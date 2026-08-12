@@ -1,0 +1,2788 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ميزانيتي</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0f1117;
+    --bg2: #1a1d2e;
+    --bg3: #252840;
+    --bg4: #2e3250;
+    --card: #1e2235;
+    --border: rgba(255,255,255,0.08);
+    --text: #e8eaf6;
+    --text2: #9fa8c7;
+    --text3: #5c6490;
+    --accent: #6c63ff;
+    --accent2: #8b80ff;
+    --green: #4caf8c;
+    --red: #e05c5c;
+    --yellow: #f0a040;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --font: 'Segoe UI', 'Tahoma', sans-serif;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+  /* THEMES */
+  body.theme-ocean { --bg:#0a1628; --bg2:#0d2040; --bg3:#102850; --bg4:#163260; --card:#0e1e3a; --accent:#2196f3; --accent2:#42a5f5; }
+  body.theme-forest { --bg:#0a1a0f; --bg2:#0d2415; --bg3:#102e1a; --bg4:#143820; --card:#0e2214; --accent:#4caf50; --accent2:#66bb6a; }
+  body.theme-sunset { --bg:#1a0d0a; --bg2:#2a1510; --bg3:#361a13; --bg4:#422018; --card:#221210; --accent:#ff5722; --accent2:#ff7043; }
+  body.theme-rose { --bg:#1a0d18; --bg2:#2a1028; --bg3:#361435; --bg4:#421840; --card:#220e20; --accent:#e91e63; --accent2:#f06292; }
+  body.theme-gold { --bg:#1a1500; --bg2:#2a2000; --bg3:#362900; --bg4:#423200; --card:#221b00; --accent:#ffc107; --accent2:#ffd54f; }
+  body.theme-slate { --bg:#0d1117; --bg2:#161b27; --bg3:#1e2433; --bg4:#252d3e; --card:#131720; --accent:#7c83fd; --accent2:#9ba3ff; }
+  body.theme-mint { --bg:#0a1a16; --bg2:#0d2420; --bg3:#102e28; --bg4:#143830; --card:#0e2220; --accent:#26c6da; --accent2:#4dd0e1; }
+  body.theme-grape { --bg:#14091a; --bg2:#1e0e28; --bg3:#271235; --bg4:#301640; --card:#1a0c22; --accent:#9c27b0; --accent2:#ba68c8; }
+  body.theme-coral { --bg:#1a0e0a; --bg2:#2a1610; --bg3:#361c14; --bg4:#422218; --card:#22120e; --accent:#ff6b6b; --accent2:#ff8a80; }
+  body.theme-arctic { --bg:#0a1520; --bg2:#0e1e2e; --bg3:#12273c; --bg4:#163048; --card:#0c1828; --accent:#00bcd4; --accent2:#26c6da; }
+  body.theme-light { --bg:#f5f7fa; --bg2:#eef0f8; --bg3:#e5e8f5; --bg4:#dde0f0; --card:#ffffff; --border:rgba(0,0,0,0.08); --text:#1a1d35; --text2:#4a5080; --text3:#8890b5; --accent:#6c63ff; --accent2:#8b80ff; }
+  body.theme-light-blue { --bg:#f0f8ff; --bg2:#e8f4fd; --bg3:#dceefb; --bg4:#cce8fa; --card:#ffffff; --border:rgba(0,0,0,0.08); --text:#0a2040; --text2:#2a5080; --text3:#6090b5; --accent:#1565c0; --accent2:#1976d2; }
+  body.theme-cream { --bg:#faf8f3; --bg2:#f5f2eb; --bg3:#ede9de; --bg4:#e5e0d3; --card:#ffffff; --border:rgba(0,0,0,0.08); --text:#2d2619; --text2:#6b5c45; --text3:#a0907a; --accent:#8d6e63; --accent2:#a1887f; }
+  body.theme-paper { --bg:#fefefe; --bg2:#f8f8f8; --bg3:#f0f0f0; --bg4:#e8e8e8; --card:#ffffff; --border:rgba(0,0,0,0.1); --text:#1a1a1a; --text2:#555555; --text3:#999999; --accent:#333333; --accent2:#555555; }
+  body.theme-midnight-blue { --bg:#020818; --bg2:#040d24; --bg3:#071230; --bg4:#0a183c; --card:#040a1e; --accent:#3d5afe; --accent2:#536dfe; }
+  body.theme-emerald { --bg:#021408; --bg2:#041e0c; --bg3:#062812; --bg4:#083218; --card:#03190a; --accent:#00897b; --accent2:#26a69a; }
+  body.theme-purple-haze { --bg:#100a1f; --bg2:#180f30; --bg3:#20143f; --bg4:#28194e; --card:#140d28; --accent:#ab47bc; --accent2:#ce93d8; }
+  body.theme-coffee { --bg:#1a1008; --bg2:#261710; --bg3:#321e14; --bg4:#3e2518; --card:#201308; --accent:#795548; --accent2:#8d6e63; }
+  body.theme-neon { --bg:#050508; --bg2:#080c12; --bg3:#0c1020; --bg4:#10162e; --card:#060a10; --accent:#00ff88; --accent2:#39ffb4; }
+  body.theme-sakura { --bg:#1f0a14; --bg2:#2e0f1e; --bg3:#3c1426; --bg4:#4a192e; --card:#260d18; --accent:#e91e8c; --accent2:#f06ab5; }
+  body.theme-volcano { --bg:#1a0800; --bg2:#2a0e00; --bg3:#3a1400; --bg4:#4a1c00; --card:#220a00; --accent:#ff6d00; --accent2:#ff9100; }
+  body.theme-blueberry { --bg:#08081e; --bg2:#0e0e2e; --bg3:#14143e; --bg4:#1a1a50; --card:#0a0a24; --accent:#5c6bc0; --accent2:#7986cb; }
+  body.theme-olive { --bg:#111408; --bg2:#1a1e0c; --bg3:#232812; --bg4:#2c3218; --card:#151808; --accent:#8bc34a; --accent2:#aed581; }
+  body.theme-steel { --bg:#0a0e14; --bg2:#10161e; --bg3:#161e28; --bg4:#1c2632; --card:#0c1018; --accent:#546e7a; --accent2:#78909c; }
+  body.theme-aurora { --bg:#040e18; --bg2:#071524; --bg3:#0a1c30; --bg4:#0e253e; --card:#060f1e; --accent:#00e5ff; --accent2:#69ffff; }
+  body.theme-candy { --bg:#1a0818; --bg2:#2a0e28; --bg3:#3a1438; --bg4:#4a1a48; --card:#220a20; --accent:#f50057; --accent2:#ff4081; }
+  body.theme-desert { --bg:#1a1208; --bg2:#261c0e; --bg3:#322614; --bg4:#3e301a; --card:#201408; --accent:#d4a853; --accent2:#e8c07a; }
+  body.theme-pine { --bg:#071410; --bg2:#0c1e18; --bg3:#112820; --bg4:#163228; --card:#091a14; --accent:#2e7d32; --accent2:#43a047; }
+  body.theme-twilight { --bg:#0e0818; --bg2:#160e26; --bg3:#1e1434; --bg4:#261a42; --card:#120a20; --accent:#7b1fa2; --accent2:#9c27b0; }
+  body.theme-ice { --bg:#e8f4f8; --bg2:#ddeef5; --bg3:#d0e8f2; --bg4:#c2e2ef; --card:#f0f9fc; --border:rgba(0,0,0,0.07); --text:#0d2b3e; --text2:#2a5c7a; --text3:#6090aa; --accent:#0288d1; --accent2:#03a9f4; }
+  body.theme-sand { --bg:#f5f0e8; --bg2:#ede7d8; --bg3:#e4dcc8; --bg4:#dbd1b8; --card:#faf8f4; --border:rgba(0,0,0,0.07); --text:#2d2418; --text2:#6b5840; --text3:#a09070; --accent:#bf8f3c; --accent2:#d4a853; }
+  body.theme-charcoal { --bg:#111111; --bg2:#191919; --bg3:#222222; --bg4:#2c2c2c; --card:#161616; --accent:#e0e0e0; --accent2:#f5f5f5; --green:#6fcf97; --red:#eb5757; --yellow:#f2c94c; }
+
+  /* LAYOUT */
+  .app { display: flex; height: 100vh; overflow: hidden; }
+  .sidebar { width: 72px; background: var(--bg2); border-left: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 16px 0; gap: 4px; flex-shrink: 0; }
+  .sidebar-logo { font-size: 24px; margin-bottom: 12px; }
+  .nav-btn { width: 48px; height: 48px; border: none; background: transparent; border-radius: var(--radius-sm); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; color: var(--text3); transition: all 0.2s; position: relative; }
+  .nav-btn:hover { background: var(--bg3); color: var(--text2); }
+  .nav-btn.active { background: var(--accent); color: white; }
+  .nav-btn .nav-icon { font-size: 20px; }
+  .nav-btn .nav-label { font-size: 9px; }
+  .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
+  /* HEADER */
+  .top-card { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .top-left { display: flex; align-items: center; gap: 20px; }
+  .salary-ring { position: relative; width: 64px; height: 64px; flex-shrink: 0; }
+  .salary-ring svg { transform: rotate(-90deg); }
+  .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-pct { font-size: 11px; font-weight: 700; }
+  .ring-label { font-size: 8px; color: var(--text3); }
+  .top-info h2 { font-size: 13px; color: var(--text2); margin-bottom: 2px; }
+  .top-info .amount { font-size: 26px; font-weight: 700; }
+  .top-info .amount.green { color: var(--green); }
+  .top-info .amount.yellow { color: var(--yellow); }
+  .top-info .amount.red { color: var(--red); }
+  .top-stats { display: flex; gap: 16px; }
+  .stat-box { text-align: center; }
+  .stat-box .val { font-size: 16px; font-weight: 600; }
+  .stat-box .lbl { font-size: 11px; color: var(--text3); }
+  .burn-bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .burn-bar { height: 6px; width: 120px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+  .burn-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+  .burn-fill.green { background: var(--green); }
+  .burn-fill.yellow { background: var(--yellow); }
+  .burn-fill.red { background: var(--red); }
+
+  /* CONTENT AREAS */
+  .content { padding: 20px 24px; flex: 1; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+
+  /* BUTTONS */
+  .btn { border: none; border-radius: var(--radius-sm); padding: 8px 16px; cursor: pointer; font-family: var(--font); font-size: 13px; font-weight: 600; transition: all 0.2s; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--bg3); }
+  .btn-danger { background: var(--red); color: white; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+  .btn-icon { width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; }
+
+  /* FORM ELEMENTS */
+  input, select, textarea { background: var(--bg3); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-sm); padding: 8px 12px; font-family: var(--font); font-size: 14px; outline: none; transition: border 0.2s; width: 100%; }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+  select option { background: var(--bg3); }
+  label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 4px; }
+  .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 12px; }
+  .form-group { display: flex; flex-direction: column; }
+
+  /* TRANSACTIONS */
+  .tx-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .tx-item:last-child { border-bottom: none; }
+  .tx-emoji { width: 36px; height: 36px; background: var(--bg3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .tx-info { flex: 1; }
+  .tx-name { font-size: 14px; font-weight: 500; }
+  .tx-sub { font-size: 12px; color: var(--text3); }
+  .tx-amount { font-weight: 700; font-size: 15px; }
+  .tx-amount.income { color: var(--green); }
+  .tx-amount.expense { color: var(--red); }
+  .tx-actions { display: flex; gap: 4px; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 4px; background: var(--bg3); padding: 4px; border-radius: var(--radius-sm); margin-bottom: 16px; }
+  .tab { flex: 1; padding: 7px; text-align: center; border: none; background: transparent; color: var(--text2); cursor: pointer; border-radius: 6px; font-size: 13px; font-family: var(--font); font-weight: 500; transition: all 0.2s; }
+  .tab.active { background: var(--accent); color: white; }
+
+  /* DAY NAV */
+  .day-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .day-nav .date-display { font-size: 15px; font-weight: 600; cursor: pointer; }
+  .day-nav .arrows { display: flex; gap: 4px; }
+
+  /* WEEK VIEW */
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .week-day-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 8px; }
+  .week-day-card.today { border-color: var(--accent); }
+  .week-day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .week-day-name { font-size: 11px; color: var(--text3); }
+  .week-day-num { font-size: 15px; font-weight: 600; }
+  .week-tx-mini { font-size: 11px; color: var(--text3); padding: 2px 0; border-bottom: 1px solid var(--border); }
+  .week-total { font-size: 12px; font-weight: 600; margin-top: 4px; }
+
+  /* MONTH VIEW */
+  .month-bar { display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
+  .month-pill { padding: 6px 12px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; background: var(--card); color: var(--text2); transition: all 0.2s; }
+  .month-pill.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-cell { min-height: 50px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px; cursor: pointer; }
+  .cal-cell:hover { border-color: var(--accent); }
+  .cal-cell.today { border-color: var(--accent); background: rgba(108,99,255,0.1); }
+  .cal-cell.other-month { opacity: 0.4; }
+  .cal-day-num { font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+  .cal-dots { display: flex; gap: 2px; flex-wrap: wrap; }
+  .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
+  .cal-dot.income { background: var(--green); }
+  .cal-dot.expense { background: var(--red); }
+  .cal-header-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+  .cal-header-cell { text-align: center; font-size: 11px; color: var(--text3); padding: 4px 0; }
+
+  /* DONUT */
+  .donut-wrap { display: flex; align-items: center; gap: 20px; }
+  .donut-chart { width: 140px; height: 140px; flex-shrink: 0; }
+  .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-name { font-size: 13px; flex: 1; }
+  .legend-pct { font-size: 12px; color: var(--text3); }
+
+  /* GOALS */
+  .goal-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .goal-name { font-size: 14px; font-weight: 600; }
+  .goal-amounts { font-size: 12px; color: var(--text3); }
+  .progress-bar { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s; }
+
+  /* CATEGORIES */
+  .cat-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .cat-item:last-child { border-bottom: none; }
+  .cat-emoji { font-size: 22px; width: 36px; text-align: center; }
+  .cat-info { flex: 1; }
+  .cat-name { font-size: 14px; font-weight: 500; }
+  .cat-limit-bar { margin-top: 4px; }
+  .cat-limit-text { font-size: 11px; color: var(--text3); margin-bottom: 2px; }
+
+  /* SETTINGS GRID */
+  .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+
+  /* THEME GRID */
+  .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; }
+  .theme-swatch { border: 2px solid transparent; border-radius: var(--radius-sm); padding: 8px; cursor: pointer; text-align: center; transition: all 0.2s; }
+  .theme-swatch.active { border-color: var(--accent); }
+  .theme-swatch-preview { height: 32px; border-radius: 6px; margin-bottom: 4px; }
+  .theme-swatch-name { font-size: 10px; color: var(--text2); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.hidden { display: none; }
+  .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 480px; max-height: 80vh; overflow-y: auto; }
+  .modal-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+
+  /* EMOJI PICKER */
+  .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; max-height: 200px; overflow-y: auto; }
+  .emoji-opt { font-size: 20px; padding: 6px; border-radius: 6px; cursor: pointer; text-align: center; border: 1px solid transparent; }
+  .emoji-opt:hover, .emoji-opt.selected { border-color: var(--accent); background: var(--bg3); }
+
+  /* COMPARE */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .compare-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+
+  /* GUIDE */
+  .guide-section { margin-bottom: 20px; }
+  .guide-section h3 { font-size: 14px; font-weight: 600; color: var(--accent2); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .guide-section p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .guide-section ul { padding-right: 16px; }
+  .guide-section li { font-size: 13px; color: var(--text2); line-height: 1.8; }
+
+  /* BAR CHART */
+  .bar-chart-wrap { height: 200px; }
+
+  /* BADGES */
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .badge-green { background: rgba(76,175,140,0.2); color: var(--green); }
+  .badge-red { background: rgba(224,92,92,0.2); color: var(--red); }
+  .badge-yellow { background: rgba(240,160,64,0.2); color: var(--yellow); }
+
+  /* PLAN TABLE */
+  .plan-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .plan-table th { text-align: right; padding: 8px; color: var(--text3); font-weight: 500; border-bottom: 1px solid var(--border); }
+  .plan-table td { padding: 8px; border-bottom: 1px solid var(--border); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) { .week-grid { grid-template-columns: repeat(3, 1fr); } .top-stats { flex-wrap: wrap; } }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--text3); }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  .type-toggle { display: flex; gap: 4px; margin-bottom: 12px; }
+  .type-btn { flex: 1; padding: 8px; border: 1px solid var(--border); background: transparent; color: var(--text2); border-radius: var(--radius-sm); cursor: pointer; font-family: var(--font); font-size: 13px; font-weight: 500; transition: all 0.2s; }
+  .type-btn.active-income { background: rgba(76,175,140,0.2); border-color: var(--green); color: var(--green); }
+  .type-btn.active-expense { background: rgba(224,92,92,0.2); border-color: var(--red); color: var(--red); }
+
+  .section-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+  .summary-row { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .summary-box { flex: 1; min-width: 100px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
+  .summary-box .s-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .summary-box .s-value { font-size: 18px; font-weight: 700; }
+  .s-value.green { color: var(--green); }
+  .s-value.red { color: var(--red); }
+  .s-value.yellow { color: var(--yellow); }
+  .plan-table thead tr { background: var(--bg3); }
+  .plan-table thead th { padding: 10px 8px; font-size: 12px; color: var(--text2); font-weight: 600; border-bottom: 2px solid var(--border); white-space: nowrap; }
+  .plan-table tbody tr:hover { background: var(--bg3); }
+  .plan-table tfoot tr { background: var(--bg3); font-weight: 700; }
+  .plan-table td { white-space: nowrap; }
+  .month-label { font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .analysis-chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .chip-green { background: rgba(76,175,140,0.2); color: var(--green); }
+  .chip-red { background: rgba(224,92,92,0.2); color: var(--red); }
+  .chip-yellow { background: rgba(240,160,64,0.2); color: var(--yellow); }
+  .chip-gray { background: var(--bg4); color: var(--text3); }
+  /* Big analysis cards */
+  .analysis-big-card { border-radius: var(--radius); padding: 20px; display:flex; flex-direction:column; gap:6px; }
+  .abc-label { font-size: 12px; opacity: 0.75; }
+  .abc-value { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+  .abc-sub { font-size: 12px; opacity: 0.65; }
+  /* Month mini cards */
+  .month-mini-card { border-radius: var(--radius-sm); padding: 12px; border-right: 4px solid transparent; background: var(--bg3); }
+  .mmc-name { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .mmc-row { display:flex; justify-content:space-between; font-size: 12px; margin-bottom: 3px; }
+  .mmc-net { font-size: 14px; font-weight: 700; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); }
+  /* Toast */
+  .toast { background: var(--bg2); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.4); animation: toastIn 0.3s ease; pointer-events: auto; }
+  @keyframes toastIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  /* Forecast card */
+  .forecast-card { background: linear-gradient(135deg, var(--bg3), var(--bg4)); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .forecast-card .fc-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+  .forecast-card .fc-value { font-size: 22px; font-weight: 700; }
+  .forecast-card .fc-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  /* ── Daily redesign ── */
+  .tx-group { margin-bottom: 12px; }
+  .tx-group-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 6px; display: inline-block; margin-bottom: 8px; }
+  .expense-label { background: rgba(224,92,92,0.15); color: var(--red); }
+  .income-label  { background: rgba(76,175,140,0.15); color: var(--green); }
+  .tx-item-new { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 6px; transition: border-color 0.2s; }
+  .tx-item-new:hover { border-color: var(--accent); }
+  .tx-item-new.expense { border-right: 3px solid var(--red); }
+  .tx-item-new.income  { border-right: 3px solid var(--green); }
+  .tx-icon-new { width: 36px; height: 36px; background: var(--bg3); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .tx-body { flex: 1; min-width: 0; }
+  .tx-name-new { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tx-note-new { font-size: 11px; color: var(--text3); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tx-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .tx-amt-new { font-size: 14px; font-weight: 700; }
+  .tx-amt-new.expense { color: var(--red); }
+  .tx-amt-new.income  { color: var(--green); }
+  .tx-act-new { display: flex; gap: 2px; }
+  .tx-act-new button { background: transparent; border: none; cursor: pointer; font-size: 14px; padding: 2px 4px; border-radius: 4px; opacity: 0.6; transition: opacity 0.2s; }
+  .tx-act-new button:hover { opacity: 1; background: var(--bg3); }
+
+  /* ── Weekly redesign ── */
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .week-card-new { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; flex-direction: column; cursor: pointer; transition: border-color 0.2s, transform 0.15s; overflow: hidden; }
+  .week-card-new:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .week-card-today { border-color: var(--accent) !important; background: rgba(108,99,255,0.06); }
+  .wc-head { padding: 8px 8px 6px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .wc-day  { font-size: 10px; color: var(--text3); font-weight: 500; }
+  .wc-date { font-size: 18px; font-weight: 700; line-height: 1; }
+  .wc-date-today { color: var(--accent); }
+  .wc-body { flex: 1; padding: 6px 6px 0; min-height: 50px; }
+  .wc-tx   { display: flex; align-items: center; gap: 4px; margin-bottom: 3px; }
+  .wc-tx-name { font-size: 10px; color: var(--text2); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .wc-tx-amt  { font-size: 10px; font-weight: 600; white-space: nowrap; }
+  .wc-tx-amt.expense { color: var(--red); }
+  .wc-tx-amt.income  { color: var(--green); }
+  .wc-empty { font-size: 10px; color: var(--text3); text-align: center; padding: 8px 0; }
+  .wc-more  { font-size: 10px; color: var(--text3); text-align: center; padding: 2px 0; }
+  .wc-foot  { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-top: 1px solid var(--border); margin-top: 4px; }
+  .wc-add   { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: white; border: none; cursor: pointer; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; line-height: 1; flex-shrink: 0; transition: opacity 0.2s; }
+  .wc-add:hover { opacity: 0.8; }
+
+  /* ── Calendar redesign ── */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+  .cal-cell-new { min-height: 58px; background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 5px 4px; cursor: pointer; transition: border-color 0.15s; display: flex; flex-direction: column; gap: 2px; }
+  .cal-cell-new:hover { border-color: var(--accent); }
+  .cal-cell-new.other-month { opacity: 0.3; pointer-events: none; }
+  .cal-cell-new.ccn-has-data { background: var(--bg3); }
+  .cal-cell-new.ccn-today { border-color: var(--accent); background: rgba(108,99,255,0.08); }
+  .ccn-num { font-size: 12px; font-weight: 600; color: var(--text2); }
+  .ccn-num-today { color: var(--accent); font-weight: 800; }
+  .ccn-exp { font-size: 10px; font-weight: 600; color: var(--red); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ccn-inc { font-size: 10px; font-weight: 600; color: var(--green); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ccn-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-top: 2px; }
+  /* Category breakdown bars */
+  .cat-bar-item { margin-bottom: 12px; }
+  .cat-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .cat-bar-name { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .cat-bar-values { display: flex; align-items: center; gap: 8px; }
+  .cat-bar-amount { font-size: 13px; font-weight: 700; }
+  .cat-bar-pct { font-size: 11px; color: var(--text3); background: var(--bg3); padding: 1px 7px; border-radius: 10px; }
+  .cat-bar-track { height: 10px; background: var(--bg4); border-radius: 5px; overflow: hidden; }
+  .cat-bar-fill { height: 100%; border-radius: 5px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+  /* Compare table */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .compare-table th { padding: 8px 10px; text-align: center; font-weight: 600; font-size: 12px; border-bottom: 2px solid var(--border); background: var(--bg3); }
+  .compare-table th:first-child { text-align: right; }
+  .compare-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: center; }
+  .compare-table td:first-child { text-align: right; font-size: 12px; color: var(--text2); }
+  .compare-table tr:hover td { background: var(--bg3); }
+  .compare-table tfoot td { font-weight: 700; background: var(--bg3); border-top: 2px solid var(--border); }
+  .compare-sel-wrap { display: flex; flex-direction: column; gap: 4px; position: relative; }
+  .compare-sel-wrap .remove-compare { position: absolute; top: -2px; left: -2px; width: 16px; height: 16px; border-radius: 50%; background: var(--red); color: white; border: none; cursor: pointer; font-size: 10px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+  /* Dashboard */
+  .db-cycle-wrap { background: linear-gradient(135deg, var(--bg2), var(--bg3)); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .db-cycle-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+  .db-cycle-title { font-size: 12px; color: var(--text3); margin-bottom: 4px; }
+  .db-cycle-big { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+  .db-cycle-sub { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .db-cycle-stats { display: flex; gap: 20px; flex-wrap: wrap; }
+  .db-stat { text-align: center; }
+  .db-stat-val { font-size: 18px; font-weight: 700; }
+  .db-stat-lbl { font-size: 11px; color: var(--text3); }
+  .db-burn-wrap { margin-top: 14px; }
+  .db-burn-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text3); margin-bottom: 6px; }
+  .db-burn-track { height: 14px; background: var(--bg4); border-radius: 7px; overflow: hidden; position: relative; }
+  .db-burn-fill { height: 100%; border-radius: 7px; transition: width 0.6s; position: relative; }
+  .db-burn-marker { position: absolute; top: -3px; width: 2px; height: 20px; background: var(--text); border-radius: 1px; opacity: 0.6; }
+  .cycle-compare-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .cycle-compare-row:last-child { border-bottom: none; }
+  .cycle-compare-label { width: 90px; font-size: 12px; color: var(--text2); flex-shrink: 0; }
+  .cycle-compare-track { flex: 1; height: 8px; background: var(--bg4); border-radius: 4px; overflow: hidden; }
+  .cycle-compare-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+  .cycle-compare-val { width: 90px; text-align: left; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  .weekday-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+  .weekday-name { width: 60px; font-size: 12px; color: var(--text2); flex-shrink: 0; }
+  .weekday-track { flex: 1; height: 22px; background: var(--bg4); border-radius: 4px; overflow: hidden; }
+  .weekday-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-right: 8px; font-size: 11px; font-weight: 600; color: white; transition: width 0.5s; justify-content: flex-end; min-width: 2px; }
+  .weekday-val { width: 80px; text-align: left; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+  /* Forecast */
+  .forecast-card { background: linear-gradient(135deg, var(--bg3), var(--bg4)); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .forecast-card .fc-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+  .forecast-card .fc-value { font-size: 22px; font-weight: 700; }
+  .forecast-card .fc-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+</style>
+</head>
+<body class="theme-default">
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">💰</div>
+    <button class="nav-btn active" onclick="showPage('dayweek')" title="اليوم/أسبوع">
+      <span class="nav-icon">📅</span>
+      <span class="nav-label">يوم/أسبوع</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('monthly')" title="شهري">
+      <span class="nav-icon">🗓️</span>
+      <span class="nav-label">شهري</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('planning')" title="تخطيط">
+      <span class="nav-icon">🎯</span>
+      <span class="nav-label">تخطيط</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('settings')" title="الإعدادات">
+      <span class="nav-icon">⚙️</span>
+      <span class="nav-label">إعداد</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('colors')" title="الألوان">
+      <span class="nav-icon">🎨</span>
+      <span class="nav-label">ألوان</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('export')" title="تصدير">
+      <span class="nav-icon">⇩</span>
+      <span class="nav-label">نسخ</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('dashboard')" title="لوحة التحكم">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">لوحة</span>
+    </button>
+    <button class="nav-btn" onclick="showPage('analysis')" title="تحليل شامل">
+      <span class="nav-icon">📈</span>
+      <span class="nav-label">تحليل</span>
+    </button>
+    <button class="nav-btn" onclick="openModal('guide-modal')" title="دليل الاستخدام">
+      <span class="nav-icon">❓</span>
+      <span class="nav-label">دليل</span>
+    </button>
+  </nav>
+
+  <div class="main">
+    <!-- TOP HEADER CARD -->
+    <div class="top-card" id="top-card"></div>
+
+    <div class="content">
+      <!-- DAY/WEEK MERGED PAGE -->
+      <div class="page active" id="page-dayweek">
+
+        <!-- ─── القسم اليومي ─── -->
+        <div style="margin-bottom:20px">
+          <div class="day-nav">
+            <button class="btn btn-ghost btn-icon" onclick="changeDay(-1)">→</button>
+            <div class="date-display" onclick="openModal('date-picker-modal')" id="day-title" style="font-size:16px;font-weight:700;cursor:pointer">اليوم</div>
+            <button class="btn btn-ghost btn-icon" onclick="changeDay(1)">←</button>
+          </div>
+          <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="openAddTx()">+ إضافة عملية</button>
+          <div id="daily-txs"></div>
+          <div class="card" style="margin-top:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span id="daily-total-label" style="color:var(--text3);font-size:13px">إجمالي اليوم</span>
+              <span id="daily-total" style="font-size:18px;font-weight:700"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- فاصل -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <span style="font-size:12px;color:var(--text3);white-space:nowrap">العرض الأسبوعي</span>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-ghost btn-sm" onclick="changeWeek(-1)">→ السابق</button>
+            <button class="btn btn-ghost btn-sm" onclick="changeWeek(1)">التالي ←</button>
+          </div>
+        </div>
+
+        <!-- ─── القسم الأسبوعي ─── -->
+        <div class="summary-row" id="week-summary"></div>
+        <div class="week-grid" id="week-grid"></div>
+      </div>
+
+      <!-- MONTHLY PAGE -->
+      <div class="page" id="page-monthly">
+        <div class="month-bar" id="month-bar"></div>
+        <div class="summary-row" id="month-summary"></div>
+        <div class="card">
+          <div class="card-title">📅 التقويم الشهري</div>
+          <div class="cal-header-row">
+            <div class="cal-header-cell">أحد</div><div class="cal-header-cell">اثنين</div>
+            <div class="cal-header-cell">ثلاثاء</div><div class="cal-header-cell">أربعاء</div>
+            <div class="cal-header-cell">خميس</div><div class="cal-header-cell">جمعة</div>
+            <div class="cal-header-cell">سبت</div>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🎯 توزيع المصاريف بالفئات</div>
+          <div id="cats-breakdown-monthly"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 قارن بخطتك</div>
+          <div id="plan-compare"></div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="justify-content:space-between;align-items:center">
+            <span>📈 مقارنة بين الأشهر</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm" onclick="addCompareMonth()">+ شهر</button>
+              <button class="btn btn-primary btn-sm" onclick="renderMonthCompare()">مقارنة ▶</button>
+            </div>
+          </div>
+          <!-- اختيار الأشهر -->
+          <div id="compare-selects-wrap" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end;padding-bottom:14px;border-bottom:1px solid var(--border)">
+            <div class="compare-sel-wrap">
+              <label style="font-size:10px;color:var(--text3)">● شهر 1</label>
+              <select class="compare-month-sel" style="min-width:130px;font-size:12px"></select>
+            </div>
+            <div class="compare-sel-wrap">
+              <label style="font-size:10px;color:var(--text3)">● شهر 2</label>
+              <select class="compare-month-sel" style="min-width:130px;font-size:12px"></select>
+            </div>
+          </div>
+          <!-- الجدول -->
+          <div id="month-compare-result"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📉 أداء آخر 12 شهر</div>
+          <div class="bar-chart-wrap"><canvas id="bar-chart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- PLANNING PAGE -->
+      <div class="page" id="page-planning">
+        <div class="section-title">
+          التخطيط المستقبلي
+          <button class="btn btn-primary btn-sm" onclick="openModal('goal-modal')">+ هدف جديد</button>
+        </div>
+        <div id="goals-list"></div>
+        <div class="card" style="margin-top:16px">
+          <div class="card-title" style="justify-content:space-between">
+            📋 الخطة الشهرية الافتراضية
+            <button class="btn btn-ghost btn-sm" onclick="openModal('plan-modal')">تعديل</button>
+          </div>
+          <div id="monthly-plan-display"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS PAGE -->
+      <div class="page" id="page-settings">
+        <div class="section-title">الإعدادات</div>
+        <div class="settings-grid">
+          <div class="card">
+            <div class="card-title">💵 إعدادات الراتب</div>
+            <div class="form-group" style="margin-bottom:10px">
+              <label>الراتب الأساسي</label>
+              <input type="number" id="s-salary" placeholder="0">
+            </div>
+            <div class="form-group" style="margin-bottom:10px">
+              <label>العملة</label>
+              <select id="s-currency">
+                <option value="ر.س">ريال سعودي (ر.س)</option>
+                <option value="$">دولار ($)</option>
+                <option value="€">يورو (€)</option>
+                <option value="£">جنيه (£)</option>
+                <option value="د.إ">درهم إماراتي (د.إ)</option>
+                <option value="د.ك">دينار كويتي (د.ك)</option>
+                <option value="د.ب">دينار بحريني (د.ب)</option>
+                <option value="ر.ع">ريال عماني (ر.ع)</option>
+                <option value="ر.ق">ريال قطري (ر.ق)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:10px">
+              <label>يوم نزول الراتب</label>
+              <input type="number" id="s-payday" min="1" max="31" placeholder="27">
+            </div>
+            <button class="btn btn-primary" style="width:100%" onclick="saveSettings()">حفظ الإعدادات</button>
+          </div>
+          <div class="card">
+            <div class="card-title">🏷️ الفئات المخصصة</div>
+            <div id="cats-list"></div>
+            <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="openModal('cat-modal')">+ إضافة فئة</button>
+          </div>
+          <div class="card">
+            <div class="card-title">🎯 حدود الإنفاق الشهرية</div>
+            <div id="limits-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">🗑️ إدارة البيانات</div>
+            <button class="btn btn-danger" style="width:100%;margin-bottom:8px" onclick="confirmReset()">حذف جميع البيانات</button>
+            <p style="font-size:12px;color:var(--text3)">سيتم حذف جميع العمليات والفئات والأهداف نهائياً</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYSIS PAGE -->
+      <div class="page" id="page-analysis">
+        <!-- فلتر الفترة الزمنية -->
+        <div class="section-title" style="margin-bottom:12px">
+          📊 التحليل الشامل
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <select id="analysis-year" onchange="renderAnalysis()" style="font-size:12px;padding:5px 8px;width:auto"></select>
+            <button class="btn btn-ghost btn-sm" onclick="toggleAnalysisFilter()" id="filter-btn">🗓️ فترة مخصصة</button>
+          </div>
+        </div>
+        <div id="analysis-filter-row" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px;display:none">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font-size:11px;color:var(--text3)">من</label>
+              <input type="date" id="filter-from" style="width:140px;font-size:12px">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font-size:11px;color:var(--text3)">إلى</label>
+              <input type="date" id="filter-to" style="width:140px;font-size:12px">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="applyAnalysisFilter()" style="margin-top:16px">تطبيق</button>
+            <button class="btn btn-ghost btn-sm" onclick="clearAnalysisFilter()" style="margin-top:16px">مسح</button>
+          </div>
+        </div>
+
+        <!-- 3 بطاقات كبيرة -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px" id="analysis-big-cards"></div>
+
+        <!-- 4 بطاقات صغيرة -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px" id="analysis-small-cards"></div>
+
+        <!-- رسمان بيانيان جنباً لجنب -->
+        <div style="display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:16px">
+          <div class="card" style="margin-bottom:0">
+            <div class="card-title">📊 الإيرادات مقابل المصاريف</div>
+            <div style="height:220px"><canvas id="analysis-bar-chart"></canvas></div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div class="card-title">🎯 توزيع المصاريف بالفئات</div>
+            <div id="analysis-cats-bars" style="overflow-y:auto;max-height:220px;padding-left:4px"></div>
+          </div>
+        </div>
+
+        <!-- توقع الشهر القادم + أفضل/أسوأ -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px" id="analysis-forecast-row"></div>
+
+        <!-- شبكة بطاقات الأشهر -->
+        <div class="card">
+          <div class="card-title">📅 أداء الأشهر دفعة واحدة</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px" id="analysis-month-cards"></div>
+        </div>
+
+        <!-- جدول تفصيلي -->
+        <div class="card" style="margin-top:12px">
+          <div class="card-title">📋 الجدول التفصيلي الكامل</div>
+          <div style="overflow-x:auto">
+            <table class="plan-table" style="min-width:700px">
+              <thead>
+                <tr>
+                  <th>الشهر</th>
+                  <th style="text-align:center">الراتب</th>
+                  <th style="text-align:center">إجمالي الدخل</th>
+                  <th style="text-align:center">المصروف</th>
+                  <th style="text-align:center">المتبقي</th>
+                  <th style="text-align:center">تحت الميزانية</th>
+                  <th style="text-align:center">نسبة الإنفاق</th>
+                  <th style="text-align:center">الحالة</th>
+                </tr>
+              </thead>
+              <tbody id="analysis-tbody"></tbody>
+              <tfoot id="analysis-tfoot"></tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- جدول الفئات شهرياً -->
+        <div class="card" style="margin-top:12px">
+          <div class="card-title">🏷️ إنفاق كل فئة شهرياً</div>
+          <div style="overflow-x:auto">
+            <table class="plan-table" style="min-width:700px">
+              <thead id="analysis-cats-head"></thead>
+              <tbody id="analysis-cats-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD PAGE -->
+      <div class="page" id="page-dashboard">
+        <div class="section-title" style="margin-bottom:12px">
+          📊 لوحة التحكم
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn btn-ghost btn-sm" id="db-auto-btn" onclick="setDashboardMode('auto')" style="border-color:var(--accent);color:var(--accent)">دورة الراتب ✓</button>
+            <button class="btn btn-ghost btn-sm" id="db-custom-btn" onclick="setDashboardMode('custom')">📅 تحديد الفترة</button>
+          </div>
+        </div>
+
+        <!-- صف التاريخ المخصص -->
+        <div id="db-custom-row" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px">
+          <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font-size:11px;color:var(--text3)">من</label>
+              <input type="date" id="db-from" style="font-size:12px;width:140px">
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <label style="font-size:11px;color:var(--text3)">إلى</label>
+              <input type="date" id="db-to" style="font-size:12px;width:140px">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="applyDashboardPeriod()">تطبيق</button>
+            <button class="btn btn-ghost btn-sm" onclick="fillPaydaySuggestion()">💡 اقتراح دورة الراتب</button>
+          </div>
+          <div id="db-period-label" style="font-size:11px;color:var(--text3);margin-top:8px"></div>
+        </div>
+
+        <!-- دورة / الفترة الحالية -->
+        <div id="db-cycle-card" style="margin-bottom:16px"></div>
+
+        <!-- شريط الإنفاق التفصيلي -->
+        <div class="card">
+          <div class="card-title">🎯 توزيع المصاريف — الدورة الحالية</div>
+          <div id="db-cats-breakdown"></div>
+        </div>
+
+        <!-- مقارنة الدورات السابقة -->
+        <div class="card">
+          <div class="card-title">🔄 مقارنة مع الدورات السابقة</div>
+          <div id="db-cycles-compare"></div>
+        </div>
+
+        <!-- رسم بياني للدورات -->
+        <div class="card">
+          <div class="card-title">📉 الإنفاق عبر الدورات الأخيرة</div>
+          <div style="height:220px"><canvas id="db-bar-chart"></canvas></div>
+        </div>
+
+        <!-- أيام الأسبوع -->
+        <div class="card">
+          <div class="card-title">📆 إنفاقك حسب أيام الأسبوع</div>
+          <div id="db-weekdays"></div>
+        </div>
+      </div>
+
+      <!-- COLORS PAGE -->
+      <div class="page" id="page-colors">
+        <div class="section-title">🎨 أنماط الألوان</div>
+        <div class="theme-grid" id="theme-grid"></div>
+      </div>
+
+      <!-- EXPORT PAGE -->
+      <div class="page" id="page-export">
+        <div class="section-title">⇩ تصدير واستيراد البيانات</div>
+        <div class="settings-grid">
+          <div class="card">
+            <div class="card-title">📤 تصدير البيانات</div>
+            <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="exportXLSX()">📊 تصدير XLSX (إكسل)</button>
+            <button class="btn btn-ghost" style="width:100%" onclick="exportCSV()">📄 تصدير CSV</button>
+          </div>
+          <div class="card">
+            <div class="card-title">📥 استيراد البيانات</div>
+            <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="margin-bottom:10px">
+            <div style="display:flex;gap:8px;margin-bottom:10px">
+              <button class="btn btn-ghost" style="flex:1" onclick="importData('merge')">دمج</button>
+              <button class="btn btn-danger" style="flex:1" onclick="importData('replace')">استبدال</button>
+            </div>
+            <p style="font-size:12px;color:var(--text3)">دمج: إضافة بيانات الملف فوق الموجودة · استبدال: مسح البيانات الحالية كلياً</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TRANSACTION MODAL -->
+<div class="modal-overlay hidden" id="add-tx-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="add-tx-title">إضافة عملية</span>
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="closeModal('add-tx-modal')">✕</button>
+    </div>
+    <div class="type-toggle">
+      <button class="type-btn active-expense" id="type-expense" onclick="setTxType('expense')">مصروف 💸</button>
+      <button class="type-btn" id="type-income" onclick="setTxType('income')">دخل 💰</button>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>المبلغ</label>
+      <input type="number" id="tx-amount" placeholder="0.00" min="0">
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>الفئة</label>
+      <select id="tx-category"></select>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>ملاحظة (اختياري) — التصنيف التلقائي</label>
+      <input type="text" id="tx-note" placeholder="مثال: قهوة، بنزين، تسوق..." oninput="autoClassify(this.value)">
+      <div id="auto-classify-hint" style="font-size:11px;color:var(--accent2);margin-top:4px;min-height:16px"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label>التاريخ</label>
+      <input type="date" id="tx-date">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="saveTx()">حفظ</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('add-tx-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- DATE PICKER MODAL -->
+<div class="modal-overlay hidden" id="date-picker-modal">
+  <div class="modal">
+    <div class="modal-title">
+      اختر التاريخ
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="closeModal('date-picker-modal')">✕</button>
+    </div>
+    <input type="date" id="date-picker-input" style="margin-bottom:12px">
+    <button class="btn btn-primary" style="width:100%" onclick="goToDate()">انتقل</button>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div class="modal-overlay hidden" id="goal-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="goal-modal-title">هدف ادخار جديد</span>
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="closeModal('goal-modal')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>اسم الهدف</label>
+      <input type="text" id="goal-name" placeholder="مثال: شراء جهاز لابتوب">
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>المبلغ المستهدف</label>
+      <input type="number" id="goal-target" placeholder="0">
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>المبلغ المحقق حالياً</label>
+      <input type="number" id="goal-current" placeholder="0">
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>المدة الزمنية (بالأشهر)</label>
+      <input type="number" id="goal-months" placeholder="12" min="1">
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label>الإيموجي</label>
+      <input type="text" id="goal-emoji" placeholder="🎯" style="width:80px">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="saveGoal()">حفظ</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('goal-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY MODAL -->
+<div class="modal-overlay hidden" id="cat-modal">
+  <div class="modal">
+    <div class="modal-title">
+      إضافة فئة مخصصة
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="closeModal('cat-modal')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>اسم الفئة</label>
+      <input type="text" id="cat-name" placeholder="مثال: الأكل والشرب">
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>الإيموجي</label>
+      <input type="text" id="cat-emoji-input" placeholder="🍔" style="width:80px;margin-bottom:8px">
+      <div class="emoji-grid" id="emoji-grid"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>نوع الفئة</label>
+      <select id="cat-type">
+        <option value="expense">مصروف</option>
+        <option value="income">دخل</option>
+        <option value="both">كلاهما</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label>الحد الشهري (اختياري)</label>
+      <input type="number" id="cat-limit" placeholder="0 = بلا حد">
+    </div>
+    <div class="form-group" style="margin-bottom:14px">
+      <label>كلمات مفتاحية للتصنيف التلقائي (افصل بفاصلة)</label>
+      <input type="text" id="cat-keywords" placeholder="مثال: قهوة، مطعم، أكل">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="saveCategory()">حفظ</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('cat-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- PLAN MODAL -->
+<div class="modal-overlay hidden" id="plan-modal">
+  <div class="modal">
+    <div class="modal-title">
+      الخطة الشهرية
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="closeModal('plan-modal')">✕</button>
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>الراتب المتوقع</label>
+      <input type="number" id="plan-salary" placeholder="0">
+    </div>
+    <div id="plan-cats-inputs"></div>
+    <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="savePlan()">حفظ الخطة</button>
+  </div>
+</div>
+
+<!-- GUIDE MODAL -->
+<div class="modal-overlay hidden" id="guide-modal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-title">
+      ❓ حول ميزانيتي — دليل الاستخدام
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="closeModal('guide-modal')">✕</button>
+    </div>
+
+    <div class="guide-section">
+      <h3>💰 البطاقة العلوية</h3>
+      <p>تعرض حلقة دائرية تتغير ألوانها حسب وتيرة إنفاقك مقارنةً بالأيام المتبقية: <b style="color:var(--green)">أخضر</b> إنفاق منتظم، <b style="color:var(--yellow)">أصفر</b> اقتراب من الحد، <b style="color:var(--red)">أحمر</b> تسارع خطير. تظهر المبلغ المتبقي من الراتب، عدد الأيام المتبقية لنزول الراتب القادم، والمتوسط اليومي المسموح به.</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>📅 يوم / أسبوع</h3>
+      <p>صفحة مدمجة تعرض اليومي في الأعلى والأسبوعي في الأسفل. في القسم اليومي: اضغط على التاريخ للانتقال لأي يوم، استخدم الأسهم للتنقل، وأضف عملياتك بزر "+". تظهر المصاريف والإيرادات في مجموعتين منفصلتين مع صافي اليوم. في القسم الأسبوعي: 7 بطاقات ملونة تعرض عمليات كل يوم — انقر على البطاقة لتنتقل لذلك اليوم في القسم العلوي، أو استخدم زر "+" للإضافة السريعة مباشرةً.</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>🗓️ شهري</h3>
+      <p>شريط يضم أشهر السنة للتنقل بينها. التقويم التفاعلي يعرض مبالغ المصاريف باللون الأحمر والإيرادات بالأخضر داخل كل خلية — انقر على أي يوم للانتقال إليه. أسفله: أشرطة ملونة لتوزيع المصاريف على الفئات، مقارنة بالخطة الشهرية، مقارنة بين الأشهر (يدعم حتى 6 أشهر جنباً إلى جنب بألوان مختلفة)، ورسم بياني لآخر 12 شهر.</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>🎯 تخطيط</h3>
+      <p>قسمان: أهداف الادخار الذكية — أضف هدفاً بمبلغ مستهدف ومدة زمنية بالأشهر وسيحسب التطبيق تلقائياً كم تحتاج توفيره شهرياً، مع شريط تقدم وشارة ملونة. عند بلوغ 100% تظهر رسالة تهنئة. والخطة الشهرية الافتراضية: ضع ميزانية تقديرية للراتب المتوقع وتوزيعه على الفئات لمقارنتها بالإنفاق الفعلي في قسم الشهري.</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>📊 لوحة التحكم</h3>
+      <p>مبنية على دورة الراتب (من يوم النزول إلى يوم قبل النزول التالي). تعرض بطاقة الدورة الحالية بالمبلغ المتبقي والمتوسط اليومي الفعلي مقارنةً بالمسموح، مع شريط مزدوج يجمع نسبة الإنفاق ونسبة الأيام المنقضية. أسفلها: أشرطة توزيع الفئات مع تنبيه تجاوز الحد، مقارنة بين آخر 6 دورات، رسم خطي يتتبع الإنفاق عبر الدورات، وإنفاق أيام الأسبوع. يمكنك التبديل بين وضع دورة الراتب التلقائي أو تحديد فترة مخصصة يدوياً مع اقتراح دورة الراتب.</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>📈 التحليل الشامل</h3>
+      <p>تقرير سنوي كامل: 3 بطاقات كبيرة للإيرادات والمصاريف والصافي، 4 بطاقات إحصائية (عدد العمليات، متوسط المصروف، نسبة الإنفاق، الأشهر النشطة). رسم بياني شريطي شهري، أشرطة توزيع الفئات، بطاقة التنبؤ المالي (يحلل آخر 3 أشهر بالانحدار الخطي ليتوقع الشهر القادم)، شبكة بطاقات الأشهر الـ12 بحدود ملونة، وجدول تفصيلي بالإجماليات. يدعم فلتر الفترة الزمنية المخصصة.</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>⚙️ الإعدادات</h3>
+      <p>ثلاثة أقسام: إعدادات الراتب (المبلغ، العملة من 9 خيارات، يوم نزول الراتب)؛ الفئات المخصصة (أضف فئات غير محدودة بإيموجي وكلمات مفتاحية للتصنيف التلقائي)؛ حدود الإنفاق الشهرية (ضع سقفاً لكل فئة مع شريط تقدم وتنبيه عند الاقتراب).</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>✨ التصنيف التلقائي</h3>
+      <p>عند كتابة ملاحظة في نافذة إضافة العملية، يبحث التطبيق عن الكلمات المفتاحية ويختار الفئة تلقائياً مع تلميح أزرق. مثال: اكتب "قهوة" فيختار فئة الأكل والشرب. يمكنك إضافة كلمات مفتاحية مخصصة لكل فئة من الإعدادات.</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>🎨 الألوان</h3>
+      <p>اختر من بين 33 ثيم جاهزاً تنوع بين الداكن (افتراضي، المحيط، الغابة، النيون، الفحم...) والفاتح (فاتح، جليد، رمال...) والمتدرج. يُحفظ خيارك تلقائياً ويُطبَّق على كامل التطبيق.</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>⇩ تصدير واستيراد</h3>
+      <p>صدّر بياناتك بصيغة XLSX (إكسل كامل) أو CSV. عند الاستيراد يمكنك اختيار الدمج (إضافة البيانات فوق الموجودة) أو الاستبدال الكامل (مسح البيانات الحالية). يدعم ملفات XLSX وXLS وCSV.</p>
+    </div>
+
+    <div class="guide-section">
+      <h3>🗑️ الحذف والتأكيد</h3>
+      <p>كل عملية حذف (عملية، هدف، فئة، إعادة تعيين كاملة) تفتح نافذة تأكيد مخصصة بزر "نعم، احذف" وزر "إلغاء". إعادة تعيين البيانات الكاملة تطلب تأكيدين متتاليين.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay hidden" id="confirm-modal">
+  <div class="modal" style="max-width:360px;text-align:center">
+    <div style="font-size:40px;margin-bottom:12px" id="confirm-icon">🗑️</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px" id="confirm-title">تأكيد الحذف</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:20px" id="confirm-msg">هل أنت متأكد؟</div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-danger" style="flex:1;padding:10px" id="confirm-ok-btn">نعم، احذف</button>
+      <button class="btn btn-ghost" style="flex:1;padding:10px" onclick="closeModal('confirm-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none"></div>
+
+<script>
+// ================== TOAST & CONFIRM ==================
+function showToast(msg, color) {
+  const c = document.getElementById('toast-container');
+  if (!c) return;
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  if (color) t.style.borderColor = color;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.4s'; setTimeout(()=>t.remove(),400); }, 2800);
+}
+
+function showConfirm(title, msg, icon, onOk) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent   = msg;
+  document.getElementById('confirm-icon').textContent  = icon || '🗑️';
+  const btn = document.getElementById('confirm-ok-btn');
+  // استبدل الـ onclick لتجنب تراكم الـ listeners
+  btn.replaceWith(btn.cloneNode(true));
+  document.getElementById('confirm-ok-btn').onclick = () => { closeModal('confirm-modal'); onOk(); };
+  document.getElementById('confirm-modal').classList.remove('hidden');
+}
+
+// ================== DATA ==================
+const EMOJIS = ['🍔','🍕','☕','🛒','🏠','🚗','💊','👕','📱','✈️','🎬','🎮','📚','💪','🐕','💼','💰','🎁','⚡','💧','🏦','💳','🎓','🏥','🛵','🚌','🏋️','🎵','🍎','🧹','🔧','💡'];
+const THEMES = [
+  {id:'theme-default',name:'افتراضي',colors:['#0f1117','#6c63ff','#4caf8c']},
+  {id:'theme-ocean',name:'المحيط',colors:['#0a1628','#2196f3','#4caf8c']},
+  {id:'theme-forest',name:'الغابة',colors:['#0a1a0f','#4caf50','#2196f3']},
+  {id:'theme-sunset',name:'الغروب',colors:['#1a0d0a','#ff5722','#ffc107']},
+  {id:'theme-rose',name:'الوردة',colors:['#1a0d18','#e91e63','#9c27b0']},
+  {id:'theme-gold',name:'الذهبي',colors:['#1a1500','#ffc107','#ff9800']},
+  {id:'theme-slate',name:'الرمادي',colors:['#0d1117','#7c83fd','#4caf8c']},
+  {id:'theme-mint',name:'النعناع',colors:['#0a1a16','#26c6da','#4caf8c']},
+  {id:'theme-grape',name:'العنب',colors:['#14091a','#9c27b0','#7c4dff']},
+  {id:'theme-coral',name:'المرجان',colors:['#1a0e0a','#ff6b6b','#ffc107']},
+  {id:'theme-arctic',name:'القطبي',colors:['#0a1520','#00bcd4','#4fc3f7']},
+  {id:'theme-light',name:'فاتح',colors:['#f5f7fa','#6c63ff','#4caf8c']},
+  {id:'theme-light-blue',name:'أزرق فاتح',colors:['#f0f8ff','#1565c0','#00acc1']},
+  {id:'theme-cream',name:'كريمي',colors:['#faf8f3','#8d6e63','#6d8b74']},
+  {id:'theme-paper',name:'ورقي',colors:['#fefefe','#333333','#555555']},
+  {id:'theme-midnight-blue',name:'منتصف الليل',colors:['#020818','#3d5afe','#2979ff']},
+  {id:'theme-emerald',name:'الزمرد',colors:['#021408','#00897b','#26a69a']},
+  {id:'theme-purple-haze',name:'البنفسج',colors:['#100a1f','#ab47bc','#7e57c2']},
+  {id:'theme-coffee',name:'القهوة',colors:['#1a1008','#795548','#a1887f']},
+  {id:'theme-neon',name:'النيون',colors:['#050508','#00ff88','#00e5ff']},
+  {id:'theme-sakura',name:'ساكورا',colors:['#1f0a14','#e91e8c','#f06ab5']},
+  {id:'theme-volcano',name:'البركان',colors:['#1a0800','#ff6d00','#ff9100']},
+  {id:'theme-blueberry',name:'التوت الأزرق',colors:['#08081e','#5c6bc0','#7986cb']},
+  {id:'theme-olive',name:'الزيتون',colors:['#111408','#8bc34a','#aed581']},
+  {id:'theme-steel',name:'الصلب',colors:['#0a0e14','#546e7a','#78909c']},
+  {id:'theme-aurora',name:'الشفق القطبي',colors:['#040e18','#00e5ff','#69ffff']},
+  {id:'theme-candy',name:'الحلوى',colors:['#1a0818','#f50057','#ff4081']},
+  {id:'theme-desert',name:'الصحراء',colors:['#1a1208','#d4a853','#e8c07a']},
+  {id:'theme-pine',name:'الصنوبر',colors:['#071410','#2e7d32','#43a047']},
+  {id:'theme-twilight',name:'الشفق البنفسجي',colors:['#0e0818','#7b1fa2','#9c27b0']},
+  {id:'theme-ice',name:'الجليد',colors:['#e8f4f8','#0288d1','#03a9f4']},
+  {id:'theme-sand',name:'الرمال',colors:['#f5f0e8','#bf8f3c','#d4a853']},
+  {id:'theme-charcoal',name:'الفحم',colors:['#111111','#e0e0e0','#6fcf97']},
+];
+const MONTH_NAMES = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const DAY_NAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+let state = {
+  transactions: [],
+  categories: [
+    {id:'c1',name:'الأكل والشرب',emoji:'🍔',type:'expense',limit:0,keywords:'مطعم,أكل,شرب,قهوة,عشاء,غداء,فطور,كافيه,وجبة,بيتزا,برجر,شاورما,سوشي'},
+    {id:'c2',name:'المواصلات',emoji:'🚗',type:'expense',limit:0,keywords:'بنزين,سيارة,تاكسي,أوبر,كريم,باص,مترو,قطار,طيران,رحلة'},
+    {id:'c3',name:'التسوق',emoji:'🛒',type:'expense',limit:0,keywords:'تسوق,ملابس,أحذية,إلكترونيات,هدية,سوق,متجر,مول'},
+    {id:'c4',name:'الترفيه',emoji:'🎬',type:'expense',limit:0,keywords:'سينما,موسيقى,ألعاب,رياضة,نزهة,سفر,فندق,حفلة,اشتراك,نتفليكس,يوتيوب'},
+    {id:'c5',name:'الصحة',emoji:'💊',type:'expense',limit:0,keywords:'دواء,صيدلية,دكتور,طبيب,مستشفى,عيادة,علاج,كشف'},
+    {id:'c6',name:'الفواتير',emoji:'⚡',type:'expense',limit:0,keywords:'كهرباء,ماء,إنترنت,هاتف,إيجار,اشتراك,جوال,فاتورة'},
+    {id:'c7',name:'راتب',emoji:'💰',type:'income',limit:0,keywords:'راتب,مرتب,أجر,معاش'},
+    {id:'c8',name:'دخل إضافي',emoji:'💼',type:'income',limit:0,keywords:'مكافأة,عمولة,مشروع,فريلانس,بيع,أرباح'},
+  ],
+  goals: [],
+  settings: { salary: 0, currency: 'ر.س', payday: 27 },
+  theme: 'theme-default',
+  currentDate: new Date(),
+  weekOffset: 0,
+  currentMonth: new Date().getMonth(),
+  currentYear: new Date().getFullYear(),
+  editingTx: null,
+  editingGoal: null,
+  plan: { salary: 0, categories: {} },
+  analysisFilter: null,
+};
+
+function load() {
+  const saved = localStorage.getItem('mizaniyati');
+  if (saved) {
+    const d = JSON.parse(saved);
+    state.transactions = d.transactions || [];
+    // Merge saved categories with defaults to preserve keywords
+    if (d.categories) {
+      state.categories = d.categories.map(sc => {
+        const def = state.categories.find(dc => dc.id === sc.id);
+        return { ...sc, keywords: sc.keywords || (def ? def.keywords : '') };
+      });
+    }
+    state.goals = d.goals || [];
+    state.settings = d.settings || state.settings;
+    state.theme = d.theme || 'theme-default';
+    state.plan = d.plan || { salary: 0, categories: {} };
+  }
+  applyTheme(state.theme);
+}
+
+function save() {
+  localStorage.setItem('mizaniyati', JSON.stringify({
+    transactions: state.transactions,
+    categories: state.categories,
+    goals: state.goals,
+    settings: state.settings,
+    theme: state.theme,
+    plan: state.plan,
+  }));
+}
+
+// ================== UTILS ==================
+function fmt(n) {
+  const abs = Math.abs(n);
+  return (n < 0 ? '-' : '') + abs.toLocaleString('ar-SA', {minimumFractionDigits:0, maximumFractionDigits:2}) + ' ' + state.settings.currency;
+}
+// dateKey دائماً يستخدم التوقيت المحلي — يحل مشكلة UTC shift في +3
+function dateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${dd}`;
+}
+// اليوم الحالي بالتوقيت المحلي
+function localToday() {
+  const n = new Date();
+  return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+}
+function getTxForDate(dateStr) {
+  return state.transactions.filter(t => t.date === dateStr);
+}
+function getDayTotal(dateStr) {
+  return getTxForDate(dateStr).reduce((s,t) => s + (t.type==='income'?t.amount:-t.amount), 0);
+}
+function getMonthTxs(y, m) {
+  const prefix = `${y}-${String(m+1).padStart(2,'0')}`;
+  return state.transactions.filter(t => t.date.startsWith(prefix));
+}
+function getCat(id) {
+  return state.categories.find(c => c.id === id) || {name:'أخرى',emoji:'📦'};
+}
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+// ================== SALARY CALC ==================
+function getPayCycleInfo() {
+  const today = localToday();
+  const payday = state.settings.payday || 27;
+  const salary = state.settings.salary || 0;
+
+  let cycleStart, cycleEnd;
+  if (today.getDate() >= payday) {
+    cycleStart = new Date(today.getFullYear(), today.getMonth(), payday);
+    cycleEnd   = new Date(today.getFullYear(), today.getMonth()+1, payday-1);
+  } else {
+    cycleStart = new Date(today.getFullYear(), today.getMonth()-1, payday);
+    cycleEnd   = new Date(today.getFullYear(), today.getMonth(), payday-1);
+  }
+
+  const totalDays   = Math.round((cycleEnd - cycleStart) / 86400000) + 1;
+  const daysElapsed = Math.round((today - cycleStart) / 86400000) + 1;
+  const daysLeft    = Math.max(0, totalDays - daysElapsed);
+
+  const startStr = dateKey(cycleStart);
+  const endStr   = dateKey(cycleEnd);
+  const spent  = state.transactions.filter(t => t.type==='expense' && t.date>=startStr && t.date<=endStr).reduce((s,t)=>s+t.amount,0);
+  const income = state.transactions.filter(t => t.type==='income'  && t.date>=startStr && t.date<=endStr).reduce((s,t)=>s+t.amount,0);
+  const totalIncome    = salary + income;
+  const remaining      = totalIncome - spent;
+  const avgPerDay      = daysLeft > 0 ? remaining / daysLeft : 0;
+  const actualDaily    = daysElapsed > 0 ? spent / daysElapsed : 0;
+  const expectedDaily  = totalIncome / totalDays;
+
+  let status = 'green';
+  if (actualDaily > expectedDaily * 1.2) status = 'red';
+  else if (actualDaily > expectedDaily * 0.9) status = 'yellow';
+
+  const pct = Math.min(100, (daysElapsed / totalDays) * 100);
+  return { remaining, daysLeft, avgPerDay, spent, totalIncome, pct, status, daysElapsed, totalDays };
+}
+
+// ================== RENDER TOP ==================
+function renderTop() {
+  const info = getPayCycleInfo();
+  const pct = info.pct;
+  const r = 28, cx = 32, cy = 32;
+  const circ = 2 * Math.PI * r;
+  const dash = (pct/100) * circ;
+  const colors = { green: '#4caf8c', yellow: '#f0a040', red: '#e05c5c' };
+  const col = colors[info.status];
+  
+  document.getElementById('top-card').innerHTML = `
+    <div class="top-left">
+      <div class="salary-ring">
+        <svg width="64" height="64" viewBox="0 0 64 64">
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg4)" stroke-width="5"/>
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${col}" stroke-width="5"
+            stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
+        </svg>
+        <div class="ring-center">
+          <span class="ring-pct" style="color:${col}">${Math.round(pct)}%</span>
+          <span class="ring-label">الأيام</span>
+        </div>
+      </div>
+      <div class="top-info">
+        <h2>المبلغ المتبقي</h2>
+        <div class="amount ${info.status}">${fmt(info.remaining)}</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">يوم ${info.daysElapsed} من ${info.totalDays} · ${info.daysLeft} يوم متبقي</div>
+      </div>
+    </div>
+    <div class="top-stats">
+      <div class="stat-box">
+        <div class="val" style="color:var(--green)">${fmt(info.totalIncome)}</div>
+        <div class="lbl">الإجمالي</div>
+      </div>
+      <div class="stat-box">
+        <div class="val" style="color:var(--red)">${fmt(info.spent)}</div>
+        <div class="lbl">المصروف</div>
+      </div>
+      <div class="stat-box">
+        <div class="val">${fmt(info.avgPerDay)}</div>
+        <div class="lbl">يومياً مسموح</div>
+      </div>
+    </div>
+    <div class="burn-bar-wrap">
+      <div class="burn-bar">
+        <div class="burn-fill ${info.status}" style="width:${Math.min(100,(info.spent/Math.max(1,info.totalIncome))*100)}%"></div>
+      </div>
+      <span style="font-size:11px;color:var(--text3)">${Math.round((info.spent/Math.max(1,info.totalIncome))*100)}% مصروف</span>
+    </div>
+  `;
+}
+
+// ================== DAILY PAGE ==================
+let currentTxType = 'expense';
+function renderDaily() {
+  const d = state.currentDate;
+  const todayStr = dateKey(localToday());
+  const dateStr  = dateKey(d);
+  const isToday  = dateStr === todayStr;
+  const isYest   = dateStr === dateKey(new Date(localToday().getFullYear(), localToday().getMonth(), localToday().getDate()-1));
+
+  const dayLabel = isToday ? 'اليوم' : isYest ? 'أمس' : DAY_NAMES[d.getDay()];
+  document.getElementById('day-title').innerHTML =
+    `<span style="color:var(--accent2)">${dayLabel}</span> · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+
+  const txs = getTxForDate(dateStr);
+  const container = document.getElementById('daily-txs');
+
+  if (!txs.length) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>لا توجد عمليات لهذا اليوم</p></div>`;
+  } else {
+    // فصل مصاريف ودخل
+    const expenses = txs.filter(t=>t.type==='expense').reverse();
+    const incomes  = txs.filter(t=>t.type==='income').reverse();
+    const renderGroup = (list, type) => list.map(t => {
+      const cat = getCat(t.category);
+      return `<div class="tx-item-new ${type}">
+        <div class="tx-icon-new">${cat.emoji}</div>
+        <div class="tx-body">
+          <div class="tx-name-new">${cat.name}</div>
+          ${t.note ? `<div class="tx-note-new">${t.note}</div>` : ''}
+        </div>
+        <div class="tx-right">
+          <div class="tx-amt-new ${type}">${type==='income'?'+':'-'}${fmt(t.amount)}</div>
+          <div class="tx-act-new">
+            <button onclick="editTx('${t.id}')" title="تعديل">✏️</button>
+            <button onclick="deleteTx('${t.id}')" title="حذف">🗑️</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    container.innerHTML = `
+      ${expenses.length ? `<div class="tx-group"><div class="tx-group-label expense-label">💸 المصاريف</div>${renderGroup(expenses,'expense')}</div>` : ''}
+      ${incomes.length  ? `<div class="tx-group"><div class="tx-group-label income-label">💰 الإيرادات</div>${renderGroup(incomes,'income')}</div>` : ''}
+    `;
+  }
+
+  const total = getDayTotal(dateStr);
+  const el = document.getElementById('daily-total');
+  el.textContent = fmt(Math.abs(total));
+  el.style.color = total >= 0 ? 'var(--green)' : 'var(--red)';
+  const lbl = document.getElementById('daily-total-label');
+  if (lbl) lbl.textContent = total >= 0 ? '✅ صافي اليوم' : '⚠️ صافي اليوم';
+}
+
+function changeDay(dir) {
+  const d = state.currentDate;
+  state.currentDate = new Date(d.getFullYear(), d.getMonth(), d.getDate() + dir);
+  renderDaily();
+}
+
+// ================== WEEKLY PAGE ==================
+function renderWeekly() {
+  const today = localToday();
+  const base = new Date(today.getFullYear(), today.getMonth(), today.getDate() + state.weekOffset * 7);
+  const dow = base.getDay();
+  const startOfWeek = new Date(base.getFullYear(), base.getMonth(), base.getDate() - dow);
+
+  let totalIncome = 0, totalExpense = 0;
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(startOfWeek.getFullYear(), startOfWeek.getMonth(), startOfWeek.getDate() + i);
+    const dateStr = dateKey(d);
+    const txs = getTxForDate(dateStr);
+    const inc = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const exp = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    totalIncome += inc; totalExpense += exp;
+    days.push({d, dateStr, txs, inc, exp});
+  }
+
+  const todayStr = dateKey(today);
+  const weekLabel = `${days[0].d.getDate()} ${MONTH_NAMES[days[0].d.getMonth()]} — ${days[6].d.getDate()} ${MONTH_NAMES[days[6].d.getMonth()]}`;
+
+  document.getElementById('week-summary').innerHTML = `
+    <div style="width:100%;margin-bottom:10px;font-size:12px;color:var(--text3);text-align:center">${weekLabel}</div>
+    <div class="summary-box"><div class="s-label">💰 الإيرادات</div><div class="s-value green">${fmt(totalIncome)}</div></div>
+    <div class="summary-box"><div class="s-label">💸 المصاريف</div><div class="s-value red">${fmt(totalExpense)}</div></div>
+    <div class="summary-box"><div class="s-label">🏦 الصافي</div><div class="s-value ${totalIncome-totalExpense>=0?'green':'red'}">${fmt(totalIncome-totalExpense)}</div></div>
+  `;
+
+  document.getElementById('week-grid').innerHTML = days.map(({d, dateStr, txs, inc, exp}) => {
+    const isToday = dateStr === todayStr;
+    const net = inc - exp;
+    const hasData = txs.length > 0;
+    const netColor = net > 0 ? 'var(--green)' : net < 0 ? 'var(--red)' : 'var(--text3)';
+    const topTxs = txs.slice(0,3);
+    return `
+    <div class="week-card-new ${isToday?'week-card-today':''}" onclick="selectDayFromWeek('${dateStr}')">
+      <div class="wc-head">
+        <div class="wc-day">${DAY_NAMES[d.getDay()]}</div>
+        <div class="wc-date ${isToday?'wc-date-today':''}">${d.getDate()}</div>
+      </div>
+      <div class="wc-body">
+        ${hasData ? topTxs.map(t=>`
+          <div class="wc-tx">
+            <span>${getCat(t.category).emoji}</span>
+            <span class="wc-tx-name">${getCat(t.category).name}</span>
+            <span class="wc-tx-amt ${t.type}">${t.type==='income'?'+':'-'}${t.amount.toLocaleString('ar-SA')}</span>
+          </div>`).join('') : `<div class="wc-empty">لا عمليات</div>`}
+        ${txs.length>3?`<div class="wc-more">+${txs.length-3} أخرى</div>`:''}
+      </div>
+      <div class="wc-foot">
+        ${hasData ? `<span style="color:${netColor};font-weight:700;font-size:13px">${net>0?'+':''}${fmt(net)}</span>` : ''}
+        <button class="wc-add" onclick="event.stopPropagation();quickAddDay('${dateStr}')">+</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// النقر على يوم في الأسبوع يحدّث القسم اليومي في الأعلى
+function selectDayFromWeek(dateStr) {
+  // بناء التاريخ محلياً بدون UTC shift
+  const [y,m,dd] = dateStr.split('-').map(Number);
+  state.currentDate = new Date(y, m-1, dd);
+  renderDaily();
+  document.getElementById('page-dayweek').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function changeWeek(dir) {
+  state.weekOffset += dir;
+  renderWeekly();
+}
+
+function quickAddDay(dateStr) {
+  const [y,m,dd] = dateStr.split('-').map(Number);
+  state.currentDate = new Date(y, m-1, dd);
+  renderDaily();
+  document.getElementById('page-dayweek').scrollTo({ top: 0, behavior: 'smooth' });
+  openAddTx(dateStr);
+}
+
+// ================== MONTHLY PAGE ==================
+let donutChart = null, barChart = null;
+function renderMonthly() {
+  // Month bar
+  const monthBar = document.getElementById('month-bar');
+  monthBar.innerHTML = MONTH_NAMES.map((m,i) => 
+    `<div class="month-pill ${i===state.currentMonth&&state.currentYear===new Date().getFullYear()?'active':''}" onclick="setMonth(${i})">${m}</div>`
+  ).join('');
+  
+  const txs = getMonthTxs(state.currentYear, state.currentMonth);
+  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  
+  document.getElementById('month-summary').innerHTML = `
+    <div class="summary-box"><div class="s-label">الإيرادات</div><div class="s-value green">${fmt(income)}</div></div>
+    <div class="summary-box"><div class="s-label">المصاريف</div><div class="s-value red">${fmt(expense)}</div></div>
+    <div class="summary-box"><div class="s-label">الصافي</div><div class="s-value ${income-expense>=0?'green':'red'}">${fmt(income-expense)}</div></div>
+  `;
+  
+  renderCalendar();
+  renderDonut(txs);
+  renderBarChart();
+  renderPlanCompare();
+  populateMonthSelects();
+}
+
+function setMonth(m) {
+  state.currentMonth = m;
+  renderMonthly();
+}
+
+function renderCalendar() {
+  const y = state.currentYear, m = state.currentMonth;
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const todayStr = dateKey(localToday());
+  const grid = document.getElementById('cal-grid');
+
+  let html = '';
+  // أيام الشهر السابق
+  for (let i = 0; i < firstDay; i++) {
+    const prevDate = new Date(y, m, i - firstDay + 1);
+    html += `<div class="cal-cell-new other-month">
+      <div class="ccn-num">${prevDate.getDate()}</div>
+    </div>`;
+  }
+  // أيام الشهر الحالي
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const txs = getTxForDate(dateStr);
+    const isToday = dateStr === todayStr;
+    const exp = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const inc = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const net = inc - exp;
+    const hasExp = exp > 0, hasInc = inc > 0;
+    html += `<div class="cal-cell-new ${isToday?'ccn-today':''} ${txs.length?'ccn-has-data':''}" onclick="jumpToDay('${dateStr}')">
+      <div class="ccn-num ${isToday?'ccn-num-today':''}">${d}</div>
+      ${hasExp ? `<div class="ccn-exp">-${exp.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>` : ''}
+      ${hasInc ? `<div class="ccn-inc">+${inc.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>` : ''}
+      ${txs.length>0 && !hasExp && !hasInc ? '<div class="ccn-dot"></div>' : ''}
+    </div>`;
+  }
+  grid.innerHTML = html;
+}
+
+function jumpToDay(dateStr) {
+  const [y,m,dd] = dateStr.split('-').map(Number);
+  const target = new Date(y, m-1, dd);
+  state.currentDate = target;
+  // احسب weekOffset الصحيح
+  const today = new Date(); today.setHours(0,0,0,0);
+  const todayWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+  const targetWeekStart = new Date(target.getFullYear(), target.getMonth(), target.getDate() - target.getDay());
+  const diffDays = Math.round((targetWeekStart - todayWeekStart) / 86400000);
+  state.weekOffset = Math.round(diffDays / 7);
+  showPage('dayweek');
+}
+
+function renderDonut(txs) {
+  // تصميم جديد: أشرطة ملونة بدل الدونات
+  const expTxs = txs.filter(t => t.type === 'expense');
+  const catTotals = {};
+  expTxs.forEach(t => { catTotals[t.category] = (catTotals[t.category]||0) + t.amount; });
+  const sorted = Object.entries(catTotals).sort((a,b) => b[1]-a[1]);
+  const total = sorted.reduce((s,[,v]) => s+v, 0);
+  const palette = ['#6c63ff','#4caf8c','#f0a040','#e05c5c','#26c6da','#ab47bc','#ff7043','#78909c','#e91e63','#00897b'];
+  const container = document.getElementById('cats-breakdown-monthly');
+  if (!total) {
+    container.innerHTML = '<div class="empty-state" style="padding:20px"><div class="empty-icon">📊</div><p>لا توجد مصاريف هذا الشهر</p></div>';
+    return;
+  }
+  container.innerHTML = sorted.map(([id, val], i) => {
+    const cat = getCat(id);
+    const pct = Math.round((val / total) * 100);
+    const color = palette[i % palette.length];
+    return `<div class="cat-bar-item">
+      <div class="cat-bar-header">
+        <div class="cat-bar-name">
+          <span style="width:10px;height:10px;border-radius:50%;background:${color};display:inline-block;flex-shrink:0"></span>
+          ${cat.emoji} ${cat.name}
+        </div>
+        <div class="cat-bar-values">
+          <span class="cat-bar-amount" style="color:${color}">${fmt(val)}</span>
+          <span class="cat-bar-pct">${pct}%</span>
+        </div>
+      </div>
+      <div class="cat-bar-track">
+        <div class="cat-bar-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function populateMonthSelects() {
+  const today = new Date();
+  const opts = Array.from({length:24},(_,i) => {
+    const d = new Date(today.getFullYear(), today.getMonth()-i, 1);
+    return `<option value="${d.getFullYear()}-${d.getMonth()}">${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}</option>`;
+  }).join('');
+  document.querySelectorAll('.compare-month-sel').forEach((sel, i) => {
+    const prev = sel.value;
+    sel.innerHTML = opts;
+    if (prev) sel.value = prev;
+    // لون الحد حسب الترتيب
+    sel.style.borderColor = (COMPARE_COLORS[i % COMPARE_COLORS.length]) + '60';
+  });
+  // ألوان العناوين للشهرين الأولين
+  const firstLabels = document.querySelectorAll('#compare-selects-wrap > .compare-sel-wrap > label');
+  firstLabels.forEach((lbl, i) => { lbl.style.color = COMPARE_COLORS[i % COMPARE_COLORS.length]; });
+}
+
+const COMPARE_COLORS = ['#6c63ff','#4caf8c','#f0a040','#e05c5c','#26c6da','#ab47bc'];
+let compareCount = 2;
+
+function addCompareMonth() {
+  if (compareCount >= 6) { showToast('الحد الأقصى 6 أشهر', 'var(--yellow)'); return; }
+  compareCount++;
+  const wrap = document.getElementById('compare-selects-wrap');
+  const div = document.createElement('div');
+  div.className = 'compare-sel-wrap';
+  div.id = `compare-sel-${compareCount}`;
+  const col = COMPARE_COLORS[(compareCount-1) % COMPARE_COLORS.length];
+  div.innerHTML = `
+    <label style="font-size:10px;color:${col};font-weight:600">● شهر ${compareCount}</label>
+    <div style="display:flex;gap:4px;align-items:center">
+      <select class="compare-month-sel" style="min-width:130px;font-size:12px;border-color:${col}40"></select>
+      <button onclick="removeCompareMonth(${compareCount})" style="background:var(--bg4);border:1px solid var(--border);color:var(--text3);cursor:pointer;border-radius:50%;width:22px;height:22px;font-size:12px;flex-shrink:0">✕</button>
+    </div>`;
+  wrap.appendChild(div);
+  populateMonthSelects();
+}
+
+function removeCompareMonth(n) {
+  const el = document.getElementById(`compare-sel-${n}`);
+  if (el) { el.remove(); compareCount = Math.max(2, compareCount-1); }
+}
+
+function renderMonthCompare() {
+  const allSels = document.querySelectorAll('.compare-month-sel');
+  if (allSels.length < 2) return;
+  const salary = state.settings.salary || 0;
+  const palette = ['#6c63ff','#4caf8c','#f0a040','#e05c5c','#26c6da','#ab47bc'];
+
+  const monthsData = Array.from(allSels).map((sel, idx) => {
+    const val = sel.value;
+    if (!val) return null;
+    const [y, m] = val.split('-').map(Number);
+    const txs = getMonthTxs(y, m);
+    const income = salary + txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const net = income - expense;
+    // فئات
+    const cats = {};
+    txs.filter(t=>t.type==='expense').forEach(t => { cats[t.category] = (cats[t.category]||0) + t.amount; });
+    return { label: `${MONTH_NAMES[m]} ${y}`, income, expense, net, cats, color: palette[idx % palette.length] };
+  }).filter(Boolean);
+
+  if (monthsData.length < 2) { showToast('اختر شهرين على الأقل', 'var(--yellow)'); return; }
+
+  // جمع كل الفئات المستخدمة
+  const allCatIds = new Set();
+  monthsData.forEach(m => Object.keys(m.cats).forEach(id => allCatIds.add(id)));
+  const catIds = Array.from(allCatIds).sort((a,b) => {
+    const sumA = monthsData.reduce((s,m) => s + (m.cats[a]||0), 0);
+    const sumB = monthsData.reduce((s,m) => s + (m.cats[b]||0), 0);
+    return sumB - sumA;
+  });
+
+  // رأس الجدول
+  const thCols = monthsData.map((m,i) => `<th style="color:${m.color}">${m.label}</th>`).join('');
+
+  // صفوف الملخص
+  const summaryRows = [
+    { label: '💰 إجمالي الدخل', vals: monthsData.map(m => `<td style="color:var(--green);font-weight:600">${fmt(m.income)}</td>`).join('') },
+    { label: '💸 إجمالي المصاريف', vals: monthsData.map(m => `<td style="color:var(--red);font-weight:600">${fmt(m.expense)}</td>`).join('') },
+    { label: '🏦 الصافي', vals: monthsData.map(m => `<td style="color:${m.net>=0?'var(--green)':'var(--red)'};font-weight:700">${fmt(m.net)}</td>`).join('') },
+  ].map(r => `<tr><td>${r.label}</td>${r.vals}</tr>`).join('');
+
+  // صفوف الفئات
+  const catRows = catIds.map(cid => {
+    const cat = getCat(cid);
+    const maxVal = Math.max(...monthsData.map(m => m.cats[cid] || 0));
+    const cells = monthsData.map(m => {
+      const v = m.cats[cid] || 0;
+      const barW = maxVal > 0 ? Math.round((v/maxVal)*100) : 0;
+      return `<td>
+        ${v > 0 ? `<div style="font-size:12px;font-weight:600;color:var(--red);margin-bottom:3px">${fmt(v)}</div>
+        <div style="height:4px;background:var(--bg4);border-radius:2px;overflow:hidden">
+          <div style="width:${barW}%;height:100%;background:${m.color};border-radius:2px"></div>
+        </div>` : '<span style="color:var(--text3);font-size:12px">—</span>'}
+      </td>`;
+    }).join('');
+    return `<tr><td>${cat.emoji} ${cat.name}</td>${cells}</tr>`;
+  }).join('');
+
+  document.getElementById('month-compare-result').innerHTML = `
+    <div style="overflow-x:auto">
+      <table class="compare-table">
+        <thead><tr><th>البند</th>${thCols}</tr></thead>
+        <tbody>
+          ${summaryRows}
+          <tr><td colspan="${monthsData.length+1}" style="padding:4px 10px;font-size:11px;color:var(--text3);background:var(--bg3)">تفصيل الفئات</td></tr>
+          ${catRows}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>أعلى إنفاق</td>
+            ${monthsData.map(m => {
+              const topCat = Object.entries(m.cats).sort((a,b)=>b[1]-a[1])[0];
+              return `<td style="font-size:12px">${topCat ? `${getCat(topCat[0]).emoji} ${fmt(topCat[1])}` : '—'}</td>`;
+            }).join('')}
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  `;
+}
+
+function renderBarChart() {
+  const ctx = document.getElementById('bar-chart').getContext('2d');
+  if (barChart) barChart.destroy();
+  const today = new Date();
+  const labels = [], incomes = [], expenses = [];
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(today.getFullYear(), today.getMonth()-i, 1);
+    labels.push(MONTH_NAMES[d.getMonth()].slice(0,3));
+    const txs = getMonthTxs(d.getFullYear(), d.getMonth());
+    incomes.push(txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0));
+    expenses.push(txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0));
+  }
+  barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'إيرادات', data: incomes, backgroundColor: 'rgba(76,175,140,0.7)', borderRadius: 4 },
+        { label: 'مصاريف', data: expenses, backgroundColor: 'rgba(224,92,92,0.7)', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#9fa8c7', font: { size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#9fa8c7', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#9fa8c7', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
+      }
+    }
+  });
+}
+
+function renderPlanCompare() {
+  const txs = getMonthTxs(state.currentYear, state.currentMonth);
+  const expCats = {};
+  txs.filter(t=>t.type==='expense').forEach(t => { expCats[t.category] = (expCats[t.category]||0) + t.amount; });
+  
+  const rows = state.categories.filter(c => c.type !== 'income' && state.plan.categories[c.id]).map(c => {
+    const planned = state.plan.categories[c.id] || 0;
+    const actual = expCats[c.id] || 0;
+    const pct = planned ? Math.min(100, (actual/planned)*100) : 0;
+    const status = pct > 90 ? 'red' : pct > 70 ? 'yellow' : 'green';
+    return `<div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+        <span>${c.emoji} ${c.name}</span>
+        <span><span style="color:var(--${status})">${fmt(actual)}</span> / ${fmt(planned)}</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--${status})"></div></div>
+    </div>`;
+  }).join('');
+  
+  document.getElementById('plan-compare').innerHTML = rows || '<p style="color:var(--text3);font-size:13px">لا توجد خطة شهرية. أضف خطة من قسم التخطيط.</p>';
+}
+
+// ================== PLANNING ==================
+function renderPlanning() {
+  const goals = state.goals;
+  const container = document.getElementById('goals-list');
+  if (!goals.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>لا توجد أهداف بعد</p></div>';
+  } else {
+    container.innerHTML = goals.map(g => {
+      const pct = g.target ? Math.min(100, (g.current/g.target)*100) : 0;
+      return `<div class="goal-card">
+        <div class="goal-header">
+          <div class="goal-name">${g.emoji||'🎯'} ${g.name}</div>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-ghost btn-icon btn-sm" onclick="editGoal('${g.id}')">✏️</button>
+            <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteGoal('${g.id}')">🗑️</button>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span class="goal-amounts">${fmt(g.current)} / ${fmt(g.target)}</span>
+          <span class="badge badge-${pct>=100?'green':pct>=50?'yellow':'red'}">${Math.round(pct)}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      </div>`;
+    }).join('');
+  }
+  
+  // Monthly plan display
+  const plan = state.plan;
+  const planDisplay = document.getElementById('monthly-plan-display');
+  if (!plan.salary && !Object.keys(plan.categories).length) {
+    planDisplay.innerHTML = '<p style="color:var(--text3);font-size:13px">لا توجد خطة شهرية مضافة بعد</p>';
+  } else {
+    const rows = state.categories.filter(c => plan.categories[c.id]).map(c =>
+      `<tr><td>${c.emoji} ${c.name}</td><td style="text-align:left">${fmt(plan.categories[c.id])}</td></tr>`
+    ).join('');
+    planDisplay.innerHTML = `
+      <table class="plan-table" style="margin-bottom:8px">
+        <tr><td><b>الراتب المتوقع</b></td><td style="text-align:left;color:var(--green)">${fmt(plan.salary)}</td></tr>
+        ${rows}
+      </table>
+    `;
+  }
+}
+
+function saveGoal() {
+  const name = document.getElementById('goal-name').value.trim();
+  const target = parseFloat(document.getElementById('goal-target').value) || 0;
+  const current = parseFloat(document.getElementById('goal-current').value) || 0;
+  const emoji = document.getElementById('goal-emoji').value || '🎯';
+  if (!name) return;
+  
+  if (state.editingGoal) {
+    const g = state.goals.find(g => g.id === state.editingGoal);
+    if (g) { g.name = name; g.target = target; g.current = current; g.emoji = emoji; }
+    state.editingGoal = null;
+  } else {
+    state.goals.push({ id: uid(), name, target, current, emoji });
+  }
+  save(); closeModal('goal-modal'); renderPlanning();
+}
+
+function editGoal(id) {
+  const g = state.goals.find(g => g.id === id);
+  if (!g) return;
+  state.editingGoal = id;
+  document.getElementById('goal-name').value = g.name;
+  document.getElementById('goal-target').value = g.target;
+  document.getElementById('goal-current').value = g.current;
+  document.getElementById('goal-emoji').value = g.emoji||'🎯';
+  document.getElementById('goal-modal-title').textContent = 'تعديل الهدف';
+  openModal('goal-modal');
+}
+
+function deleteGoal(id) {
+  const g = state.goals.find(g => g.id === id);
+  showConfirm('حذف الهدف', `هل تريد حذف هدف "${g ? g.name : ''}" نهائياً؟`, '🎯', () => {
+    state.goals = state.goals.filter(g => g.id !== id);
+    showToast('🗑️ تم حذف الهدف', 'var(--red)');
+    save(); renderPlanning();
+  });
+}
+
+// ================== PLANNING (old stubs removed — new versions above) ==================
+
+function savePlan() {
+  state.plan.salary = parseFloat(document.getElementById('plan-salary').value) || 0;
+  state.categories.filter(c => c.type !== 'income').forEach(c => {
+    const el = document.getElementById('plan-cat-' + c.id);
+    if (el) state.plan.categories[c.id] = parseFloat(el.value) || 0;
+  });
+  save(); closeModal('plan-modal'); renderPlanning();
+  showToast('✅ تم حفظ الخطة الشهرية', 'var(--green)');
+}
+
+function openPlanModal() {
+  document.getElementById('plan-salary').value = state.plan.salary || '';
+  const container = document.getElementById('plan-cats-inputs');
+  container.innerHTML = state.categories.filter(c => c.type !== 'income').map(c => `
+    <div class="form-group" style="margin-bottom:8px">
+      <label>${c.emoji} ${c.name}</label>
+      <input type="number" id="plan-cat-${c.id}" placeholder="0" value="${state.plan.categories[c.id]||''}">
+    </div>
+  `).join('');
+  openModal('plan-modal');
+}
+
+// ================== SETTINGS ==================
+function renderSettings() {
+  const s = state.settings;
+  document.getElementById('s-salary').value = s.salary || '';
+  document.getElementById('s-currency').value = s.currency || 'ر.س';
+  document.getElementById('s-payday').value = s.payday || 27;
+  renderCatsList();
+  renderLimitsList();
+}
+
+function saveSettings() {
+  state.settings.salary = parseFloat(document.getElementById('s-salary').value) || 0;
+  state.settings.currency = document.getElementById('s-currency').value;
+  state.settings.payday = parseInt(document.getElementById('s-payday').value) || 27;
+  save(); renderTop();
+  showToast('✅ تم حفظ الإعدادات', 'var(--green)');
+}
+
+function renderCatsList() {
+  const container = document.getElementById('cats-list');
+  container.innerHTML = state.categories.map(c => `
+    <div class="cat-item">
+      <div class="cat-emoji">${c.emoji}</div>
+      <div class="cat-info">
+        <div class="cat-name">${c.name}</div>
+        <div style="font-size:11px;color:var(--text3)">${c.type==='income'?'دخل':c.type==='both'?'كلاهما':'مصروف'}${c.keywords?` · 🔑 ${c.keywords.split(',').slice(0,3).join('، ')}...`:''}</div>
+      </div>
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteCategory('${c.id}')">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function renderLimitsList() {
+  const container = document.getElementById('limits-list');
+  const expCats = state.categories.filter(c => c.type !== 'income');
+  const today = new Date();
+  const txs = getMonthTxs(today.getFullYear(), today.getMonth());
+  container.innerHTML = expCats.map(c => {
+    const spent = txs.filter(t=>t.type==='expense'&&t.category===c.id).reduce((s,t)=>s+t.amount,0);
+    const limit = c.limit || 0;
+    const pct = limit ? Math.min(100, (spent/limit)*100) : 0;
+    const status = pct > 90 ? 'red' : pct > 70 ? 'yellow' : 'green';
+    return `<div class="cat-item">
+      <div class="cat-emoji">${c.emoji}</div>
+      <div class="cat-info">
+        <div class="cat-name">${c.name}</div>
+        ${limit ? `<div class="cat-limit-bar">
+          <div class="cat-limit-text">${fmt(spent)} / ${fmt(limit)}</div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--${status})"></div></div>
+        </div>` : '<div style="font-size:11px;color:var(--text3)">بلا حد</div>'}
+      </div>
+      <input type="number" placeholder="حد" value="${limit||''}" style="width:80px" onchange="setCatLimit('${c.id}',this.value)">
+    </div>`;
+  }).join('');
+}
+
+function setCatLimit(id, val) {
+  const cat = state.categories.find(c => c.id === id);
+  if (cat) { cat.limit = parseFloat(val) || 0; save(); }
+}
+
+function saveCategory() {
+  const name = document.getElementById('cat-name').value.trim();
+  const emoji = document.getElementById('cat-emoji-input').value || '📦';
+  const type = document.getElementById('cat-type').value;
+  const limit = parseFloat(document.getElementById('cat-limit').value) || 0;
+  const keywords = document.getElementById('cat-keywords').value.trim();
+  if (!name) return;
+  state.categories.unshift({ id: uid(), name, emoji, type, limit, keywords });
+  save(); closeModal('cat-modal'); renderCatsList(); renderLimitsList();
+  document.getElementById('cat-name').value = '';
+  document.getElementById('cat-emoji-input').value = '';
+  document.getElementById('cat-limit').value = '';
+  document.getElementById('cat-keywords').value = '';
+  showToast(`✅ تمت إضافة فئة "${name}"`, 'var(--accent)');
+}
+
+// ================== TRANSACTIONS ==================
+function openAddTx(dateStr) {
+  state.editingTx = null;
+  document.getElementById('add-tx-title').textContent = 'إضافة عملية';
+  document.getElementById('tx-amount').value = '';
+  document.getElementById('tx-note').value = '';
+  document.getElementById('tx-date').value = dateStr || dateKey(state.currentDate);
+  setTxType('expense');
+  populateCategorySelect('expense');
+  openModal('add-tx-modal');
+}
+
+function editTx(id) {
+  const tx = state.transactions.find(t => t.id === id);
+  if (!tx) return;
+  state.editingTx = id;
+  document.getElementById('add-tx-title').textContent = 'تعديل العملية';
+  document.getElementById('tx-amount').value = tx.amount;
+  document.getElementById('tx-note').value = tx.note || '';
+  document.getElementById('tx-date').value = tx.date;
+  setTxType(tx.type);
+  populateCategorySelect(tx.type);
+  document.getElementById('tx-category').value = tx.category;
+  openModal('add-tx-modal');
+}
+
+function setTxType(type) {
+  currentTxType = type;
+  document.getElementById('type-expense').className = 'type-btn' + (type==='expense'?' active-expense':'');
+  document.getElementById('type-income').className = 'type-btn' + (type==='income'?' active-income':'');
+  populateCategorySelect(type);
+}
+
+function populateCategorySelect(type) {
+  const cats = state.categories.filter(c => c.type === type || c.type === 'both');
+  document.getElementById('tx-category').innerHTML = cats.map(c =>
+    `<option value="${c.id}">${c.emoji} ${c.name}</option>`
+  ).join('');
+}
+
+function saveTx() {
+  const amount = parseFloat(document.getElementById('tx-amount').value);
+  const category = document.getElementById('tx-category').value;
+  const note = document.getElementById('tx-note').value.trim();
+  const date = document.getElementById('tx-date').value;
+  if (!amount || !category || !date) return;
+  
+  if (state.editingTx) {
+    const tx = state.transactions.find(t => t.id === state.editingTx);
+    if (tx) { tx.amount = amount; tx.category = category; tx.note = note; tx.date = date; tx.type = currentTxType; }
+    state.editingTx = null;
+  } else {
+    state.transactions.push({ id: uid(), amount, category, note, date, type: currentTxType });
+  }
+  save(); closeModal('add-tx-modal'); renderTop(); renderDaily();
+}
+
+function deleteTx(id) {
+  showConfirm('حذف العملية', 'هل تريد حذف هذه العملية نهائياً؟', '🗑️', () => {
+    state.transactions = state.transactions.filter(t => t.id !== id);
+    save(); renderTop(); renderDaily();
+    showToast('تم حذف العملية', 'var(--red)');
+  });
+}
+
+// ================== EXPORT / IMPORT ==================
+function exportCSV() {
+  const rows = [['التاريخ','النوع','الفئة','المبلغ','الملاحظة']];
+  state.transactions.forEach(t => {
+    const cat = getCat(t.category);
+    rows.push([t.date, t.type==='income'?'دخل':'مصروف', cat.name, t.amount, t.note||'']);
+  });
+  const csv = rows.map(r => r.join(',')).join('\n');
+  downloadFile('mizaniyati.csv', 'text/csv', csv);
+}
+
+function exportXLSX() {
+  const ws_data = [['التاريخ','النوع','الفئة','المبلغ','الملاحظة']];
+  state.transactions.forEach(t => {
+    const cat = getCat(t.category);
+    ws_data.push([t.date, t.type==='income'?'دخل':'مصروف', cat.name, t.amount, t.note||'']);
+  });
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(ws_data);
+  XLSX.utils.book_append_sheet(wb, ws, 'ميزانيتي');
+  XLSX.writeFile(wb, 'mizaniyati.xlsx');
+}
+
+function downloadFile(name, type, content) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], {type}));
+  a.download = name; a.click();
+}
+
+function importData(mode) {
+  const file = document.getElementById('import-file').files[0];
+  if (!file) { alert('اختر ملفاً أولاً'); return; }
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  function processRows(rows) {
+    // rows[0] = header, skip it
+    const data = rows.slice(1).filter(r => r && r.length >= 4);
+    const imported = data.map(parts => {
+      const dateVal = (parts[0] || '').toString().trim();
+      const typeVal = (parts[1] || '').toString().trim();
+      const catName = (parts[2] || '').toString().trim();
+      const amountVal = parseFloat((parts[3] || '0').toString().replace(/[^\d.]/g,'')) || 0;
+      const noteVal = (parts[4] || '').toString().trim();
+      // Try to find matching category, fallback to first
+      const cat = state.categories.find(c => c.name === catName) || state.categories[0];
+      const type = (typeVal === 'دخل' || typeVal === 'income') ? 'income' : 'expense';
+      // Handle Excel serial date numbers
+      let dateStr = dateVal;
+      if (/^\d{5}$/.test(dateVal)) {
+        const excelEpoch = new Date(1899, 11, 30);
+        const d = new Date(excelEpoch.getFullYear(), excelEpoch.getMonth(), excelEpoch.getDate() + parseInt(dateVal));
+        dateStr = dateKey(d);
+      }
+      return { id: uid(), date: dateStr, type, category: cat.id, amount: amountVal, note: noteVal };
+    }).filter(t => t.date && t.amount > 0);
+    return imported;
+  }
+
+  if (ext === 'xlsx' || ext === 'xls') {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+        const imported = processRows(rows);
+        if (mode === 'replace') state.transactions = imported;
+        else state.transactions = [...state.transactions, ...imported];
+        save(); renderTop(); renderDaily();
+        alert(`✅ تم استيراد ${imported.length} عملية من XLSX`);
+      } catch(err) { alert('خطأ في قراءة الملف: ' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    // CSV
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const text = e.target.result;
+        const rows = text.split('\n').map(l => l.split(',').map(c => c.trim().replace(/^"|"$/g,'')));
+        const imported = processRows(rows);
+        if (mode === 'replace') state.transactions = imported;
+        else state.transactions = [...state.transactions, ...imported];
+        save(); renderTop(); renderDaily();
+        alert(`✅ تم استيراد ${imported.length} عملية من CSV`);
+      } catch(err) { alert('خطأ في قراءة الملف: ' + err.message); }
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+}
+
+// ================== THEMES ==================
+function renderThemes() {
+  document.getElementById('theme-grid').innerHTML = THEMES.map(t => `
+    <div class="theme-swatch ${state.theme === t.id ? 'active' : ''}" onclick="applyTheme('${t.id}')">
+      <div class="theme-swatch-preview" style="background:linear-gradient(135deg,${t.colors[0]} 50%,${t.colors[1]} 50%)"></div>
+      <div class="theme-swatch-name">${t.name}</div>
+    </div>
+  `).join('');
+}
+
+function applyTheme(themeId) {
+  document.body.className = themeId;
+  state.theme = themeId;
+  save();
+  renderThemes();
+}
+
+// ================== EMOJI PICKER ==================
+function initEmojiPicker() {
+  document.getElementById('emoji-grid').innerHTML = EMOJIS.map(e =>
+    `<div class="emoji-opt" onclick="selectEmoji('${e}')">${e}</div>`
+  ).join('');
+}
+
+function selectEmoji(e) {
+  document.getElementById('cat-emoji-input').value = e;
+  document.querySelectorAll('.emoji-opt').forEach(el => el.classList.remove('selected'));
+  event.target.classList.add('selected');
+}
+
+// ================== MODALS ==================
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+  if (id === 'cat-modal') initEmojiPicker();
+  if (id === 'plan-modal') openPlanModal();
+  if (id === 'goal-modal') {
+    if (!state.editingGoal) {
+      document.getElementById('goal-modal-title').textContent = 'هدف ادخار جديد';
+      document.getElementById('goal-name').value = '';
+      document.getElementById('goal-target').value = '';
+      document.getElementById('goal-current').value = '';
+      document.getElementById('goal-emoji').value = '';
+    }
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+  state.editingTx = null; state.editingGoal = null;
+}
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.add('hidden'); });
+});
+
+function goToDate() {
+  const val = document.getElementById('date-picker-input').value;
+  if (val) {
+    const [y,m,dd] = val.split('-').map(Number);
+    state.currentDate = new Date(y, m-1, dd);
+    closeModal('date-picker-modal');
+    renderDaily();
+  }
+}
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    const oc = b.getAttribute('onclick') || '';
+    if (oc.includes("showPage('" + name + "')")) b.classList.add('active');
+  });
+  if (name === 'daily') renderDaily();
+  if (name === 'weekly') renderWeekly();
+  if (name === 'monthly') renderMonthly();
+  if (name === 'planning') renderPlanning();
+  if (name === 'settings') renderSettings();
+  if (name === 'colors') renderThemes();
+  if (name === 'analysis') renderAnalysis();
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'dayweek') { renderDaily(); renderWeekly(); }
+  // دعم backward compat للصفحات القديمة
+  if (name === 'daily') { showPage('dayweek'); return; }
+  if (name === 'weekly') { showPage('dayweek'); return; }
+}
+
+// ================== DASHBOARD PERIOD MODE ==================
+let dashboardMode = 'auto'; // 'auto' | 'custom'
+let dashboardCustom = { from: null, to: null };
+
+function setDashboardMode(mode) {
+  dashboardMode = mode;
+  document.getElementById('db-custom-row').style.display = mode === 'custom' ? 'block' : 'none';
+  document.getElementById('db-auto-btn').style.cssText  = mode === 'auto'   ? 'border-color:var(--accent);color:var(--accent)' : '';
+  document.getElementById('db-custom-btn').style.cssText = mode === 'custom' ? 'border-color:var(--accent);color:var(--accent)' : '';
+  if (mode === 'auto') renderDashboard();
+}
+
+function fillPaydaySuggestion() {
+  const payday = state.settings.payday || 27;
+  const today  = new Date();
+  let s, e;
+  if (today.getDate() >= payday) {
+    s = new Date(today.getFullYear(), today.getMonth(), payday);
+    e = new Date(today.getFullYear(), today.getMonth()+1, payday-1);
+  } else {
+    s = new Date(today.getFullYear(), today.getMonth()-1, payday);
+    e = new Date(today.getFullYear(), today.getMonth(), payday-1);
+  }
+  document.getElementById('db-from').value = dateKey(s);
+  document.getElementById('db-to').value   = dateKey(e);
+  document.getElementById('db-period-label').textContent = `💡 دورة الراتب: ${dateKey(s)} → ${dateKey(e)}`;
+}
+
+function applyDashboardPeriod() {
+  const from = document.getElementById('db-from').value;
+  const to   = document.getElementById('db-to').value;
+  if (!from || !to) { showToast('⚠️ اختر تاريخ البداية والنهاية', 'var(--yellow)'); return; }
+  if (from > to)    { showToast('⚠️ تاريخ البداية يجب أن يسبق النهاية', 'var(--red)'); return; }
+  dashboardCustom = { from, to };
+  document.getElementById('db-period-label').textContent = `✅ الفترة المحددة: ${from} → ${to}`;
+  renderDashboard();
+  showToast(`📅 الفترة: ${from} → ${to}`, 'var(--accent)');
+}
+
+// ================== DASHBOARD ==================
+let dbBarChart = null;
+
+function getCycles(count) {
+  const payday = state.settings.payday || 27;
+  const today  = localToday();
+  let cycleStart, cycleEnd;
+  if (today.getDate() >= payday) {
+    cycleStart = new Date(today.getFullYear(), today.getMonth(), payday);
+    cycleEnd   = new Date(today.getFullYear(), today.getMonth()+1, payday-1);
+  } else {
+    cycleStart = new Date(today.getFullYear(), today.getMonth()-1, payday);
+    cycleEnd   = new Date(today.getFullYear(), today.getMonth(), payday-1);
+  }
+  const cycles = [];
+  for (let i = 0; i < count; i++) {
+    const s = new Date(cycleStart.getFullYear(), cycleStart.getMonth()-i, cycleStart.getDate());
+    const e = new Date(cycleEnd.getFullYear(),   cycleEnd.getMonth()-i,   cycleEnd.getDate());
+    const sStr = dateKey(s), eStr = dateKey(e);
+    const txs     = state.transactions.filter(t => t.date >= sStr && t.date <= eStr);
+    const income  = (state.settings.salary||0) + txs.filter(t=>t.type==='income').reduce((a,t)=>a+t.amount,0);
+    const expense = txs.filter(t=>t.type==='expense').reduce((a,t)=>a+t.amount,0);
+    const catBreakdown = {};
+    txs.filter(t=>t.type==='expense').forEach(t=>{ catBreakdown[t.category]=(catBreakdown[t.category]||0)+t.amount; });
+    const totalDays = Math.max(1, Math.round((e-s)/86400000)+1);
+    const elapsed   = i===0 ? Math.min(totalDays, Math.round((today-s)/86400000)+1) : totalDays;
+    cycles.push({ start:s, end:e, sStr, eStr, txs, income, expense, remaining:income-expense,
+      catBreakdown, totalDays, elapsed, isCurrent:i===0,
+      label:`${MONTH_NAMES[s.getMonth()]} ${s.getFullYear()}` });
+  }
+  return cycles;
+}
+
+function renderDashboard() {
+  const PALETTE = ['#6c63ff','#4caf8c','#f0a040','#e05c5c','#26c6da','#ab47bc','#ff7043','#78909c','#e91e63','#00897b'];
+
+  // ── تحديد الفترة (auto أو custom) ─────────────────────
+  let cur, cycles;
+  if (dashboardMode === 'custom' && dashboardCustom.from && dashboardCustom.to) {
+    const s = new Date(dashboardCustom.from + 'T00:00:00');
+    const e = new Date(dashboardCustom.to   + 'T00:00:00');
+    const txs    = state.transactions.filter(t => t.date >= dashboardCustom.from && t.date <= dashboardCustom.to);
+    const income = (state.settings.salary||0) + txs.filter(t=>t.type==='income').reduce((a,t)=>a+t.amount,0);
+    const expense= txs.filter(t=>t.type==='expense').reduce((a,t)=>a+t.amount,0);
+    const catBreakdown = {};
+    txs.filter(t=>t.type==='expense').forEach(t=>{ catBreakdown[t.category]=(catBreakdown[t.category]||0)+t.amount; });
+    const totalDays = Math.max(1, Math.round((e-s)/86400000)+1);
+    const today2    = new Date(); today2.setHours(0,0,0,0);
+    const elapsed   = Math.min(totalDays, Math.max(1, Math.round((today2-s)/86400000)+1));
+    cur    = { start:s, end:e, sStr:dashboardCustom.from, eStr:dashboardCustom.to, txs, income, expense, remaining:income-expense, catBreakdown, totalDays, elapsed, isCurrent:true, label:`${dashboardCustom.from} → ${dashboardCustom.to}` };
+    cycles = [cur];
+  } else {
+    cycles = getCycles(6);
+    cur    = cycles[0];
+  }
+
+  const salary = state.settings.salary || 0;
+
+  // ── بطاقة الدورة الحالية ─────────────────────────────────
+  const spentPct   = cur.income>0 ? Math.min(100,(cur.expense/cur.income)*100) : 0;
+  const daysPct    = Math.min(100,(cur.elapsed/cur.totalDays)*100);
+  const statusCol  = spentPct>90?'var(--red)':spentPct>70?'var(--yellow)':'var(--green)';
+  const avgAllowed = cur.elapsed<cur.totalDays ? cur.remaining/Math.max(1,cur.totalDays-cur.elapsed) : 0;
+  const avgActual  = cur.elapsed>0 ? cur.expense/cur.elapsed : 0;
+
+  document.getElementById('db-cycle-card').innerHTML = `
+    <div class="cyc-wrap" style="background:linear-gradient(145deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;overflow:hidden">
+
+      <!-- ── الرأس: اسم الدورة + الحالة ── -->
+      <div style="padding:18px 20px 0;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:12px;color:var(--text3);font-weight:500">📅 الدورة الحالية</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:11px;color:var(--text3)">${cur.sStr.slice(5)} ← ${cur.eStr.slice(5)}</span>
+          <span style="padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;background:${statusCol === 'var(--red)' ? 'rgba(224,92,92,0.2)' : statusCol === 'var(--yellow)' ? 'rgba(240,160,64,0.2)' : 'rgba(76,175,140,0.2)'};color:${statusCol}">
+            ${spentPct > daysPct ? '⚠️ مرتفع' : '✅ منتظم'}
+          </span>
+        </div>
+      </div>
+
+      <!-- ── الرقم الرئيسي ── -->
+      <div style="padding:12px 20px 16px;display:flex;align-items:flex-end;gap:12px">
+        <div>
+          <div style="font-size:11px;color:var(--text3);margin-bottom:4px">المبلغ المتبقي</div>
+          <div style="font-size:42px;font-weight:900;letter-spacing:-2px;color:${statusCol};line-height:1">${fmt(cur.remaining)}</div>
+        </div>
+        <div style="margin-bottom:6px;display:flex;flex-direction:column;gap:3px">
+          <div style="font-size:11px;color:var(--text3)">من أصل</div>
+          <div style="font-size:18px;font-weight:700;color:var(--text)">${fmt(cur.income)}</div>
+        </div>
+      </div>
+
+      <!-- ── شريط التقدم المركب ── -->
+      <div style="padding:0 20px 14px">
+        <div style="position:relative;height:20px;background:var(--bg4);border-radius:10px;overflow:visible;margin-bottom:6px">
+          <!-- شريط الإنفاق -->
+          <div style="position:absolute;top:0;right:0;height:100%;width:${spentPct}%;background:${statusCol};border-radius:10px;transition:width 0.6s;opacity:0.9"></div>
+          <!-- خط الأيام المنقضية -->
+          <div style="position:absolute;top:-4px;bottom:-4px;right:${daysPct}%;width:2px;background:var(--text);border-radius:2px;opacity:0.5;z-index:2">
+            <div style="position:absolute;top:-16px;right:-16px;font-size:9px;color:var(--text3);white-space:nowrap">يوم ${cur.elapsed}</div>
+          </div>
+          <!-- نسبة الإنفاق داخل الشريط -->
+          ${spentPct > 15 ? `<div style="position:absolute;top:50%;right:8px;transform:translateY(-50%);font-size:10px;font-weight:700;color:white;z-index:3">${Math.round(spentPct)}%</div>` : ''}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3)">
+          <span style="color:${statusCol}">صُرف ${Math.round(spentPct)}% من الميزانية</span>
+          <span>مضى ${cur.elapsed} من ${cur.totalDays} يوم (${Math.round(daysPct)}%)</span>
+        </div>
+      </div>
+
+      <!-- ── 4 بطاقات إحصائية ── -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)">
+        <div style="background:var(--bg2);padding:12px;text-align:center">
+          <div style="font-size:16px;font-weight:800;color:var(--red)">${fmt(cur.expense)}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">💸 صرفت</div>
+        </div>
+        <div style="background:var(--bg2);padding:12px;text-align:center">
+          <div style="font-size:16px;font-weight:800;color:${avgActual > avgAllowed ? 'var(--red)' : 'var(--green)'}">${fmt(avgActual)}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">📊 يومياً فعلي</div>
+        </div>
+        <div style="background:var(--bg2);padding:12px;text-align:center">
+          <div style="font-size:16px;font-weight:800;color:var(--accent2)">${fmt(avgAllowed)}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">🎯 مسموح يومياً</div>
+        </div>
+        <div style="background:var(--bg2);padding:12px;text-align:center">
+          <div style="font-size:22px;font-weight:900;color:var(--text)">${cur.totalDays - cur.elapsed}</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">⏳ يوم متبقي</div>
+        </div>
+      </div>
+
+    </div>`;
+
+
+  // ── توزيع الفئات الدورة الحالية ──────────────────────────
+  const catEntries = Object.entries(cur.catBreakdown).sort((a,b)=>b[1]-a[1]);
+  const catTotal   = catEntries.reduce((s,[,v])=>s+v,0);
+  document.getElementById('db-cats-breakdown').innerHTML = catEntries.length ? catEntries.map(([id,val],i)=>{
+    const cat  = getCat(id);
+    const pct  = catTotal>0?Math.round((val/catTotal)*100):0;
+    const col  = PALETTE[i%PALETTE.length];
+    const limit= (state.categories.find(c=>c.id===id)||{}).limit||0;
+    const limitBar = limit ? `<div style="margin-top:3px;font-size:10px;color:${val>=limit?'var(--red)':'var(--text3)'}">حد الإنفاق: ${fmt(limit)} ${val>=limit?'⚠️ تجاوزت الحد!':''}</div>` : '';
+    return `<div class="cat-bar-item">
+      <div class="cat-bar-header">
+        <div class="cat-bar-name"><span style="width:9px;height:9px;border-radius:50%;background:${col};display:inline-block;flex-shrink:0"></span>${cat.emoji} ${cat.name}</div>
+        <div class="cat-bar-values"><span class="cat-bar-amount" style="color:${col}">${fmt(val)}</span><span class="cat-bar-pct">${pct}%</span></div>
+      </div>
+      <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      ${limitBar}
+    </div>`;
+  }).join('') : '<p style="color:var(--text3);font-size:13px;text-align:center;padding:20px">لا توجد مصاريف في هذه الدورة</p>';
+
+  // ── مقارنة الدورات السابقة ───────────────────────────────
+  const maxExp = Math.max(...cycles.map(c=>c.expense), 1);
+  document.getElementById('db-cycles-compare').innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:14px">
+      ${cycles.map((c,i)=>{
+        const pct   = c.income>0?Math.min(100,(c.expense/c.income)*100):0;
+        const col   = pct>90?'var(--red)':pct>70?'var(--yellow)':'var(--green)';
+        const badge = i===0?'<span class="analysis-chip chip-green" style="font-size:10px">الحالية</span>':'';
+        return `<div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;border-right:3px solid ${col}">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-size:12px;font-weight:600">${c.label} ${badge}</span>
+            <span style="font-size:11px;color:${col};font-weight:700">${Math.round(pct)}%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px">
+            <span style="color:var(--red)">مصروف: ${fmt(c.expense)}</span>
+            <span style="color:${c.remaining>=0?'var(--green)':'var(--red)'}">متبقي: ${fmt(c.remaining)}</span>
+          </div>
+          <div style="height:5px;background:var(--bg4);border-radius:3px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:${col};border-radius:3px"></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div>
+      ${cycles.map((c,i)=>{
+        const barW = Math.round((c.expense/maxExp)*100);
+        const col  = i===0?'var(--accent)':PALETTE[(i+1)%PALETTE.length];
+        const diff = i<cycles.length-1 ? c.expense - cycles[i+1].expense : null;
+        const diffTxt = diff!==null ? `<span style="font-size:11px;color:${diff>0?'var(--red)':'var(--green)'}"> ${diff>0?'↑':'↓'} ${fmt(Math.abs(diff))}</span>` : '';
+        return `<div class="cycle-compare-row">
+          <div class="cycle-compare-label">${c.label}</div>
+          <div class="cycle-compare-track"><div class="cycle-compare-fill" style="width:${barW}%;background:${col}"></div></div>
+          <div class="cycle-compare-val" style="color:${col}">${fmt(c.expense)}${diffTxt}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // ── تصميم جديد: خط زمني للدورات ──────────────────────────
+  const reversed = [...cycles].reverse();
+  const maxExpAll = Math.max(...reversed.map(c=>c.expense), 1);
+  const ctx = document.getElementById('db-bar-chart').getContext('2d');
+  if (dbBarChart) dbBarChart.destroy();
+
+  // ألوان الخط البياني المتدرجة
+  const lineColors = reversed.map((_,i) => i === reversed.length-1 ? '#6c63ff' : `rgba(108,99,255,${0.3 + i*0.1})`);
+
+  dbBarChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: reversed.map(c => c.label),
+      datasets: [
+        {
+          label: 'المصاريف',
+          data: reversed.map(c => c.expense),
+          borderColor: '#e05c5c',
+          backgroundColor: 'rgba(224,92,92,0.12)',
+          borderWidth: 2.5,
+          pointBackgroundColor: reversed.map((_,i) => i===reversed.length-1 ? '#e05c5c' : 'rgba(224,92,92,0.6)'),
+          pointRadius: reversed.map((_,i) => i===reversed.length-1 ? 7 : 4),
+          pointHoverRadius: 8,
+          fill: true,
+          tension: 0.4,
+        },
+        {
+          label: 'الدخل',
+          data: reversed.map(c => c.income),
+          borderColor: '#4caf8c',
+          backgroundColor: 'rgba(76,175,140,0.08)',
+          borderWidth: 2,
+          borderDash: [5,4],
+          pointBackgroundColor: '#4caf8c',
+          pointRadius: 3,
+          fill: false,
+          tension: 0.4,
+        },
+        {
+          label: 'المتبقي',
+          data: reversed.map(c => Math.max(0, c.remaining)),
+          borderColor: '#6c63ff',
+          backgroundColor: 'rgba(108,99,255,0.08)',
+          borderWidth: 2,
+          pointBackgroundColor: '#6c63ff',
+          pointRadius: 3,
+          fill: false,
+          tension: 0.4,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#9fa8c7', font:{size:11}, boxWidth:14 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('ar-SA')} ${state.settings.currency||'ر.س'}`
+          }
+        }
+      },
+      scales: {
+        x: { ticks:{color:'#9fa8c7',font:{size:9}}, grid:{color:'rgba(255,255,255,0.04)'} },
+        y: { ticks:{color:'#9fa8c7',font:{size:9}}, grid:{color:'rgba(255,255,255,0.04)'},
+             beginAtZero: true }
+      }
+    }
+  });
+
+  // ── إنفاق حسب أيام الأسبوع ───────────────────────────────
+  const dayTotals = [0,0,0,0,0,0,0];
+  cur.txs.filter(t=>t.type==='expense').forEach(t=>{
+    const d = new Date(t.date); dayTotals[d.getDay()]+=t.amount;
+  });
+  const maxDay = Math.max(...dayTotals,1);
+  const dayColors = ['#6c63ff','#4caf8c','#f0a040','#e05c5c','#26c6da','#ab47bc','#ff7043'];
+  document.getElementById('db-weekdays').innerHTML = DAY_NAMES.map((name,i)=>{
+    const w = Math.round((dayTotals[i]/maxDay)*100);
+    return `<div class="weekday-row">
+      <div class="weekday-name">${name.slice(0,8)}</div>
+      <div class="weekday-track">
+        <div class="weekday-fill" style="width:${w}%;background:${dayColors[i]}">${dayTotals[i]>0?fmt(dayTotals[i]):''}</div>
+      </div>
+      <div class="weekday-val" style="color:${dayColors[i]}">${dayTotals[i]>0?fmt(dayTotals[i]):'—'}</div>
+    </div>`;
+  }).join('');
+}
+
+function confirmReset() {
+  showConfirm(
+    'حذف جميع البيانات',
+    'سيتم حذف جميع العمليات والفئات والأهداف نهائياً ولا يمكن التراجع!',
+    '⚠️',
+    () => {
+      showConfirm('تأكيد نهائي', 'هذا الإجراء لا يمكن التراجع عنه. هل أنت متأكد تماماً؟', '🚨', () => {
+        localStorage.removeItem('mizaniyati');
+        location.reload();
+      });
+    }
+  );
+}
+
+function deleteCategory(id) {
+  const cat = state.categories.find(c => c.id === id);
+  showConfirm('حذف الفئة', `هل تريد حذف فئة "${cat ? cat.name : ''}" نهائياً؟`, '🏷️', () => {
+    state.categories = state.categories.filter(c => c.id !== id);
+    showToast('🗑️ تم حذف الفئة', 'var(--red)');
+    save(); renderCatsList(); renderLimitsList();
+  });
+}
+
+// ================== OPEN MODAL (reset goal fields) ==================
+function openModal(id) {
+  document.getElementById(id).classList.remove('hidden');
+  if (id === 'cat-modal') initEmojiPicker();
+  if (id === 'plan-modal') openPlanModal();
+  if (id === 'goal-modal' && !state.editingGoal) {
+    document.getElementById('goal-modal-title').textContent = 'هدف ادخار جديد';
+    document.getElementById('goal-name').value = '';
+    document.getElementById('goal-target').value = '';
+    document.getElementById('goal-current').value = '';
+    document.getElementById('goal-months').value = '12';
+    document.getElementById('goal-emoji').value = '';
+    document.getElementById('auto-classify-hint') && (document.getElementById('auto-classify-hint').textContent = '');
+  }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.add('hidden');
+  state.editingTx = null; state.editingGoal = null;
+}
+
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', e => { if (e.target === el) el.classList.add('hidden'); });
+});
+
+function goToDate() {
+  const val = document.getElementById('date-picker-input').value;
+  if (val) { state.currentDate = new Date(val); closeModal('date-picker-modal'); renderDaily(); }
+}
+
+function renderPlanning() {
+  const goals = state.goals;
+  const container = document.getElementById('goals-list');
+  if (!goals.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>لا توجد أهداف بعد</p></div>';
+  } else {
+    container.innerHTML = goals.map(g => {
+      const pct = g.target ? Math.min(100, (g.current / g.target) * 100) : 0;
+      const remaining = Math.max(0, g.target - g.current);
+      const monthlyNeeded = g.months > 0 ? Math.ceil(remaining / g.months) : 0;
+      const badge = pct >= 100 ? 'green' : pct >= 50 ? 'yellow' : 'red';
+      return `<div class="goal-card">
+        <div class="goal-header">
+          <div class="goal-name">${g.emoji || '🎯'} ${g.name}</div>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-ghost btn-icon btn-sm" onclick="editGoal('${g.id}')">✏️</button>
+            <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteGoal('${g.id}')">🗑️</button>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span class="goal-amounts">${fmt(g.current)} / ${fmt(g.target)}</span>
+          <span class="badge badge-${badge}">${Math.round(pct)}%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+        ${pct >= 100
+          ? `<div style="margin-top:8px;padding:8px;background:rgba(76,175,140,0.15);border-radius:8px;text-align:center;color:var(--green);font-weight:600">🎉 مبروك! لقد حققت هدفك!</div>`
+          : monthlyNeeded > 0
+            ? `<div style="margin-top:8px;font-size:12px;color:var(--accent2)">💡 تحتاج <b>${fmt(monthlyNeeded)}</b> شهرياً لتحقيق الهدف خلال ${g.months || 12} شهر</div>`
+            : ''}
+      </div>`;
+    }).join('');
+  }
+
+  // Monthly plan display
+  const plan = state.plan;
+  const planDisplay = document.getElementById('monthly-plan-display');
+  if (!plan.salary && !Object.keys(plan.categories).length) {
+    planDisplay.innerHTML = '<p style="color:var(--text3);font-size:13px">لا توجد خطة شهرية مضافة بعد</p>';
+  } else {
+    const rows = state.categories.filter(c => plan.categories[c.id]).map(c =>
+      `<tr><td>${c.emoji} ${c.name}</td><td style="text-align:left">${fmt(plan.categories[c.id])}</td></tr>`
+    ).join('');
+    planDisplay.innerHTML = `
+      <table class="plan-table">
+        <tr><td><b>الراتب المتوقع</b></td><td style="text-align:left;color:var(--green)">${fmt(plan.salary)}</td></tr>
+        ${rows}
+      </table>`;
+  }
+}
+
+function editGoal(id) {
+  const g = state.goals.find(g => g.id === id);
+  if (!g) return;
+  state.editingGoal = id;
+  document.getElementById('goal-name').value = g.name;
+  document.getElementById('goal-target').value = g.target;
+  document.getElementById('goal-current').value = g.current;
+  document.getElementById('goal-months').value = g.months || 12;
+  document.getElementById('goal-emoji').value = g.emoji || '🎯';
+  document.getElementById('goal-modal-title').textContent = 'تعديل الهدف';
+  openModal('goal-modal');
+}
+
+// deleteGoal defined above — no duplicate needed
+
+// ================== ANALYSIS FILTER ==================
+let filterVisible = false;
+function toggleAnalysisFilter() {
+  filterVisible = !filterVisible;
+  document.getElementById('analysis-filter-row').style.display = filterVisible ? 'block' : 'none';
+}
+function applyAnalysisFilter() {
+  const from = document.getElementById('filter-from').value;
+  const to = document.getElementById('filter-to').value;
+  if (!from || !to) { showToast('⚠️ اختر تاريخ البداية والنهاية', 'var(--yellow)'); return; }
+  state.analysisFilter = { from, to };
+  renderAnalysis();
+  showToast(`📅 تم تطبيق الفلتر: ${from} → ${to}`, 'var(--accent)');
+}
+function clearAnalysisFilter() {
+  state.analysisFilter = null;
+  document.getElementById('filter-from').value = '';
+  document.getElementById('filter-to').value = '';
+  renderAnalysis();
+  showToast('مُسح الفلتر — عرض السنة كاملة', '');
+}
+
+// ================== FINANCIAL FORECAST ==================
+function getForecast() {
+  const today = localToday();
+  const expenses = [];
+  for (let i = 2; i >= 0; i--) {
+    const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+    const txs = getMonthTxs(d.getFullYear(), d.getMonth());
+    expenses.push(txs.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0));
+  }
+  if (expenses.every(e => e === 0)) return { forecast: 0, slope: 0, last3: expenses };
+  const n = expenses.length;
+  const xs = [0,1,2];
+  const sumX  = xs.reduce((s,x) => s+x, 0);
+  const sumY  = expenses.reduce((s,y) => s+y, 0);
+  const sumXY = xs.reduce((s,x,i) => s + x*expenses[i], 0);
+  const sumX2 = xs.reduce((s,x) => s + x*x, 0);
+  const slope = (n*sumXY - sumX*sumY) / (n*sumX2 - sumX*sumX) || 0;
+  const intercept = (sumY - slope*sumX) / n;
+  return { forecast: Math.round(Math.max(0, intercept + slope*n)), slope, last3: expenses };
+}
+
+// ================== ANALYSIS (REDESIGNED) ==================
+let analysisBarChart = null, analysisDonut = null;
+
+function initAnalysisYear() {
+  const sel = document.getElementById('analysis-year');
+  const years = new Set();
+  const today = new Date();
+  years.add(today.getFullYear());
+  years.add(today.getFullYear() - 1);
+  state.transactions.forEach(t => years.add(parseInt(t.date.split('-')[0])));
+  const sorted = Array.from(years).sort((a, b) => b - a);
+  const cur = sel.value;
+  sel.innerHTML = sorted.map(y => `<option value="${y}" ${y == cur ? 'selected' : ''}>${y}</option>`).join('');
+}
+
+function renderAnalysis() {
+  initAnalysisYear();
+  const year = parseInt(document.getElementById('analysis-year').value) || new Date().getFullYear();
+  const salary = state.settings.salary || 0;
+  const PALETTE = ['#6c63ff','#4caf8c','#f0a040','#e05c5c','#26c6da','#ab47bc','#ff7043','#78909c','#e91e63','#00897b','#ffc107','#5c6bc0'];
+
+  // تحديد التخصيص بالفلتر أو السنة
+  let filteredTxs;
+  let periodLabel;
+  if (state.analysisFilter) {
+    filteredTxs = state.transactions.filter(t => t.date >= state.analysisFilter.from && t.date <= state.analysisFilter.to);
+    periodLabel = `${state.analysisFilter.from} → ${state.analysisFilter.to}`;
+  } else {
+    filteredTxs = state.transactions.filter(t => t.date.startsWith(year.toString()));
+    periodLabel = `كل ${year}`;
+  }
+
+  // جمع بيانات الأشهر
+  const months = MONTH_NAMES.map((name, m) => {
+    let txs;
+    if (state.analysisFilter) {
+      const mPrefix = `${year}-${String(m+1).padStart(2,'0')}`;
+      txs = filteredTxs.filter(t => t.date.startsWith(mPrefix));
+    } else {
+      txs = getMonthTxs(year, m);
+    }
+    const incomeFromTx = txs.filter(t => t.type === 'income').reduce((s,t) => s + t.amount, 0);
+    const expense = txs.filter(t => t.type === 'expense').reduce((s,t) => s + t.amount, 0);
+    const totalIncome = salary + incomeFromTx;
+    const remaining = totalIncome - expense;
+    const spendPct = totalIncome > 0 ? (expense / totalIncome) * 100 : 0;
+    const catBreakdown = {};
+    txs.filter(t => t.type === 'expense').forEach(t => { catBreakdown[t.category] = (catBreakdown[t.category] || 0) + t.amount; });
+    return { name, m, txs, incomeFromTx, totalIncome, expense, remaining, spendPct, catBreakdown, hasData: txs.length > 0 };
+  });
+
+  const totalSalary = salary * 12;
+  const totalIncome = months.reduce((s,m) => s + m.totalIncome, 0);
+  const totalExpense = months.reduce((s,m) => s + m.expense, 0);
+  const totalRemaining = totalIncome - totalExpense;
+  const totalIncomeFromTx = months.reduce((s,m) => s + m.incomeFromTx, 0);
+  const txCount = filteredTxs.filter(t => t.type === 'expense').length;
+  const avgTx = txCount > 0 ? totalExpense / txCount : 0;
+  const spendRatio = totalIncome > 0 ? Math.round((totalExpense / totalIncome) * 100) : 0;
+
+  // 3 بطاقات كبيرة
+  document.getElementById('analysis-big-cards').innerHTML = `
+    <div class="analysis-big-card" style="background:linear-gradient(135deg,rgba(76,175,140,0.25),rgba(76,175,140,0.05));border:1px solid rgba(76,175,140,0.3)">
+      <div class="abc-label" style="color:var(--green)">📥 إجمالي الإيرادات</div>
+      <div class="abc-value" style="color:var(--green)">${fmt(totalIncome)}</div>
+      <div class="abc-sub">راتب: ${fmt(totalSalary)} + إضافي: ${fmt(totalIncomeFromTx)}</div>
+    </div>
+    <div class="analysis-big-card" style="background:linear-gradient(135deg,rgba(224,92,92,0.25),rgba(224,92,92,0.05));border:1px solid rgba(224,92,92,0.3)">
+      <div class="abc-label" style="color:var(--red)">📤 إجمالي المصاريف</div>
+      <div class="abc-value" style="color:var(--red)">${fmt(totalExpense)}</div>
+      <div class="abc-sub">${txCount} عملية · متوسط ${fmt(avgTx)} للعملية</div>
+    </div>
+    <div class="analysis-big-card" style="background:linear-gradient(135deg,${totalRemaining>=0?'rgba(108,99,255,0.25),rgba(108,99,255,0.05)':'rgba(224,92,92,0.2),rgba(224,92,92,0.05)'});border:1px solid ${totalRemaining>=0?'rgba(108,99,255,0.3)':'rgba(224,92,92,0.3)'}">
+      <div class="abc-label" style="color:var(--accent2)">💰 الصافي</div>
+      <div class="abc-value" style="color:${totalRemaining>=0?'var(--accent2)':'var(--red)'}">${fmt(totalRemaining)}</div>
+      <div class="abc-sub">${periodLabel}</div>
+    </div>
+  `;
+
+  // 4 بطاقات صغيرة
+  const ratioCls = spendRatio > 90 ? 'red' : spendRatio > 70 ? 'yellow' : 'green';
+  const dataMonths = months.filter(m => m.hasData);
+  document.getElementById('analysis-small-cards').innerHTML = `
+    <div class="summary-box"><div class="s-label">🔢 عدد العمليات</div><div class="s-value">${txCount}</div></div>
+    <div class="summary-box"><div class="s-label">📊 متوسط المصروف</div><div class="s-value">${fmt(avgTx)}</div></div>
+    <div class="summary-box"><div class="s-label">📉 نسبة الإنفاق</div><div class="s-value ${ratioCls}">${spendRatio}%</div></div>
+    <div class="summary-box"><div class="s-label">📅 أشهر نشطة</div><div class="s-value">${dataMonths.length} / 12</div></div>
+  `;
+
+  // رسم بياني شريطي
+  const barCtx = document.getElementById('analysis-bar-chart').getContext('2d');
+  if (analysisBarChart) analysisBarChart.destroy();
+  analysisBarChart = new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: MONTH_NAMES.map(n => n.slice(0,3)),
+      datasets: [
+        { label: 'الدخل', data: months.map(m => m.totalIncome), backgroundColor: 'rgba(76,175,140,0.75)', borderRadius: 5 },
+        { label: 'المصاريف', data: months.map(m => m.expense), backgroundColor: 'rgba(224,92,92,0.75)', borderRadius: 5 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#9fa8c7', font:{size:10} } } },
+      scales: {
+        x: { ticks:{color:'#9fa8c7',font:{size:9}}, grid:{color:'rgba(255,255,255,0.04)'} },
+        y: { ticks:{color:'#9fa8c7',font:{size:9}}, grid:{color:'rgba(255,255,255,0.04)'} }
+      }
+    }
+  });
+
+  // أشرطة الفئات بدل الدونات
+  const yearCatTotals = {};
+  months.forEach(mo => Object.entries(mo.catBreakdown).forEach(([cid,val]) => { yearCatTotals[cid] = (yearCatTotals[cid]||0) + val; }));
+  const sortedCats2 = Object.entries(yearCatTotals).sort((a,b)=>b[1]-a[1]);
+  const catGrandTotal = sortedCats2.reduce((s,[,v])=>s+v,0);
+  const analysisCatsEl = document.getElementById('analysis-cats-bars');
+  if (analysisCatsEl) {
+    analysisCatsEl.innerHTML = sortedCats2.length ? sortedCats2.map(([id,val],i)=>{
+      const cat = getCat(id);
+      const pct = catGrandTotal>0 ? Math.round((val/catGrandTotal)*100) : 0;
+      const col = PALETTE[i%PALETTE.length];
+      return `<div class="cat-bar-item" style="margin-bottom:8px">
+        <div class="cat-bar-header">
+          <div class="cat-bar-name" style="font-size:12px"><span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block;flex-shrink:0"></span>${cat.emoji} ${cat.name}</div>
+          <div class="cat-bar-values"><span class="cat-bar-amount" style="color:${col};font-size:12px">${fmt(val)}</span><span class="cat-bar-pct" style="font-size:10px">${pct}%</span></div>
+        </div>
+        <div class="cat-bar-track" style="height:7px"><div class="cat-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      </div>`;
+    }).join('') : '<p style="color:var(--text3);font-size:12px;text-align:center;padding:20px">لا توجد مصاريف</p>';
+  }
+
+  // التنبؤ المالي + أفضل/أسوأ
+  const forecast = getForecast();
+  const bestMonth = dataMonths.length ? dataMonths.reduce((a,b)=>a.remaining>b.remaining?a:b) : null;
+  const worstMonth = dataMonths.length ? dataMonths.reduce((a,b)=>a.expense>b.expense?a:b) : null;
+  const forecastVal = typeof forecast === 'object' ? forecast.forecast : forecast;
+  const slopeVal = typeof forecast === 'object' ? forecast.slope : 0;
+  document.getElementById('analysis-forecast-row').innerHTML = `
+    <div class="forecast-card">
+      <div class="fc-label">🔮 توقع الشهر القادم</div>
+      <div class="fc-value" style="color:var(--accent2)">${fmt(forecastVal)}</div>
+      <div class="fc-sub">${slopeVal > 0 ? '📈 الإنفاق في ارتفاع' : slopeVal < 0 ? '📉 الإنفاق في انخفاض' : '➡️ إنفاق مستقر'} (متوسط آخر 3 أشهر)</div>
+    </div>
+    <div class="forecast-card" style="border-color:rgba(76,175,140,0.3)">
+      <div class="fc-label" style="color:var(--green)">🏆 أفضل شهر (أقل إنفاق)</div>
+      ${bestMonth ? `<div class="fc-value" style="color:var(--green)">${bestMonth.name}</div><div class="fc-sub">مصروف: ${fmt(bestMonth.expense)} · متبقي: ${fmt(bestMonth.remaining)}</div>` : '<div class="fc-sub">لا بيانات كافية</div>'}
+    </div>
+    <div class="forecast-card" style="border-color:rgba(224,92,92,0.3)">
+      <div class="fc-label" style="color:var(--red)">📉 أعلى إنفاق</div>
+      ${worstMonth ? `<div class="fc-value" style="color:var(--red)">${worstMonth.name}</div><div class="fc-sub">مصروف: ${fmt(worstMonth.expense)} · متبقي: ${fmt(worstMonth.remaining)}</div>` : '<div class="fc-sub">لا بيانات كافية</div>'}
+    </div>
+  `;
+
+  // شبكة بطاقات الأشهر
+  document.getElementById('analysis-month-cards').innerHTML = months.map(mo => {
+    const borderColor = !mo.hasData ? 'var(--border)' : mo.remaining >= 0 ? 'var(--green)' : 'var(--red)';
+    const netColor = mo.remaining >= 0 ? 'var(--green)' : 'var(--red)';
+    return `<div class="month-mini-card" style="border-right-color:${borderColor};opacity:${mo.hasData?1:0.45}">
+      <div class="mmc-name">📆 ${mo.name}</div>
+      <div class="mmc-row"><span style="color:var(--text3)">الدخل</span><span style="color:var(--green)">${fmt(mo.totalIncome)}</span></div>
+      <div class="mmc-row"><span style="color:var(--text3)">المصروف</span><span style="color:var(--red)">${mo.hasData?fmt(mo.expense):'—'}</span></div>
+      ${mo.hasData && mo.spendPct>0?`<div style="margin:4px 0"><div style="height:3px;background:var(--bg4);border-radius:2px"><div style="width:${Math.min(100,mo.spendPct)}%;height:100%;background:${mo.spendPct>90?'var(--red)':mo.spendPct>70?'var(--yellow)':'var(--green)'};border-radius:2px"></div></div></div>`:''}
+      <div class="mmc-net" style="color:${netColor}">${mo.hasData?fmt(mo.remaining):'—'}</div>
+    </div>`;
+  }).join('');
+
+  // جدول تفصيلي
+  document.getElementById('analysis-tbody').innerHTML = months.map(mo => {
+    const pctCls = mo.spendPct > 90 ? 'red' : mo.spendPct > 70 ? 'yellow' : 'green';
+    const statusChip = !mo.hasData ? '<span class="analysis-chip chip-gray">—</span>'
+      : mo.spendPct > 90 ? '<span class="analysis-chip chip-red">🔴 مرتفع</span>'
+      : mo.spendPct > 70 ? '<span class="analysis-chip chip-yellow">🟡 متوسط</span>'
+      : '<span class="analysis-chip chip-green">🟢 ممتاز</span>';
+    return `<tr style="${!mo.hasData?'opacity:0.4':''}">
+      <td><b>${mo.name}</b></td>
+      <td style="text-align:center;color:var(--green)">${fmt(salary)}</td>
+      <td style="text-align:center;color:var(--green)">${fmt(mo.totalIncome)}</td>
+      <td style="text-align:center;color:var(--red)">${mo.hasData?fmt(mo.expense):'—'}</td>
+      <td style="text-align:center;color:${mo.remaining>=0?'var(--green)':'var(--red)'}">${mo.hasData?fmt(mo.remaining):'—'}</td>
+      <td style="text-align:center">${mo.hasData?(mo.remaining>=0?`<span class="analysis-chip chip-green">+${fmt(mo.remaining)}</span>`:`<span class="analysis-chip chip-red">${fmt(mo.remaining)}</span>`):'—'}</td>
+      <td style="text-align:center">${mo.hasData?`<span style="color:var(--${pctCls})">${Math.round(mo.spendPct)}%</span>`:'—'}</td>
+      <td style="text-align:center">${statusChip}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('analysis-tfoot').innerHTML = `
+    <tr>
+      <td><b>الإجمالي</b></td>
+      <td style="text-align:center;color:var(--green)"><b>${fmt(totalSalary)}</b></td>
+      <td style="text-align:center;color:var(--green)"><b>${fmt(totalIncome)}</b></td>
+      <td style="text-align:center;color:var(--red)"><b>${fmt(totalExpense)}</b></td>
+      <td style="text-align:center;color:${totalRemaining>=0?'var(--green)':'var(--red)'}"><b>${fmt(totalRemaining)}</b></td>
+      <td style="text-align:center">${totalRemaining>=0?`<span class="analysis-chip chip-green">+${fmt(totalRemaining)}</span>`:`<span class="analysis-chip chip-red">${fmt(totalRemaining)}</span>`}</td>
+      <td style="text-align:center"><b>${spendRatio}%</b></td>
+      <td></td>
+    </tr>`;
+
+  // جدول الفئات شهرياً
+  const activeMonths = months.filter(m => m.hasData);
+  const expCatsList = state.categories.filter(c => c.type !== 'income');
+  document.getElementById('analysis-cats-head').innerHTML = `<tr><th>الفئة</th>${activeMonths.map(m=>`<th style="text-align:center;font-size:11px">${m.name.slice(0,3)}</th>`).join('')}<th style="text-align:center">المجموع</th></tr>`;
+  document.getElementById('analysis-cats-body').innerHTML = expCatsList.map(cat => {
+    const vals = activeMonths.map(m => m.catBreakdown[cat.id] || 0);
+    const total = vals.reduce((s,v)=>s+v,0);
+    if (!total) return '';
+    return `<tr><td>${cat.emoji} ${cat.name}</td>${vals.map(v=>`<td style="text-align:center;font-size:12px;color:${v>0?'var(--red)':'var(--text3)'}">${v>0?fmt(v):'—'}</td>`).join('')}<td style="text-align:center;font-weight:700;color:var(--red)">${fmt(total)}</td></tr>`;
+  }).filter(Boolean).join('') || `<tr><td colspan="20" style="text-align:center;color:var(--text3);padding:20px">لا توجد مصاريف لهذه السنة</td></tr>`;
+}
+
+// ================== INIT ==================
+load();
+renderTop();
+renderDaily();
+renderWeekly();
+</script>
+</body>
+</html>
