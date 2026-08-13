@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ميزانيتي</title>
- <link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
-<link rel="shortcut icon" href="favicon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -65,6 +62,40 @@
   body.theme-ice { --bg:#e8f4f8; --bg2:#ddeef5; --bg3:#d0e8f2; --bg4:#c2e2ef; --card:#f0f9fc; --border:rgba(0,0,0,0.07); --text:#0d2b3e; --text2:#2a5c7a; --text3:#6090aa; --accent:#0288d1; --accent2:#03a9f4; }
   body.theme-sand { --bg:#f5f0e8; --bg2:#ede7d8; --bg3:#e4dcc8; --bg4:#dbd1b8; --card:#faf8f4; --border:rgba(0,0,0,0.07); --text:#2d2418; --text2:#6b5840; --text3:#a09070; --accent:#bf8f3c; --accent2:#d4a853; }
   body.theme-charcoal { --bg:#111111; --bg2:#191919; --bg3:#222222; --bg4:#2c2c2c; --card:#161616; --accent:#e0e0e0; --accent2:#f5f5f5; --green:#6fcf97; --red:#eb5757; --yellow:#f2c94c; }
+  /* ── 33 ثيم جديد ── */
+  body.theme-lava      { --bg:#0e0500; --bg2:#1a0800; --bg3:#260b00; --bg4:#321000; --card:#150600; --accent:#ff3d00; --accent2:#ff6e40; }
+  body.theme-royal     { --bg:#05001a; --bg2:#0a0030; --bg3:#100046; --bg4:#16005c; --card:#080025; --accent:#7c4dff; --accent2:#b388ff; }
+  body.theme-matrix    { --bg:#000800; --bg2:#001000; --bg3:#001800; --bg4:#002000; --card:#000c00; --accent:#00e676; --accent2:#69f0ae; }
+  body.theme-rose-gold { --bg:#1a0e10; --bg2:#2a1618; --bg3:#3a1e22; --bg4:#4a262c; --card:#221214; --accent:#f48fb1; --accent2:#f8bbd0; }
+  body.theme-cyberpunk { --bg:#020010; --bg2:#06001e; --bg3:#0c002e; --bg4:#12003e; --card:#040016; --accent:#ffea00; --accent2:#ff6d00; }
+  body.theme-ocean-deep{ --bg:#000a14; --bg2:#001020; --bg3:#00182e; --bg4:#00203c; --card:#00080e; --accent:#00b8d4; --accent2:#18ffff; }
+  body.theme-amber     { --bg:#0e0800; --bg2:#1c1000; --bg3:#2a1800; --bg4:#382000; --card:#140a00; --accent:#ffab00; --accent2:#ffd740; }
+  body.theme-teal-dark { --bg:#001412; --bg2:#001e1c; --bg3:#002826; --bg4:#003230; --card:#001816; --accent:#1de9b6; --accent2:#64ffda; }
+  body.theme-indigo    { --bg:#07080f; --bg2:#0e1020; --bg3:#151831; --bg4:#1c2042; --card:#0a0c18; --accent:#536dfe; --accent2:#8c9eff; }
+  body.theme-moss      { --bg:#080e06; --bg2:#0e1a0c; --bg3:#142612; --bg4:#1a3218; --card:#0a1208; --accent:#76ff03; --accent2:#b2ff59; }
+  body.theme-dusk      { --bg:#100814; --bg2:#1c1022; --bg3:#281830; --bg4:#34203e; --card:#160c1a; --accent:#ea80fc; --accent2:#e040fb; }
+  body.theme-brick     { --bg:#120600; --bg2:#1e0c00; --bg3:#2a1200; --bg4:#361800; --card:#180800; --accent:#e64a19; --accent2:#ff7043; }
+  body.theme-glacier   { --bg:#040e18; --bg2:#081624; --bg3:#0c1e30; --bg4:#10263c; --card:#060c14; --accent:#80deea; --accent2:#b2ebf2; }
+  body.theme-plum      { --bg:#0e0414; --bg2:#18082e; --bg3:#220c48; --bg4:#2c1062; --card:#120618; --accent:#ce93d8; --accent2:#e1bee7; }
+  body.theme-brass     { --bg:#100c00; --bg2:#201800; --bg3:#302400; --bg4:#403000; --card:#180e00; --accent:#c6a84b; --accent2:#ffe082; }
+  body.theme-toxic     { --bg:#060e00; --bg2:#0c1800; --bg3:#122200; --bg4:#182c00; --card:#081200; --accent:#c6ff00; --accent2:#eeff41; }
+  body.theme-wine      { --bg:#0e0006; --bg2:#1e0010; --bg3:#2e001a; --bg4:#3e0024; --card:#160008; --accent:#f06292; --accent2:#f48fb1; }
+  body.theme-storm     { --bg:#04080e; --bg2:#080e18; --bg3:#0c1422; --bg4:#101a2c; --card:#060a12; --accent:#90caf9; --accent2:#bbdefb; }
+  body.theme-khaki     { --bg:#0e0e08; --bg2:#1a1a10; --bg3:#262618; --bg4:#323220; --card:#121208; --accent:#cddc39; --accent2:#dce775; }
+  body.theme-infrared  { --bg:#0e0000; --bg2:#1a0000; --bg3:#260000; --bg4:#320000; --card:#120000; --accent:#ff1744; --accent2:#ff5252; }
+  body.theme-space     { --bg:#000005; --bg2:#00000f; --bg3:#00001a; --bg4:#000025; --card:#000008; --accent:#e040fb; --accent2:#ea80fc; }
+  body.theme-retro     { --bg:#1a1000; --bg2:#2a1c00; --bg3:#3a2800; --bg4:#4a3400; --card:#201400; --accent:#ff6f00; --accent2:#ffa000; }
+  body.theme-cobalt    { --bg:#000a1a; --bg2:#00122a; --bg3:#001a3a; --bg4:#00224a; --card:#00060e; --accent:#2979ff; --accent2:#82b1ff; }
+  body.theme-sage      { --bg:#080e0c; --bg2:#101a16; --bg3:#182620; --bg4:#20322a; --card:#0a1210; --accent:#80cbc4; --accent2:#b2dfdb; }
+  body.theme-mulberry  { --bg:#0e0010; --bg2:#1a0020; --bg3:#260030; --bg4:#320040; --card:#120014; --accent:#ba68c8; --accent2:#ce93d8; }
+  body.theme-iron      { --bg:#0a0a0c; --bg2:#121214; --bg3:#1a1a1c; --bg4:#222224; --card:#0e0e10; --accent:#b0bec5; --accent2:#cfd8dc; }
+  body.theme-tangerine { --bg:#0e0800; --bg2:#1c1000; --bg3:#2a1800; --bg4:#382000; --card:#140a00; --accent:#ff6d00; --accent2:#ffab40; }
+  body.theme-jade      { --bg:#001810; --bg2:#002418; --bg3:#003020; --bg4:#003c28; --card:#001c14; --accent:#00bfa5; --accent2:#64ffda; }
+  body.theme-blush     { --bg:#fce4ec; --bg2:#f8bbd0; --bg3:#f48fb1; --bg4:#f06292; --card:#fce4ec; --border:rgba(0,0,0,0.08); --text:#4a0020; --text2:#880e4f; --text3:#c2185b; --accent:#ad1457; --accent2:#c2185b; }
+  body.theme-arctic-day{ --bg:#f0f9ff; --bg2:#e0f4ff; --bg3:#ceeeff; --bg4:#bce8ff; --card:#f8fdff; --border:rgba(0,0,0,0.07); --text:#003050; --text2:#005080; --text3:#0080b0; --accent:#006db0; --accent2:#0090c8; }
+  body.theme-obsidian  { --bg:#060608; --bg2:#0a0a0e; --bg3:#0e0e14; --bg4:#12121a; --card:#080808; --accent:#6c63ff; --accent2:#9c94ff; }
+  body.theme-mocha     { --bg:#100806; --bg2:#1e1210; --bg3:#2c1c1a; --bg4:#3a2624; --card:#160a08; --accent:#bcaaa4; --accent2:#d7ccc8; }
+  body.theme-electric  { --bg:#000814; --bg2:#001028; --bg3:#00183c; --bg4:#002050; --card:#000510; --accent:#00e5ff; --accent2:#84ffff; --green:#00e676; --red:#ff1744; --yellow:#ffea00; }
 
   /* LAYOUT */
   .app { display: flex; height: 100vh; overflow: hidden; }
@@ -254,8 +285,61 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
 
-  /* RESPONSIVE */
-  @media (max-width: 600px) { .week-grid { grid-template-columns: repeat(3, 1fr); } .top-stats { flex-wrap: wrap; } }
+  /* ── موبايل وآيفون ── */
+  @media (max-width: 768px) {
+    .app { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; min-height: 56px; flex-direction: row; padding: 0 4px; gap: 0; border-left: none; border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; overflow-x: auto; justify-content: space-around; flex-shrink: 0; }
+    .sidebar-logo { display: none; }
+    .nav-btn { width: auto; height: 52px; min-width: 48px; flex-direction: column; gap: 1px; padding: 4px 6px; border-radius: 8px; flex: 1; max-width: 68px; }
+    .nav-btn .nav-icon { font-size: 18px; }
+    .nav-btn .nav-label { font-size: 9px; }
+    .main { height: 100vh; overflow-y: auto; padding-bottom: 72px; }
+    .content { padding: 12px 12px; }
+    .top-card { padding: 10px 12px; flex-wrap: wrap; gap: 8px; }
+    .top-left { gap: 10px; }
+    .top-info .amount { font-size: 20px; }
+    .top-stats { gap: 8px; flex-wrap: wrap; }
+    .stat-box .val { font-size: 13px; }
+    .stat-box .lbl { font-size: 10px; }
+    .burn-bar { width: 70px; }
+    .burn-bar-wrap { display: none; }
+    .week-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
+    .wc-body { display: none; }
+    .wc-head { padding: 6px 4px; }
+    .wc-foot { padding: 4px 6px; }
+    .wc-add { width: 20px; height: 20px; font-size: 14px; }
+    .cal-cell-new { min-height: 42px; padding: 3px 2px; }
+    .ccn-num { font-size: 11px; }
+    .ccn-exp, .ccn-inc { font-size: 9px; overflow: hidden; text-overflow: ellipsis; }
+    .cal-header-cell { font-size: 10px; }
+    .section-title { font-size: 15px; }
+    .summary-box { min-width: 75px; padding: 8px 6px; }
+    .summary-box .s-value { font-size: 13px; }
+    .month-pill { padding: 4px 8px; font-size: 11px; }
+    .settings-grid { grid-template-columns: 1fr; }
+    #nav-sort-list { grid-template-columns: repeat(4, 1fr) !important; }
+    .modal { padding: 16px; border-radius: 16px; }
+    .modal-overlay { padding: 12px; align-items: flex-end; }
+    .day-nav .date-display { font-size: 13px; }
+    .goal-card { padding: 12px; }
+    .donut-wrap { flex-direction: column; }
+    .donut-chart { width: 120px !important; height: 120px !important; }
+    .compare-table { font-size: 11px; }
+    .compare-table th, .compare-table td { padding: 5px 6px; }
+  }
+  @media (max-width: 390px) {
+    .week-grid { grid-template-columns: repeat(3, 1fr); }
+    .nav-btn .nav-label { font-size: 8px; }
+    .nav-btn { min-width: 42px; }
+    #nav-sort-list { grid-template-columns: repeat(3, 1fr) !important; }
+    .top-stats { display: none; }
+  }
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    @media (max-width: 768px) {
+      .sidebar { padding-bottom: env(safe-area-inset-bottom); }
+      .main { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+    }
+  }
 
   .empty-state { text-align: center; padding: 40px 20px; color: var(--text3); }
   .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
@@ -413,8 +497,8 @@
   .nav-sort-item:active { cursor:grabbing; }
   .nav-sort-item.dragging { opacity:0.35; box-shadow:0 8px 24px rgba(0,0,0,0.5); transform:scale(0.97); }
   .nav-sort-item.drag-over { border-color:var(--accent); background:rgba(108,99,255,0.12); box-shadow:0 0 0 2px var(--accent); }
-  .nav-sort-item.hidden-nav { opacity:0.4; }
-  .nav-sort-item.hidden-nav span:not([style*='position']) { text-decoration:line-through; }
+  .nav-sort-item.nav-permanent { border-color:rgba(108,99,255,0.4); background:rgba(108,99,255,0.06); cursor:default; }
+  .nav-sort-item.nav-permanent:hover { border-color:rgba(108,99,255,0.4); transform:none; }
 </style>
 </head>
 <body class="theme-default">
@@ -1082,6 +1166,40 @@ const THEMES = [
   {id:'theme-ice',name:'الجليد',colors:['#e8f4f8','#0288d1','#03a9f4']},
   {id:'theme-sand',name:'الرمال',colors:['#f5f0e8','#bf8f3c','#d4a853']},
   {id:'theme-charcoal',name:'الفحم',colors:['#111111','#e0e0e0','#6fcf97']},
+  // ── 33 جديد ──
+  {id:'theme-lava',      name:'اللافا',        colors:['#0e0500','#ff3d00','#ff6e40']},
+  {id:'theme-royal',     name:'الملكي',        colors:['#05001a','#7c4dff','#b388ff']},
+  {id:'theme-matrix',    name:'ماتريكس',       colors:['#000800','#00e676','#69f0ae']},
+  {id:'theme-rose-gold', name:'ذهبي وردي',     colors:['#1a0e10','#f48fb1','#f8bbd0']},
+  {id:'theme-cyberpunk', name:'سايبربانك',     colors:['#020010','#ffea00','#ff6d00']},
+  {id:'theme-ocean-deep',name:'أعماق البحر',   colors:['#000a14','#00b8d4','#18ffff']},
+  {id:'theme-amber',     name:'العنبر',        colors:['#0e0800','#ffab00','#ffd740']},
+  {id:'theme-teal-dark', name:'تيل داكن',      colors:['#001412','#1de9b6','#64ffda']},
+  {id:'theme-indigo',    name:'النيلي',        colors:['#07080f','#536dfe','#8c9eff']},
+  {id:'theme-moss',      name:'الطحلب',        colors:['#080e06','#76ff03','#b2ff59']},
+  {id:'theme-dusk',      name:'الغسق',         colors:['#100814','#ea80fc','#e040fb']},
+  {id:'theme-brick',     name:'الطوب',         colors:['#120600','#e64a19','#ff7043']},
+  {id:'theme-glacier',   name:'الجليدي',       colors:['#040e18','#80deea','#b2ebf2']},
+  {id:'theme-plum',      name:'البرقوق',       colors:['#0e0414','#ce93d8','#e1bee7']},
+  {id:'theme-brass',     name:'النحاس',        colors:['#100c00','#c6a84b','#ffe082']},
+  {id:'theme-toxic',     name:'توكسيك',        colors:['#060e00','#c6ff00','#eeff41']},
+  {id:'theme-wine',      name:'النبيذ',        colors:['#0e0006','#f06292','#f48fb1']},
+  {id:'theme-storm',     name:'العاصفة',       colors:['#04080e','#90caf9','#bbdefb']},
+  {id:'theme-khaki',     name:'الخاكي',        colors:['#0e0e08','#cddc39','#dce775']},
+  {id:'theme-infrared',  name:'الأشعة',        colors:['#0e0000','#ff1744','#ff5252']},
+  {id:'theme-space',     name:'الفضاء',        colors:['#000005','#e040fb','#ea80fc']},
+  {id:'theme-retro',     name:'ريترو',         colors:['#1a1000','#ff6f00','#ffa000']},
+  {id:'theme-cobalt',    name:'الكوبالت',      colors:['#000a1a','#2979ff','#82b1ff']},
+  {id:'theme-sage',      name:'الميرمية',      colors:['#080e0c','#80cbc4','#b2dfdb']},
+  {id:'theme-mulberry',  name:'التوت',         colors:['#0e0010','#ba68c8','#ce93d8']},
+  {id:'theme-iron',      name:'الحديد',        colors:['#0a0a0c','#b0bec5','#cfd8dc']},
+  {id:'theme-tangerine', name:'اليوسفي',       colors:['#0e0800','#ff6d00','#ffab40']},
+  {id:'theme-jade',      name:'اليشم',         colors:['#001810','#00bfa5','#64ffda']},
+  {id:'theme-blush',     name:'وردي فاتح',     colors:['#fce4ec','#ad1457','#c2185b']},
+  {id:'theme-arctic-day',name:'قطبي نهاري',    colors:['#f0f9ff','#006db0','#0090c8']},
+  {id:'theme-obsidian',  name:'الأوبسيديان',   colors:['#060608','#6c63ff','#9c94ff']},
+  {id:'theme-mocha',     name:'موكا',          colors:['#100806','#bcaaa4','#d7ccc8']},
+  {id:'theme-electric',  name:'إلكتريك',       colors:['#000814','#00e5ff','#84ffff']},
 ];
 const MONTH_NAMES = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const DAY_NAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
@@ -2460,101 +2578,6 @@ function deleteCategory(id) {
   });
 }
 
-// ================== OPEN MODAL (reset goal fields) ==================
-function openModal(id) {
-  document.getElementById(id).classList.remove('hidden');
-  if (id === 'cat-modal') initEmojiPicker();
-  if (id === 'plan-modal') openPlanModal();
-  if (id === 'goal-modal' && !state.editingGoal) {
-    document.getElementById('goal-modal-title').textContent = 'هدف ادخار جديد';
-    document.getElementById('goal-name').value = '';
-    document.getElementById('goal-target').value = '';
-    document.getElementById('goal-current').value = '';
-    document.getElementById('goal-months').value = '12';
-    document.getElementById('goal-emoji').value = '';
-    document.getElementById('auto-classify-hint') && (document.getElementById('auto-classify-hint').textContent = '');
-  }
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.add('hidden');
-  state.editingTx = null; state.editingGoal = null;
-}
-
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.add('hidden'); });
-});
-
-function goToDate() {
-  const val = document.getElementById('date-picker-input').value;
-  if (val) { state.currentDate = new Date(val); closeModal('date-picker-modal'); renderDaily(); }
-}
-
-function renderPlanning() {
-  const goals = state.goals;
-  const container = document.getElementById('goals-list');
-  if (!goals.length) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>لا توجد أهداف بعد</p></div>';
-  } else {
-    container.innerHTML = goals.map(g => {
-      const pct = g.target ? Math.min(100, (g.current / g.target) * 100) : 0;
-      const remaining = Math.max(0, g.target - g.current);
-      const monthlyNeeded = g.months > 0 ? Math.ceil(remaining / g.months) : 0;
-      const badge = pct >= 100 ? 'green' : pct >= 50 ? 'yellow' : 'red';
-      return `<div class="goal-card">
-        <div class="goal-header">
-          <div class="goal-name">${g.emoji || '🎯'} ${g.name}</div>
-          <div style="display:flex;gap:4px">
-            <button class="btn btn-ghost btn-icon btn-sm" onclick="editGoal('${g.id}')">✏️</button>
-            <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteGoal('${g.id}')">🗑️</button>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <span class="goal-amounts">${fmt(g.current)} / ${fmt(g.target)}</span>
-          <span class="badge badge-${badge}">${Math.round(pct)}%</span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-        ${pct >= 100
-          ? `<div style="margin-top:8px;padding:8px;background:rgba(76,175,140,0.15);border-radius:8px;text-align:center;color:var(--green);font-weight:600">🎉 مبروك! لقد حققت هدفك!</div>`
-          : monthlyNeeded > 0
-            ? `<div style="margin-top:8px;font-size:12px;color:var(--accent2)">💡 تحتاج <b>${fmt(monthlyNeeded)}</b> شهرياً لتحقيق الهدف خلال ${g.months || 12} شهر</div>`
-            : ''}
-      </div>`;
-    }).join('');
-  }
-
-  // Monthly plan display
-  const plan = state.plan;
-  const planDisplay = document.getElementById('monthly-plan-display');
-  if (!plan.salary && !Object.keys(plan.categories).length) {
-    planDisplay.innerHTML = '<p style="color:var(--text3);font-size:13px">لا توجد خطة شهرية مضافة بعد</p>';
-  } else {
-    const rows = state.categories.filter(c => plan.categories[c.id]).map(c =>
-      `<tr><td>${c.emoji} ${c.name}</td><td style="text-align:left">${fmt(plan.categories[c.id])}</td></tr>`
-    ).join('');
-    planDisplay.innerHTML = `
-      <table class="plan-table">
-        <tr><td><b>الراتب المتوقع</b></td><td style="text-align:left;color:var(--green)">${fmt(plan.salary)}</td></tr>
-        ${rows}
-      </table>`;
-  }
-}
-
-function editGoal(id) {
-  const g = state.goals.find(g => g.id === id);
-  if (!g) return;
-  state.editingGoal = id;
-  document.getElementById('goal-name').value = g.name;
-  document.getElementById('goal-target').value = g.target;
-  document.getElementById('goal-current').value = g.current;
-  document.getElementById('goal-months').value = g.months || 12;
-  document.getElementById('goal-emoji').value = g.emoji || '🎯';
-  document.getElementById('goal-modal-title').textContent = 'تعديل الهدف';
-  openModal('goal-modal');
-}
-
-// deleteGoal defined above — no duplicate needed
-
 // ================== ANALYSIS FILTER ==================
 let filterVisible = false;
 function toggleAnalysisFilter() {
@@ -2810,13 +2833,13 @@ function renderAnalysis() {
 
 // ================== NAV CUSTOMIZATION ==================
 const ALL_NAV_PAGES = [
+  { id:'dashboard', icon:'📊', label:'لوحة'      },
   { id:'dayweek',   icon:'📅', label:'يوم/أسبوع' },
   { id:'monthly',   icon:'🗓️', label:'شهري'       },
-  { id:'planning',  icon:'🎯', label:'تخطيط'      },
-  { id:'settings',  icon:'⚙️', label:'إعداد'       },
   { id:'colors',    icon:'🎨', label:'ألوان'       },
-  { id:'dashboard', icon:'📊', label:'لوحة'        },
   { id:'analysis',  icon:'📈', label:'تحليل'       },
+  { id:'planning',  icon:'🎯', label:'تخطيط'      },
+  { id:'settings',  icon:'⚙️', label:'إعداد', permanent:true },
 ];
 
 function getNavOrder() {
@@ -2846,14 +2869,12 @@ function resetNavOrder() {
 function applyNavOrder() {
   const order = getNavOrder();
   const sidebar = document.querySelector('.sidebar');
-  const logo = sidebar.querySelector('.sidebar-logo');
-  // احذف كل أزرار التنقل الموجودة
   sidebar.querySelectorAll('.nav-btn').forEach(b => b.remove());
-  // أعد بناءها بالترتيب الجديد
   order.forEach(item => {
-    if (!item.visible) return;
     const meta = ALL_NAV_PAGES.find(p => p.id === item.id);
     if (!meta) return;
+    // permanent دائماً يظهر، غير permanent يخضع لـ visible
+    if (!meta.permanent && !item.visible) return;
     const btn = document.createElement('button');
     btn.className = 'nav-btn';
     btn.title = meta.label;
@@ -2861,11 +2882,11 @@ function applyNavOrder() {
     btn.innerHTML = `<span class="nav-icon">${meta.icon}</span><span class="nav-label">${meta.label}</span>`;
     sidebar.appendChild(btn);
   });
-  // إعادة تحديد الزر النشط
+  // تحديد الزر النشط
+  const cur = document.querySelector('.page.active')?.id?.replace('page-','');
   document.querySelectorAll('.nav-btn').forEach(b => {
     const oc = b.getAttribute('onclick') || '';
-    const cur = document.querySelector('.page.active')?.id?.replace('page-', '');
-    if (cur && oc.includes(`'${cur}'`)) b.classList.add('active');
+    b.classList.toggle('active', !!(cur && oc.includes(`'${cur}'`)));
   });
 }
 
@@ -2881,24 +2902,30 @@ function renderNavSortList() {
     if (!items.find(i => i.id === p.id)) items.push({ ...p, visible: true });
   });
 
-  container.innerHTML = items.map((item, idx) => `
-    <div class="nav-sort-item ${item.visible ? '' : 'hidden-nav'}"
+  container.innerHTML = items.map((item) => {
+    const isPermanent = item.permanent;
+    return `
+    <div class="nav-sort-item ${!isPermanent && !item.visible ? 'hidden-nav' : ''} ${isPermanent ? 'nav-permanent' : ''}"
          data-id="${item.id}"
-         draggable="true"
-         ondragstart="navDragStart(event)"
-         ondragover="navDragOver(event)"
-         ondrop="navDrop(event)"
-         ondragend="navDragEnd(event)"
+         draggable="${!isPermanent}"
+         ${!isPermanent ? `ondragstart="navDragStart(event)" ondragover="navDragOver(event)" ondrop="navDrop(event)" ondragend="navDragEnd(event)"` : ''}
          style="flex-direction:column;align-items:center;justify-content:center;padding:14px 10px;gap:6px;position:relative;min-height:80px;text-align:center">
-      <span style="position:absolute;top:5px;right:6px;font-size:11px;color:var(--text3)">⠿</span>
+      <!-- مقبض السحب أو قفل -->
+      <span style="position:absolute;top:5px;right:6px;font-size:12px;color:var(--text3)">${isPermanent ? '' : '⠿'}</span>
+      <!-- الأيقونة -->
       <span style="font-size:26px;line-height:1">${item.icon}</span>
-      <span style="font-size:12px;font-weight:600;color:${item.visible?'var(--text)':'var(--text3)'}">${item.label}</span>
-      <button class="nav-sort-eye" onclick="toggleNavVisible(this)" title="${item.visible ? 'إخفاء' : 'إظهار'}"
-              style="position:absolute;top:5px;left:6px;font-size:13px;background:transparent;border:none;cursor:pointer;opacity:0.7">
-        ${item.visible ? '👁️' : '🙈'}
-      </button>
-    </div>
-  `).join('');
+      <!-- الاسم -->
+      <span style="font-size:12px;font-weight:600;color:${(!isPermanent && !item.visible)?'var(--text3)':'var(--text)'}">${item.label}</span>
+      <!-- زر الإخفاء أو شعار دائم -->
+      ${isPermanent
+        ? `<span style="position:absolute;top:4px;left:6px;font-size:14px" title="لا يمكن إخفاؤه">👊🏻</span>`
+        : `<button class="nav-sort-eye" onclick="toggleNavVisible(this)" title="${item.visible ? 'إخفاء' : 'إظهار'}"
+                  style="position:absolute;top:5px;left:6px;font-size:13px;background:transparent;border:none;cursor:pointer;opacity:0.7">
+             ${item.visible ? '👁️' : '🙈'}
+           </button>`
+      }
+    </div>`;
+  }).join('');
 }
 
 function toggleNavVisible(btn) {
