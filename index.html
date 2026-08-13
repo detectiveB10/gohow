@@ -404,6 +404,14 @@
   .forecast-card .fc-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
   .forecast-card .fc-value { font-size: 22px; font-weight: 700; }
   .forecast-card .fc-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  /* Nav customization drag */
+  .nav-sort-item { background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:grab; user-select:none; transition:box-shadow 0.2s, opacity 0.2s, border-color 0.2s; }
+  .nav-sort-item:hover { border-color:var(--accent); }
+  .nav-sort-item:active { cursor:grabbing; }
+  .nav-sort-item.dragging { opacity:0.35; box-shadow:0 8px 24px rgba(0,0,0,0.5); transform:scale(0.97); }
+  .nav-sort-item.drag-over { border-color:var(--accent); background:rgba(108,99,255,0.12); box-shadow:0 0 0 2px var(--accent); }
+  .nav-sort-item.hidden-nav { opacity:0.4; }
+  .nav-sort-item.hidden-nav span:not([style*='position']) { text-decoration:line-through; }
 </style>
 </head>
 <body class="theme-default">
@@ -432,10 +440,6 @@
       <span class="nav-icon">🎨</span>
       <span class="nav-label">ألوان</span>
     </button>
-    <button class="nav-btn" onclick="showPage('export')" title="تصدير">
-      <span class="nav-icon">⇩</span>
-      <span class="nav-label">نسخ</span>
-    </button>
     <button class="nav-btn" onclick="showPage('dashboard')" title="لوحة التحكم">
       <span class="nav-icon">📊</span>
       <span class="nav-label">لوحة</span>
@@ -443,10 +447,6 @@
     <button class="nav-btn" onclick="showPage('analysis')" title="تحليل شامل">
       <span class="nav-icon">📈</span>
       <span class="nav-label">تحليل</span>
-    </button>
-    <button class="nav-btn" onclick="openModal('guide-modal')" title="دليل الاستخدام">
-      <span class="nav-icon">❓</span>
-      <span class="nav-label">دليل</span>
     </button>
   </nav>
 
@@ -559,8 +559,24 @@
 
       <!-- SETTINGS PAGE -->
       <div class="page" id="page-settings">
-        <div class="section-title">الإعدادات</div>
+        <div class="section-title">⚙️ الإعدادات</div>
+
+        <!-- 🔀 تخصيص القوائم — فوق كل شيء بتصميم جديد -->
+        <div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div style="font-size:15px;font-weight:700">🔀 تخصيص القوائم</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-ghost btn-sm" onclick="resetNavOrder()">↺ إعادة تعيين</button>
+              <button class="btn btn-primary btn-sm" onclick="saveNavOrder()">💾 حفظ</button>
+            </div>
+          </div>
+          <p style="font-size:12px;color:var(--text3);margin-bottom:16px">اسحب لإعادة الترتيب · 👁️ لإخفاء أو إظهار القائمة</p>
+          <div id="nav-sort-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px"></div>
+        </div>
+
         <div class="settings-grid">
+
+          <!-- إعدادات الراتب -->
           <div class="card">
             <div class="card-title">💵 إعدادات الراتب</div>
             <div class="form-group" style="margin-bottom:10px">
@@ -570,7 +586,7 @@
             <div class="form-group" style="margin-bottom:10px">
               <label>العملة</label>
               <select id="s-currency">
-                <option value="ر.س">ريال سعودي (ر.س)</option>
+                <option value="⃁">ريال سعودي (⃁)</option>
                 <option value="$">دولار ($)</option>
                 <option value="€">يورو (€)</option>
                 <option value="£">جنيه (£)</option>
@@ -583,24 +599,53 @@
             </div>
             <div class="form-group" style="margin-bottom:10px">
               <label>يوم نزول الراتب</label>
-              <input type="number" id="s-payday" min="1" max="31" placeholder="27">
+              <input type="number" id="s-payday" min="1" max="31" placeholder="مثال: 27">
             </div>
             <button class="btn btn-primary" style="width:100%" onclick="saveSettings()">حفظ الإعدادات</button>
           </div>
+
+          <!-- الفئات -->
           <div class="card">
             <div class="card-title">🏷️ الفئات المخصصة</div>
             <div id="cats-list"></div>
             <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="openModal('cat-modal')">+ إضافة فئة</button>
           </div>
+
+          <!-- حدود الإنفاق -->
           <div class="card">
             <div class="card-title">🎯 حدود الإنفاق الشهرية</div>
             <div id="limits-list"></div>
           </div>
+
+          <!-- تصدير واستيراد -->
+          <div class="card">
+            <div class="card-title">⇩ تصدير واستيراد البيانات</div>
+            <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="exportXLSX()">📊 تصدير XLSX (إكسل)</button>
+            <button class="btn btn-ghost" style="width:100%;margin-bottom:12px" onclick="exportCSV()">📄 تصدير CSV</button>
+            <div style="height:1px;background:var(--border);margin-bottom:12px"></div>
+            <div class="card-title" style="margin-bottom:8px">📥 استيراد</div>
+            <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="margin-bottom:10px">
+            <div style="display:flex;gap:8px;margin-bottom:8px">
+              <button class="btn btn-ghost" style="flex:1" onclick="importData('merge')">دمج</button>
+              <button class="btn btn-danger" style="flex:1" onclick="importData('replace')">استبدال</button>
+            </div>
+            <p style="font-size:11px;color:var(--text3)">دمج: يضيف فوق الموجودة · استبدال: يمسح الكل</p>
+          </div>
+
+          <!-- الدليل -->
+          <div class="card">
+            <div class="card-title">❓ دليل الاستخدام</div>
+            <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.7">شرح كامل لجميع أقسام وميزات التطبيق.</p>
+            <button class="btn btn-ghost" style="width:100%" onclick="openModal('guide-modal')">📖 فتح الدليل</button>
+          </div>
+
+          <!-- إدارة البيانات -->
           <div class="card">
             <div class="card-title">🗑️ إدارة البيانات</div>
             <button class="btn btn-danger" style="width:100%;margin-bottom:8px" onclick="confirmReset()">حذف جميع البيانات</button>
             <p style="font-size:12px;color:var(--text3)">سيتم حذف جميع العمليات والفئات والأهداف نهائياً</p>
           </div>
+
         </div>
       </div>
 
@@ -752,26 +797,6 @@
         <div class="theme-grid" id="theme-grid"></div>
       </div>
 
-      <!-- EXPORT PAGE -->
-      <div class="page" id="page-export">
-        <div class="section-title">⇩ تصدير واستيراد البيانات</div>
-        <div class="settings-grid">
-          <div class="card">
-            <div class="card-title">📤 تصدير البيانات</div>
-            <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="exportXLSX()">📊 تصدير XLSX (إكسل)</button>
-            <button class="btn btn-ghost" style="width:100%" onclick="exportCSV()">📄 تصدير CSV</button>
-          </div>
-          <div class="card">
-            <div class="card-title">📥 استيراد البيانات</div>
-            <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="margin-bottom:10px">
-            <div style="display:flex;gap:8px;margin-bottom:10px">
-              <button class="btn btn-ghost" style="flex:1" onclick="importData('merge')">دمج</button>
-              <button class="btn btn-danger" style="flex:1" onclick="importData('replace')">استبدال</button>
-            </div>
-            <p style="font-size:12px;color:var(--text3)">دمج: إضافة بيانات الملف فوق الموجودة · استبدال: مسح البيانات الحالية كلياً</p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -1071,7 +1096,7 @@ let state = {
     {id:'c8',name:'دخل إضافي',emoji:'💼',type:'income',limit:0,keywords:'مكافأة,عمولة,مشروع,فريلانس,بيع,أرباح'},
   ],
   goals: [],
-  settings: { salary: 0, currency: 'ر.س', payday: 27 },
+  settings: { salary: 0, currency: '⃁', payday: null },
   theme: 'theme-default',
   currentDate: new Date(),
   weekOffset: 0,
@@ -1776,10 +1801,12 @@ function openPlanModal() {
 function renderSettings() {
   const s = state.settings;
   document.getElementById('s-salary').value = s.salary || '';
-  document.getElementById('s-currency').value = s.currency || 'ر.س';
-  document.getElementById('s-payday').value = s.payday || 27;
+  document.getElementById('s-currency').value = s.currency || '⃁';
+  document.getElementById('s-payday').value = s.payday || '';
+  document.getElementById('s-payday').placeholder = 'مثال: 27';
   renderCatsList();
   renderLimitsList();
+  renderNavSortList();
 }
 
 function saveSettings() {
@@ -2376,7 +2403,7 @@ function renderDashboard() {
         legend: { labels: { color: '#9fa8c7', font:{size:11}, boxWidth:14 } },
         tooltip: {
           callbacks: {
-            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('ar-SA')} ${state.settings.currency||'ر.س'}`
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('ar-SA')} ${state.settings.currency||'⃁'}`
           }
         }
       },
@@ -2778,8 +2805,139 @@ function renderAnalysis() {
   }).filter(Boolean).join('') || `<tr><td colspan="20" style="text-align:center;color:var(--text3);padding:20px">لا توجد مصاريف لهذه السنة</td></tr>`;
 }
 
-// ================== INIT ==================
+// ================== NAV CUSTOMIZATION ==================
+const ALL_NAV_PAGES = [
+  { id:'dayweek',   icon:'📅', label:'يوم/أسبوع' },
+  { id:'monthly',   icon:'🗓️', label:'شهري'       },
+  { id:'planning',  icon:'🎯', label:'تخطيط'      },
+  { id:'settings',  icon:'⚙️', label:'إعداد'       },
+  { id:'colors',    icon:'🎨', label:'ألوان'       },
+  { id:'dashboard', icon:'📊', label:'لوحة'        },
+  { id:'analysis',  icon:'📈', label:'تحليل'       },
+];
+
+function getNavOrder() {
+  const saved = localStorage.getItem('mizaniyati_nav');
+  if (saved) return JSON.parse(saved);
+  return ALL_NAV_PAGES.map(p => ({ id: p.id, visible: true }));
+}
+
+function saveNavOrder() {
+  const items = document.querySelectorAll('#nav-sort-list .nav-sort-item');
+  const order = Array.from(items).map(el => ({
+    id: el.dataset.id,
+    visible: !el.classList.contains('hidden-nav')
+  }));
+  localStorage.setItem('mizaniyati_nav', JSON.stringify(order));
+  applyNavOrder();
+  showToast('✅ تم حفظ ترتيب القوائم', 'var(--green)');
+}
+
+function resetNavOrder() {
+  localStorage.removeItem('mizaniyati_nav');
+  renderNavSortList();
+  applyNavOrder();
+  showToast('↺ تم إعادة تعيين الترتيب', 'var(--text3)');
+}
+
+function applyNavOrder() {
+  const order = getNavOrder();
+  const sidebar = document.querySelector('.sidebar');
+  const logo = sidebar.querySelector('.sidebar-logo');
+  // احذف كل أزرار التنقل الموجودة
+  sidebar.querySelectorAll('.nav-btn').forEach(b => b.remove());
+  // أعد بناءها بالترتيب الجديد
+  order.forEach(item => {
+    if (!item.visible) return;
+    const meta = ALL_NAV_PAGES.find(p => p.id === item.id);
+    if (!meta) return;
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn';
+    btn.title = meta.label;
+    btn.setAttribute('onclick', `showPage('${meta.id}')`);
+    btn.innerHTML = `<span class="nav-icon">${meta.icon}</span><span class="nav-label">${meta.label}</span>`;
+    sidebar.appendChild(btn);
+  });
+  // إعادة تحديد الزر النشط
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    const oc = b.getAttribute('onclick') || '';
+    const cur = document.querySelector('.page.active')?.id?.replace('page-', '');
+    if (cur && oc.includes(`'${cur}'`)) b.classList.add('active');
+  });
+}
+
+function renderNavSortList() {
+  const order = getNavOrder();
+  const container = document.getElementById('nav-sort-list');
+  if (!container) return;
+  const items = order.map(o => {
+    const meta = ALL_NAV_PAGES.find(p => p.id === o.id) || {};
+    return { ...meta, ...o };
+  });
+  ALL_NAV_PAGES.forEach(p => {
+    if (!items.find(i => i.id === p.id)) items.push({ ...p, visible: true });
+  });
+
+  container.innerHTML = items.map((item, idx) => `
+    <div class="nav-sort-item ${item.visible ? '' : 'hidden-nav'}"
+         data-id="${item.id}"
+         draggable="true"
+         ondragstart="navDragStart(event)"
+         ondragover="navDragOver(event)"
+         ondrop="navDrop(event)"
+         ondragend="navDragEnd(event)"
+         style="flex-direction:column;align-items:center;justify-content:center;padding:14px 10px;gap:6px;position:relative;min-height:80px;text-align:center">
+      <span style="position:absolute;top:5px;right:6px;font-size:11px;color:var(--text3)">⠿</span>
+      <span style="font-size:26px;line-height:1">${item.icon}</span>
+      <span style="font-size:12px;font-weight:600;color:${item.visible?'var(--text)':'var(--text3)'}">${item.label}</span>
+      <button class="nav-sort-eye" onclick="toggleNavVisible(this)" title="${item.visible ? 'إخفاء' : 'إظهار'}"
+              style="position:absolute;top:5px;left:6px;font-size:13px;background:transparent;border:none;cursor:pointer;opacity:0.7">
+        ${item.visible ? '👁️' : '🙈'}
+      </button>
+    </div>
+  `).join('');
+}
+
+function toggleNavVisible(btn) {
+  const item = btn.closest('.nav-sort-item');
+  item.classList.toggle('hidden-nav');
+  btn.textContent = item.classList.contains('hidden-nav') ? '🙈' : '👁️';
+  btn.title = item.classList.contains('hidden-nav') ? 'إظهار' : 'إخفاء';
+}
+
+// ── Drag & Drop ──
+let dragSrc = null;
+function navDragStart(e) {
+  dragSrc = e.currentTarget;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function navDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.nav-sort-item').forEach(el => el.classList.remove('drag-over'));
+  if (e.currentTarget !== dragSrc) e.currentTarget.classList.add('drag-over');
+}
+function navDrop(e) {
+  e.preventDefault();
+  const target = e.currentTarget;
+  if (!dragSrc || dragSrc === target) return;
+  const container = document.getElementById('nav-sort-list');
+  const items = Array.from(container.children);
+  const fromIdx = items.indexOf(dragSrc);
+  const toIdx   = items.indexOf(target);
+  if (fromIdx < toIdx) container.insertBefore(dragSrc, target.nextSibling);
+  else container.insertBefore(dragSrc, target);
+  document.querySelectorAll('.nav-sort-item').forEach(el => el.classList.remove('drag-over'));
+}
+function navDragEnd() {
+  document.querySelectorAll('.nav-sort-item').forEach(el => {
+    el.classList.remove('dragging'); el.classList.remove('drag-over');
+  });
+  dragSrc = null;
+}
 load();
+applyNavOrder();
 renderTop();
 renderDaily();
 renderWeekly();
