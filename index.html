@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ميزانيتي</title>
- <link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
-<link rel="shortcut icon" href="favicon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -288,62 +285,6 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
 
-  /* ── موبايل وآيفون ── */
-  @media (max-width: 768px) {
-    .app { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; min-height: 56px; flex-direction: row; padding: 0 4px; gap: 0; border-left: none; border-top: 1px solid var(--border); position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; overflow-x: auto; justify-content: space-around; flex-shrink: 0; }
-    .sidebar-logo { display: none; }
-    .nav-btn { width: auto; height: 52px; min-width: 48px; flex-direction: column; gap: 1px; padding: 4px 6px; border-radius: 8px; flex: 1; max-width: 68px; }
-    .nav-btn .nav-icon { font-size: 18px; }
-    .nav-btn .nav-label { font-size: 9px; }
-    .main { height: 100vh; overflow-y: auto; padding-bottom: 72px; }
-    .content { padding: 12px 12px; }
-    .top-card { padding: 10px 12px; flex-wrap: wrap; gap: 8px; }
-    .top-left { gap: 10px; }
-    .top-info .amount { font-size: 20px; }
-    .top-stats { gap: 8px; flex-wrap: wrap; }
-    .stat-box .val { font-size: 13px; }
-    .stat-box .lbl { font-size: 10px; }
-    .burn-bar { width: 70px; }
-    .burn-bar-wrap { display: none; }
-    .week-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; }
-    .wc-body { display: none; }
-    .wc-head { padding: 6px 4px; }
-    .wc-foot { padding: 4px 6px; }
-    .wc-add { width: 20px; height: 20px; font-size: 14px; }
-    .cal-cell-new { min-height: 42px; padding: 3px 2px; }
-    .ccn-num { font-size: 11px; }
-    .ccn-exp, .ccn-inc { font-size: 9px; overflow: hidden; text-overflow: ellipsis; }
-    .cal-header-cell { font-size: 10px; }
-    .section-title { font-size: 15px; }
-    .summary-box { min-width: 75px; padding: 8px 6px; }
-    .summary-box .s-value { font-size: 13px; }
-    .month-pill { padding: 4px 8px; font-size: 11px; }
-    .settings-grid { grid-template-columns: 1fr; }
-    #nav-sort-list { grid-template-columns: repeat(4, 1fr) !important; }
-    .modal { padding: 16px; border-radius: 16px; }
-    .modal-overlay { padding: 12px; align-items: flex-end; }
-    .day-nav .date-display { font-size: 13px; }
-    .goal-card { padding: 12px; }
-    .donut-wrap { flex-direction: column; }
-    .donut-chart { width: 120px !important; height: 120px !important; }
-    .compare-table { font-size: 11px; }
-    .compare-table th, .compare-table td { padding: 5px 6px; }
-  }
-  @media (max-width: 390px) {
-    .week-grid { grid-template-columns: repeat(3, 1fr); }
-    .nav-btn .nav-label { font-size: 8px; }
-    .nav-btn { min-width: 42px; }
-    #nav-sort-list { grid-template-columns: repeat(3, 1fr) !important; }
-    .top-stats { display: none; }
-  }
-  @supports (padding-bottom: env(safe-area-inset-bottom)) {
-    @media (max-width: 768px) {
-      .sidebar { padding-bottom: env(safe-area-inset-bottom); }
-      .main { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
-    }
-  }
-
   .empty-state { text-align: center; padding: 40px 20px; color: var(--text3); }
   .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
   .empty-state p { font-size: 14px; }
@@ -502,6 +443,62 @@
   .nav-sort-item.drag-over { border-color:var(--accent); background:rgba(108,99,255,0.12); box-shadow:0 0 0 2px var(--accent); }
   .nav-sort-item.nav-permanent { border-color:rgba(108,99,255,0.4); background:rgba(108,99,255,0.06); cursor:default; }
   .nav-sort-item.nav-permanent:hover { border-color:rgba(108,99,255,0.4); transform:none; }
+
+  /* ══ MEDIA QUERIES — في النهاية لضمان الأولوية ══ */
+  @media (max-width: 768px) {
+    .app { flex-direction: column; }
+    .sidebar { width:100%; height:auto; min-height:56px; flex-direction:row; padding:0 4px; gap:0; border-left:none; border-top:1px solid var(--border); position:fixed; bottom:0; left:0; right:0; z-index:50; overflow-x:auto; justify-content:space-around; flex-shrink:0; }
+    .sidebar-logo { display:none; }
+    .nav-btn { width:auto; height:52px; min-width:48px; flex-direction:column; gap:1px; padding:4px 6px; border-radius:8px; flex:1; max-width:68px; }
+    .nav-btn .nav-icon { font-size:18px; }
+    .nav-btn .nav-label { font-size:9px; }
+    .main { height:100vh; overflow-y:auto; padding-bottom:72px; }
+    .content { padding:12px; }
+    .top-card { padding:10px 12px; flex-wrap:wrap; gap:8px; }
+    .top-left { gap:10px; }
+    .top-info .amount { font-size:20px; }
+    .top-stats { gap:8px; flex-wrap:wrap; }
+    .stat-box .val { font-size:13px; }
+    .stat-box .lbl { font-size:10px; }
+    .burn-bar { width:70px; }
+    .burn-bar-wrap { display:none; }
+    .week-grid { display:grid; grid-template-columns:repeat(4,1fr) !important; gap:4px; }
+    .wc-body { display:none !important; }
+    .wc-head { padding:6px 4px; }
+    .wc-foot { padding:4px 6px; }
+    .wc-add { width:20px; height:20px; font-size:14px; }
+    .cal-cell-new { min-height:42px; padding:3px 2px; }
+    .ccn-num { font-size:11px; }
+    .ccn-exp, .ccn-inc { font-size:9px; overflow:hidden; text-overflow:ellipsis; }
+    .cal-header-cell { font-size:10px; }
+    .section-title { font-size:15px; }
+    .summary-box { min-width:75px; padding:8px 6px; }
+    .summary-box .s-value { font-size:13px; }
+    .month-pill { padding:4px 8px; font-size:11px; }
+    .settings-grid { grid-template-columns:1fr; }
+    #nav-sort-list { grid-template-columns:repeat(4,1fr) !important; }
+    .modal { padding:16px; border-radius:16px; }
+    .modal-overlay { padding:12px; align-items:flex-end; }
+    .day-nav .date-display { font-size:13px; }
+    .goal-card { padding:12px; }
+    .donut-wrap { flex-direction:column; }
+    .donut-chart { width:120px !important; height:120px !important; }
+    .compare-table { font-size:11px; }
+    .compare-table th, .compare-table td { padding:5px 6px; }
+  }
+  @media (max-width: 390px) {
+    .week-grid { grid-template-columns:repeat(3,1fr) !important; }
+    .nav-btn .nav-label { font-size:8px; }
+    .nav-btn { min-width:42px; }
+    #nav-sort-list { grid-template-columns:repeat(3,1fr) !important; }
+    .top-stats { display:none; }
+  }
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    @media (max-width: 768px) {
+      .sidebar { padding-bottom:env(safe-area-inset-bottom); }
+      .main { padding-bottom:calc(72px + env(safe-area-inset-bottom)); }
+    }
+  }
 </style>
 </head>
 <body class="theme-default">
@@ -1507,10 +1504,33 @@ function renderDaily() {
   if (lbl) lbl.textContent = total >= 0 ? '✅ صافي اليوم' : '⚠️ صافي اليوم';
 }
 
+// ================== DAY/WEEK HELPERS ==================
+function parseLocalDate(dateStr) {
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+
+function updateWeekOffsetForDate(date) {
+  const today = localToday();
+  const todayWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+  const targetWeekStart = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
+  state.weekOffset = Math.round((targetWeekStart - todayWeekStart) / (7 * 86400000));
+}
+
+function refreshDayWeek() {
+  renderTop();
+  renderDaily();
+  renderWeekly();
+}
+
 function changeDay(dir) {
   const d = state.currentDate;
-  state.currentDate = new Date(d.getFullYear(), d.getMonth(), d.getDate() + dir);
+  const newDate = new Date(d.getFullYear(), d.getMonth(), d.getDate() + dir);
+  state.currentDate = newDate;
+  // حدّث الأسبوع إذا انتقل التاريخ لأسبوع مختلف
+  updateWeekOffsetForDate(newDate);
   renderDaily();
+  renderWeekly();
 }
 
 // ================== WEEKLY PAGE ==================
@@ -1565,7 +1585,7 @@ function renderWeekly() {
       </div>
       <div class="wc-foot">
         ${hasData ? `<span style="color:${netColor};font-weight:700;font-size:13px">${net>0?'+':''}${fmt(net)}</span>` : ''}
-        <button class="wc-add" onclick="event.stopPropagation();quickAddDay('${dateStr}')">+</button>
+        <button class="wc-add" onclick="quickAddDay('${dateStr}',event)">+</button>
       </div>
     </div>`;
   }).join('');
@@ -1573,21 +1593,32 @@ function renderWeekly() {
 
 // النقر على يوم في الأسبوع يحدّث القسم اليومي في الأعلى
 function selectDayFromWeek(dateStr) {
-  // بناء التاريخ محلياً بدون UTC shift
-  const [y,m,dd] = dateStr.split('-').map(Number);
-  state.currentDate = new Date(y, m-1, dd);
+  state.currentDate = parseLocalDate(dateStr);
   renderDaily();
   document.getElementById('page-dayweek').scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function changeWeek(dir) {
   state.weekOffset += dir;
+  // زامن currentDate ليكون ضمن الأسبوع الجديد (أول يوم منه)
+  const today = localToday();
+  const base = new Date(today.getFullYear(), today.getMonth(), today.getDate() + state.weekOffset * 7);
+  const startOfWeek = new Date(base.getFullYear(), base.getMonth(), base.getDate() - base.getDay());
+  // إذا كان currentDate خارج الأسبوع الجديد، اضبطه على أول يوم منه
+  const curStr   = dateKey(state.currentDate);
+  const weekDays = Array.from({length:7}, (_,i) =>
+    dateKey(new Date(startOfWeek.getFullYear(), startOfWeek.getMonth(), startOfWeek.getDate()+i)));
+  if (!weekDays.includes(curStr)) {
+    state.currentDate = new Date(startOfWeek.getFullYear(), startOfWeek.getMonth(), startOfWeek.getDate());
+    renderDaily();
+  }
   renderWeekly();
 }
 
-function quickAddDay(dateStr) {
-  const [y,m,dd] = dateStr.split('-').map(Number);
-  state.currentDate = new Date(y, m-1, dd);
+function quickAddDay(dateStr, e) {
+  if (e && e.stopPropagation) e.stopPropagation();
+  state.currentDate = parseLocalDate(dateStr);
+  updateWeekOffsetForDate(state.currentDate);
   renderDaily();
   document.getElementById('page-dayweek').scrollTo({ top: 0, behavior: 'smooth' });
   openAddTx(dateStr);
@@ -2177,12 +2208,15 @@ function populateCategorySelect(type) {
 }
 
 function saveTx() {
-  const amount = parseFloat(document.getElementById('tx-amount').value);
+  const amount   = parseFloat(document.getElementById('tx-amount').value);
   const category = document.getElementById('tx-category').value;
-  const note = document.getElementById('tx-note').value.trim();
-  const date = document.getElementById('tx-date').value;
-  if (!amount || !category || !date) return;
-  
+  const note     = document.getElementById('tx-note').value.trim();
+  const date     = document.getElementById('tx-date').value;
+
+  if (!amount || amount <= 0) { showToast('⚠️ أدخل مبلغاً صحيحاً', 'var(--yellow)'); return; }
+  if (!category)              { showToast('⚠️ اختر الفئة', 'var(--yellow)'); return; }
+  if (!date)                  { showToast('⚠️ اختر التاريخ', 'var(--yellow)'); return; }
+
   if (state.editingTx) {
     const tx = state.transactions.find(t => t.id === state.editingTx);
     if (tx) { tx.amount = amount; tx.category = category; tx.note = note; tx.date = date; tx.type = currentTxType; }
@@ -2190,13 +2224,19 @@ function saveTx() {
   } else {
     state.transactions.push({ id: uid(), amount, category, note, date, type: currentTxType });
   }
-  save(); closeModal('add-tx-modal'); renderTop(); renderDaily();
+  save();
+  closeModal('add-tx-modal');
+  // زامن التاريخ مع اليوم المضاف
+  state.currentDate = parseLocalDate(date);
+  updateWeekOffsetForDate(state.currentDate);
+  refreshDayWeek();
 }
 
 function deleteTx(id) {
   showConfirm('حذف العملية', 'هل تريد حذف هذه العملية نهائياً؟', '🗑️', () => {
     state.transactions = state.transactions.filter(t => t.id !== id);
-    save(); renderTop(); renderDaily();
+    save();
+    refreshDayWeek();
     showToast('تم حذف العملية', 'var(--red)');
   });
 }
@@ -2312,14 +2352,14 @@ function applyTheme(themeId) {
 // ================== EMOJI PICKER ==================
 function initEmojiPicker() {
   document.getElementById('emoji-grid').innerHTML = EMOJIS.map(e =>
-    `<div class="emoji-opt" onclick="selectEmoji('${e}')">${e}</div>`
+    `<div class="emoji-opt" onclick="selectEmoji('${e}',this)">${e}</div>`
   ).join('');
 }
 
-function selectEmoji(e) {
-  document.getElementById('cat-emoji-input').value = e;
-  document.querySelectorAll('.emoji-opt').forEach(el => el.classList.remove('selected'));
-  event.target.classList.add('selected');
+function selectEmoji(emoji, el) {
+  document.getElementById('cat-emoji-input').value = emoji;
+  document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
+  if (el) el.classList.add('selected');
 }
 
 // ================== MODALS ==================
@@ -2357,25 +2397,27 @@ function goToDate() {
   }
 }
 function showPage(name) {
+  // backward compat — daily/weekly يفتحان dayweek
+  if (name === 'daily' || name === 'weekly') name = 'dayweek';
+
+  const pageEl = document.getElementById('page-' + name);
+  if (!pageEl) return;
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
+  pageEl.classList.add('active');
+
   document.querySelectorAll('.nav-btn').forEach(b => {
     const oc = b.getAttribute('onclick') || '';
-    if (oc.includes("showPage('" + name + "')")) b.classList.add('active');
+    b.classList.toggle('active', oc.includes(`'${name}'`));
   });
-  if (name === 'daily') renderDaily();
-  if (name === 'weekly') renderWeekly();
-  if (name === 'monthly') renderMonthly();
+
+  if (name === 'dayweek')  { renderDaily(); renderWeekly(); }
+  if (name === 'monthly')  renderMonthly();
   if (name === 'planning') renderPlanning();
   if (name === 'settings') renderSettings();
-  if (name === 'colors') renderThemes();
+  if (name === 'colors')   renderThemes();
   if (name === 'analysis') renderAnalysis();
   if (name === 'dashboard') renderDashboard();
-  if (name === 'dayweek') { renderDaily(); renderWeekly(); }
-  // دعم backward compat للصفحات القديمة
-  if (name === 'daily') { showPage('dayweek'); return; }
-  if (name === 'weekly') { showPage('dayweek'); return; }
 }
 
 // ================== DASHBOARD PERIOD MODE ==================
