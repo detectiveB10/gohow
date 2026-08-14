@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ميزانيتي</title>
- <link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
-<link rel="shortcut icon" href="favicon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -446,6 +443,10 @@
   .nav-sort-item.drag-over { border-color:var(--accent); background:rgba(108,99,255,0.12); box-shadow:0 0 0 2px var(--accent); }
   .nav-sort-item.nav-permanent { border-color:rgba(108,99,255,0.4); background:rgba(108,99,255,0.06); cursor:default; }
   .nav-sort-item.nav-permanent:hover { border-color:rgba(108,99,255,0.4); transform:none; }
+  /* Analysis collapsible details */
+  details.card { padding: 12px; }
+  details > summary { outline: none; }
+  details > summary::-webkit-details-marker { display: none; }
 
   /* ══ MEDIA QUERIES — في النهاية لضمان الأولوية ══ */
   @media (max-width: 768px) {
@@ -488,6 +489,9 @@
     .donut-chart { width:120px !important; height:120px !important; }
     .compare-table { font-size:11px; }
     .compare-table th, .compare-table td { padding:5px 6px; }
+    #analysis-big-cards { grid-template-columns:1fr !important; }
+    #analysis-small-cards { grid-template-columns:repeat(2,1fr) !important; }
+    #analysis-forecast-row { grid-template-columns:1fr !important; }
   }
   @media (max-width: 390px) {
     .week-grid { grid-template-columns:repeat(3,1fr) !important; }
@@ -760,70 +764,78 @@
 
       <!-- ANALYSIS PAGE -->
       <div class="page" id="page-analysis">
-        <!-- فلتر الفترة الزمنية -->
-        <div class="section-title" style="margin-bottom:12px">
-          📊 التحليل الشامل
+
+        <!-- رأس + فلتر -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-            <select id="analysis-year" onchange="renderAnalysis()" style="font-size:12px;padding:5px 8px;width:auto"></select>
-            <button class="btn btn-ghost btn-sm" onclick="toggleAnalysisFilter()" id="filter-btn">🗓️ فترة مخصصة</button>
+            <select id="analysis-year" onchange="renderAnalysis()" style="font-size:12px;padding:5px 8px;width:auto;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:6px"></select>
+            <button class="btn btn-ghost btn-sm" onclick="toggleAnalysisFilter()">🗓️ فترة</button>
           </div>
+          <span style="font-size:12px;color:var(--text3)">📈 التحليل الشامل</span>
         </div>
-        <div id="analysis-filter-row" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px;display:none">
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font-size:11px;color:var(--text3)">من</label>
-              <input type="date" id="filter-from" style="width:140px;font-size:12px">
+
+        <!-- فلتر مخصص -->
+        <div id="analysis-filter-row" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px">
+          <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <label style="font-size:10px;color:var(--text3)">من</label>
+              <input type="date" id="filter-from" style="font-size:12px;padding:5px 8px">
             </div>
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font-size:11px;color:var(--text3)">إلى</label>
-              <input type="date" id="filter-to" style="width:140px;font-size:12px">
+            <div style="display:flex;flex-direction:column;gap:3px">
+              <label style="font-size:10px;color:var(--text3)">إلى</label>
+              <input type="date" id="filter-to" style="font-size:12px;padding:5px 8px">
             </div>
-            <button class="btn btn-primary btn-sm" onclick="applyAnalysisFilter()" style="margin-top:16px">تطبيق</button>
-            <button class="btn btn-ghost btn-sm" onclick="clearAnalysisFilter()" style="margin-top:16px">مسح</button>
+            <button class="btn btn-primary btn-sm" onclick="applyAnalysisFilter()">تطبيق</button>
+            <button class="btn btn-ghost btn-sm" onclick="clearAnalysisFilter()">✕ مسح</button>
           </div>
         </div>
 
-        <!-- 3 بطاقات كبيرة -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px" id="analysis-big-cards"></div>
+        <!-- ── صف 1: 3 بطاقات ملخص مضغوطة ── -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px" id="analysis-big-cards"></div>
 
-        <!-- 4 بطاقات صغيرة -->
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px" id="analysis-small-cards"></div>
+        <!-- ── صف 2: ملخص إحصائي مدمج ── -->
+        <div style="display:grid;grid-template-columns:1fr;gap:6px;margin-bottom:12px" id="analysis-small-cards"></div>
 
-        <!-- رسمان بيانيان جنباً لجنب -->
-        <div style="display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:16px">
-          <div class="card" style="margin-bottom:0">
-            <div class="card-title">📊 الإيرادات مقابل المصاريف</div>
-            <div style="height:220px"><canvas id="analysis-bar-chart"></canvas></div>
+        <!-- ── صف 3: رسم بياني ── -->
+        <div class="card" style="margin-bottom:10px;padding:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span style="font-size:12px;font-weight:600;color:var(--text2)">📊 الإيرادات مقابل المصاريف</span>
           </div>
-          <div class="card" style="margin-bottom:0">
-            <div class="card-title">🎯 توزيع المصاريف بالفئات</div>
-            <div id="analysis-cats-bars" style="overflow-y:auto;max-height:220px;padding-left:4px"></div>
-          </div>
+          <div style="height:160px"><canvas id="analysis-bar-chart"></canvas></div>
         </div>
 
-        <!-- توقع الشهر القادم + أفضل/أسوأ -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px" id="analysis-forecast-row"></div>
-
-        <!-- شبكة بطاقات الأشهر -->
-        <div class="card">
-          <div class="card-title">📅 أداء الأشهر دفعة واحدة</div>
-          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px" id="analysis-month-cards"></div>
+        <!-- ── صف 4: توزيع الفئات (أشرطة أفقية) ── -->
+        <div class="card" style="margin-bottom:10px;padding:12px">
+          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">🎯 توزيع المصاريف</div>
+          <div id="analysis-cats-bars"></div>
         </div>
 
-        <!-- جدول تفصيلي -->
-        <div class="card" style="margin-top:12px">
-          <div class="card-title">📋 الجدول التفصيلي الكامل</div>
-          <div style="overflow-x:auto">
-            <table class="plan-table" style="min-width:700px">
+        <!-- ── صف 5: توقع + أفضل/أسوأ ── -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px" id="analysis-forecast-row"></div>
+
+        <!-- ── صف 6: بطاقات الأشهر (قابلة للطي) ── -->
+        <details class="card" style="margin-bottom:10px;padding:12px">
+          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between;align-items:center">
+            📅 أداء الأشهر <span style="font-size:11px;color:var(--text3)">اضغط للعرض ▾</span>
+          </summary>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px" id="analysis-month-cards"></div>
+        </details>
+
+        <!-- ── صف 7: الجدول التفصيلي (قابل للطي) ── -->
+        <details class="card" style="margin-bottom:10px;padding:12px">
+          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between;align-items:center">
+            📋 الجدول التفصيلي <span style="font-size:11px;color:var(--text3)">اضغط للعرض ▾</span>
+          </summary>
+          <div style="overflow-x:auto;margin-top:12px">
+            <table class="plan-table" style="min-width:600px;font-size:11px">
               <thead>
                 <tr>
                   <th>الشهر</th>
-                  <th style="text-align:center">الراتب</th>
-                  <th style="text-align:center">إجمالي الدخل</th>
+                  <th style="text-align:center">الدخل</th>
                   <th style="text-align:center">المصروف</th>
                   <th style="text-align:center">المتبقي</th>
-                  <th style="text-align:center">تحت الميزانية</th>
-                  <th style="text-align:center">نسبة الإنفاق</th>
+                  <th style="text-align:center">الفرق</th>
+                  <th style="text-align:center">%</th>
                   <th style="text-align:center">الحالة</th>
                 </tr>
               </thead>
@@ -831,18 +843,21 @@
               <tfoot id="analysis-tfoot"></tfoot>
             </table>
           </div>
-        </div>
+        </details>
 
-        <!-- جدول الفئات شهرياً -->
-        <div class="card" style="margin-top:12px">
-          <div class="card-title">🏷️ إنفاق كل فئة شهرياً</div>
-          <div style="overflow-x:auto">
-            <table class="plan-table" style="min-width:700px">
+        <!-- ── صف 8: جدول الفئات (قابل للطي) ── -->
+        <details class="card" style="margin-bottom:10px;padding:12px">
+          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between;align-items:center">
+            🏷️ إنفاق كل فئة شهرياً <span style="font-size:11px;color:var(--text3)">اضغط للعرض ▾</span>
+          </summary>
+          <div style="overflow-x:auto;margin-top:12px">
+            <table class="plan-table" style="min-width:600px;font-size:11px">
               <thead id="analysis-cats-head"></thead>
               <tbody id="analysis-cats-body"></tbody>
             </table>
           </div>
-        </div>
+        </details>
+
       </div>
 
       <!-- DASHBOARD PAGE -->
@@ -2954,33 +2969,52 @@ function renderAnalysis() {
   const avgTx = txCount > 0 ? totalExpense / txCount : 0;
   const spendRatio = totalIncome > 0 ? Math.round((totalExpense / totalIncome) * 100) : 0;
 
-  // 3 بطاقات كبيرة
+  // 3 بطاقات ملخص مضغوطة
   document.getElementById('analysis-big-cards').innerHTML = `
-    <div class="analysis-big-card" style="background:linear-gradient(135deg,rgba(76,175,140,0.25),rgba(76,175,140,0.05));border:1px solid rgba(76,175,140,0.3)">
-      <div class="abc-label" style="color:var(--green)">📥 إجمالي الإيرادات</div>
-      <div class="abc-value" style="color:var(--green)">${fmt(totalIncome)}</div>
-      <div class="abc-sub">راتب: ${fmt(totalSalary)} + إضافي: ${fmt(totalIncomeFromTx)}</div>
+    <div style="background:linear-gradient(135deg,rgba(76,175,140,0.2),rgba(76,175,140,0.04));border:1px solid rgba(76,175,140,0.3);border-radius:var(--radius-sm);padding:12px 10px">
+      <div style="font-size:10px;color:var(--green);margin-bottom:4px;font-weight:600">📥 الإيرادات</div>
+      <div style="font-size:18px;font-weight:800;color:var(--green);letter-spacing:-0.5px">${fmt(totalIncome)}</div>
+      <div style="font-size:9px;color:var(--text3);margin-top:3px">${fmt(totalIncomeFromTx)} إضافي</div>
     </div>
-    <div class="analysis-big-card" style="background:linear-gradient(135deg,rgba(224,92,92,0.25),rgba(224,92,92,0.05));border:1px solid rgba(224,92,92,0.3)">
-      <div class="abc-label" style="color:var(--red)">📤 إجمالي المصاريف</div>
-      <div class="abc-value" style="color:var(--red)">${fmt(totalExpense)}</div>
-      <div class="abc-sub">${txCount} عملية · متوسط ${fmt(avgTx)} للعملية</div>
+    <div style="background:linear-gradient(135deg,rgba(224,92,92,0.2),rgba(224,92,92,0.04));border:1px solid rgba(224,92,92,0.3);border-radius:var(--radius-sm);padding:12px 10px">
+      <div style="font-size:10px;color:var(--red);margin-bottom:4px;font-weight:600">📤 المصاريف</div>
+      <div style="font-size:18px;font-weight:800;color:var(--red);letter-spacing:-0.5px">${fmt(totalExpense)}</div>
+      <div style="font-size:9px;color:var(--text3);margin-top:3px">${txCount} عملية</div>
     </div>
-    <div class="analysis-big-card" style="background:linear-gradient(135deg,${totalRemaining>=0?'rgba(108,99,255,0.25),rgba(108,99,255,0.05)':'rgba(224,92,92,0.2),rgba(224,92,92,0.05)'});border:1px solid ${totalRemaining>=0?'rgba(108,99,255,0.3)':'rgba(224,92,92,0.3)'}">
-      <div class="abc-label" style="color:var(--accent2)">💰 الصافي</div>
-      <div class="abc-value" style="color:${totalRemaining>=0?'var(--accent2)':'var(--red)'}">${fmt(totalRemaining)}</div>
-      <div class="abc-sub">${periodLabel}</div>
+    <div style="background:linear-gradient(135deg,${totalRemaining>=0?'rgba(108,99,255,0.2),rgba(108,99,255,0.04)':'rgba(224,92,92,0.15),rgba(224,92,92,0.04)'});border:1px solid ${totalRemaining>=0?'rgba(108,99,255,0.3)':'rgba(224,92,92,0.3)'};border-radius:var(--radius-sm);padding:12px 10px">
+      <div style="font-size:10px;color:var(--accent2);margin-bottom:4px;font-weight:600">💰 الصافي</div>
+      <div style="font-size:18px;font-weight:800;color:${totalRemaining>=0?'var(--accent2)':'var(--red)'};letter-spacing:-0.5px">${fmt(totalRemaining)}</div>
+      <div style="font-size:9px;color:var(--text3);margin-top:3px">${spendRatio}% مصروف</div>
     </div>
   `;
 
-  // 4 بطاقات صغيرة
+  // ملخص إحصائي مدمج — صف واحد
   const ratioCls = spendRatio > 90 ? 'red' : spendRatio > 70 ? 'yellow' : 'green';
+  const ratioBar = `<div style="height:3px;background:var(--bg4);border-radius:2px;margin-top:5px;overflow:hidden"><div style="width:${Math.min(100,spendRatio)}%;height:100%;background:var(--${ratioCls});border-radius:2px"></div></div>`;
   const dataMonths = months.filter(m => m.hasData);
   document.getElementById('analysis-small-cards').innerHTML = `
-    <div class="summary-box"><div class="s-label">🔢 عدد العمليات</div><div class="s-value">${txCount}</div></div>
-    <div class="summary-box"><div class="s-label">📊 متوسط المصروف</div><div class="s-value">${fmt(avgTx)}</div></div>
-    <div class="summary-box"><div class="s-label">📉 نسبة الإنفاق</div><div class="s-value ${ratioCls}">${spendRatio}%</div></div>
-    <div class="summary-box"><div class="s-label">📅 أشهر نشطة</div><div class="s-value">${dataMonths.length} / 12</div></div>
+    <div style="grid-column:1/-1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:grid;grid-template-columns:repeat(4,1fr);gap:0">
+      <div style="padding:0 12px 0 0;border-left:1px solid var(--border);text-align:center">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:3px">🔢 العمليات</div>
+        <div style="font-size:20px;font-weight:800;letter-spacing:-0.5px">${txCount}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px">عملية مصروف</div>
+      </div>
+      <div style="padding:0 12px;border-left:1px solid var(--border);text-align:center">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:3px">💸 متوسط العملية</div>
+        <div style="font-size:16px;font-weight:800;color:var(--red)">${fmt(avgTx)}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px">لكل عملية</div>
+      </div>
+      <div style="padding:0 12px;border-left:1px solid var(--border);text-align:center">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:3px">📉 نسبة الإنفاق</div>
+        <div style="font-size:16px;font-weight:800;color:var(--${ratioCls})">${spendRatio}%</div>
+        ${ratioBar}
+      </div>
+      <div style="padding:0 0 0 12px;text-align:center">
+        <div style="font-size:10px;color:var(--text3);margin-bottom:3px">📅 أشهر نشطة</div>
+        <div style="font-size:20px;font-weight:800">${dataMonths.length}<span style="font-size:12px;color:var(--text3);font-weight:500">/12</span></div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px">${periodLabel}</div>
+      </div>
+    </div>
   `;
 
   // رسم بياني شريطي
@@ -3061,20 +3095,19 @@ function renderAnalysis() {
     </div>`;
   }).join('');
 
-  // جدول تفصيلي
+  // جدول تفصيلي (6 أعمدة)
   document.getElementById('analysis-tbody').innerHTML = months.map(mo => {
     const pctCls = mo.spendPct > 90 ? 'red' : mo.spendPct > 70 ? 'yellow' : 'green';
-    const statusChip = !mo.hasData ? '<span class="analysis-chip chip-gray">—</span>'
-      : mo.spendPct > 90 ? '<span class="analysis-chip chip-red">🔴 مرتفع</span>'
-      : mo.spendPct > 70 ? '<span class="analysis-chip chip-yellow">🟡 متوسط</span>'
-      : '<span class="analysis-chip chip-green">🟢 ممتاز</span>';
+    const statusChip = !mo.hasData ? '—'
+      : mo.spendPct > 90 ? '<span class="analysis-chip chip-red">🔴</span>'
+      : mo.spendPct > 70 ? '<span class="analysis-chip chip-yellow">🟡</span>'
+      : '<span class="analysis-chip chip-green">🟢</span>';
     return `<tr style="${!mo.hasData?'opacity:0.4':''}">
       <td><b>${mo.name}</b></td>
-      <td style="text-align:center;color:var(--green)">${fmt(salary)}</td>
       <td style="text-align:center;color:var(--green)">${fmt(mo.totalIncome)}</td>
       <td style="text-align:center;color:var(--red)">${mo.hasData?fmt(mo.expense):'—'}</td>
       <td style="text-align:center;color:${mo.remaining>=0?'var(--green)':'var(--red)'}">${mo.hasData?fmt(mo.remaining):'—'}</td>
-      <td style="text-align:center">${mo.hasData?(mo.remaining>=0?`<span class="analysis-chip chip-green">+${fmt(mo.remaining)}</span>`:`<span class="analysis-chip chip-red">${fmt(mo.remaining)}</span>`):'—'}</td>
+      <td style="text-align:center">${mo.hasData?(mo.remaining>=0?`<span style="color:var(--green);font-size:10px">+${fmt(mo.remaining)}</span>`:`<span style="color:var(--red);font-size:10px">${fmt(mo.remaining)}</span>`):'—'}</td>
       <td style="text-align:center">${mo.hasData?`<span style="color:var(--${pctCls})">${Math.round(mo.spendPct)}%</span>`:'—'}</td>
       <td style="text-align:center">${statusChip}</td>
     </tr>`;
@@ -3083,11 +3116,10 @@ function renderAnalysis() {
   document.getElementById('analysis-tfoot').innerHTML = `
     <tr>
       <td><b>الإجمالي</b></td>
-      <td style="text-align:center;color:var(--green)"><b>${fmt(totalSalary)}</b></td>
       <td style="text-align:center;color:var(--green)"><b>${fmt(totalIncome)}</b></td>
       <td style="text-align:center;color:var(--red)"><b>${fmt(totalExpense)}</b></td>
       <td style="text-align:center;color:${totalRemaining>=0?'var(--green)':'var(--red)'}"><b>${fmt(totalRemaining)}</b></td>
-      <td style="text-align:center">${totalRemaining>=0?`<span class="analysis-chip chip-green">+${fmt(totalRemaining)}</span>`:`<span class="analysis-chip chip-red">${fmt(totalRemaining)}</span>`}</td>
+      <td style="text-align:center">${totalRemaining>=0?`<span style="color:var(--green);font-size:10px">+${fmt(totalRemaining)}</span>`:`<span style="color:var(--red);font-size:10px">${fmt(totalRemaining)}</span>`}</td>
       <td style="text-align:center"><b>${spendRatio}%</b></td>
       <td></td>
     </tr>`;
