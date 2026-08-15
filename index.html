@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ميزانيتي</title>
- <link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
 <link rel="shortcut icon" href="favicon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -117,28 +117,32 @@
   .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
 
   /* HEADER */
-  .top-card { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-  .top-left { display: flex; align-items: center; gap: 20px; }
-  .salary-ring { position: relative; width: 64px; height: 64px; flex-shrink: 0; }
+  .top-card { background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%); border-bottom: 1px solid var(--border); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; position: sticky; top: 0; z-index: 20; flex-shrink: 0; overflow: hidden; }
+  .top-left { display: flex; align-items: center; gap: 20px; flex: 1; min-width: 0; }
+  .salary-ring { position: relative; width: 72px; height: 72px; flex-shrink: 0; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15)); }
   .salary-ring svg { transform: rotate(-90deg); }
   .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .ring-pct { font-size: 11px; font-weight: 700; }
-  .ring-label { font-size: 8px; color: var(--text3); }
-  .top-info h2 { font-size: 13px; color: var(--text2); margin-bottom: 2px; }
-  .top-info .amount { font-size: 26px; font-weight: 700; }
+  .ring-pct { font-size: 14px; font-weight: 800; }
+  .ring-label { font-size: 9px; color: var(--text3); font-weight: 600; }
+  .top-info { flex: 1; min-width: 0; }
+  .top-info h2 { font-size: 12px; color: var(--text3); margin-bottom: 4px; font-weight: 500; letter-spacing: 0.3px; }
+  .top-info .amount { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
   .top-info .amount.green { color: var(--green); }
   .top-info .amount.yellow { color: var(--yellow); }
   .top-info .amount.red { color: var(--red); }
-  .top-stats { display: flex; gap: 16px; }
-  .stat-box { text-align: center; }
-  .stat-box .val { font-size: 16px; font-weight: 600; }
-  .stat-box .lbl { font-size: 11px; color: var(--text3); }
-  .burn-bar-wrap { display: flex; align-items: center; gap: 10px; }
-  .burn-bar { height: 6px; width: 120px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
-  .burn-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
-  .burn-fill.green { background: var(--green); }
-  .burn-fill.yellow { background: var(--yellow); }
-  .burn-fill.red { background: var(--red); }
+  .top-info .sub { font-size: 12px; color: var(--text3); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+  .top-stats { display: flex; gap: 8px; }
+  .stat-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; text-align: center; min-width: 64px; transition: transform 0.2s, box-shadow 0.2s; }
+  .stat-box:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .stat-box .val { font-size: 15px; font-weight: 700; }
+  .stat-box .lbl { font-size: 10px; color: var(--text3); margin-top: 2px; font-weight: 500; }
+  .burn-bar-wrap { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+  .burn-bar { height: 8px; width: 100%; background: var(--bg4); border-radius: 4px; overflow: hidden; }
+  .burn-fill { height: 100%; border-radius: 4px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+  .burn-fill.green { background: linear-gradient(90deg, var(--green), #6dd5a8); }
+  .burn-fill.yellow { background: linear-gradient(90deg, var(--yellow), #f5c26b); }
+  .burn-fill.red { background: linear-gradient(90deg, var(--red), #f08080); }
+  .burn-label { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--text3); }
 
   /* CONTENT AREAS */
   .content { padding: 20px 24px; flex: 1; }
@@ -466,14 +470,19 @@
     .nav-btn .nav-label { font-size:9px; }
     .main { height:100vh; overflow-y:auto; padding-bottom:72px; }
     .content { padding:12px; }
-    .top-card { padding:10px 12px; flex-wrap:wrap; gap:8px; }
-    .top-left { gap:10px; }
-    .top-info .amount { font-size:20px; }
-    .top-stats { gap:8px; flex-wrap:wrap; }
+    .top-card { padding:12px; flex-wrap:wrap; gap:10px; }
+    .top-left { gap:12px; }
+    .salary-ring { width:56px; height:56px; }
+    .ring-pct { font-size:12px; }
+    .top-info .amount { font-size:22px; }
+    .top-info .sub { font-size:11px; }
+    .top-stats { gap:6px; flex-wrap:wrap; }
+    .stat-box { padding:6px 8px; min-width:52px; }
     .stat-box .val { font-size:13px; }
-    .stat-box .lbl { font-size:10px; }
-    .burn-bar { width:70px; }
-    .burn-bar-wrap { display:none; }
+    .stat-box .lbl { font-size:9px; }
+    .burn-bar { height:6px; }
+    .burn-bar-wrap { gap:4px; }
+    .burn-label { font-size:10px; }
     .week-grid { display:grid; grid-template-columns:repeat(4,1fr) !important; gap:4px; }
     .wc-body { display:none !important; }
     .wc-head { padding:6px 4px; }
@@ -550,15 +559,7 @@
       <span class="nav-icon">📈</span>
       <span class="nav-label">تحليل</span>
     </button>
-    <!-- Zoom Controls -->
-    <div style="margin-top:auto;padding:10px 6px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;align-items:center">
-      <span style="font-size:10px;color:var(--text3);font-weight:600">التكبير</span>
-      <div style="display:flex;gap:4px;align-items:center">
-        <button class="btn btn-ghost btn-icon btn-sm" id="zoom-out-btn" onclick="zoomOut()" title="تصغير" style="font-size:14px">➖</button>
-        <span id="zoom-reset-btn" style="font-size:11px;color:var(--text3);min-width:36px;text-align:center;font-weight:700">100%</span>
-        <button class="btn btn-ghost btn-icon btn-sm" id="zoom-in-btn" onclick="zoomIn()" title="تكبير" style="font-size:14px">➕</button>
-      </div>
-    </div>
+
   </nav>
 
   <div class="main">
@@ -601,15 +602,6 @@
         <div class="summary-row" id="week-summary"></div>
         <div class="week-grid" id="week-grid"></div>
       </div>
-
-      <!-- العمليات المتكررة -->
-<div class="card" style="grid-column:1/-1">
-            <div class="card-title" style="justify-content:space-between">
-              <span>🔄 العمليات المتكررة الشهرية</span>
-              <span style="font-size:11px;color:var(--text3)">تُضاف تلقائياً بداية كل شهر</span>
-            </div>
-            <div id="recurring-list"></div>
-          </div>
 
       <!-- MONTHLY PAGE -->
       <div class="page" id="page-monthly">
@@ -812,7 +804,13 @@
 
           
           <!-- العمليات المتكررة -->
-          
+          <div class="card">
+            <div class="card-title" style="justify-content:space-between">
+              <span>🔄 العمليات المتكررة الشهرية</span>
+              <span style="font-size:11px;color:var(--text3)">تُضاف تلقائياً بداية كل شهر</span>
+            </div>
+            <div id="recurring-list"></div>
+          </div>
 
           <!-- تصدير واستيراد -->
           <div class="card">
@@ -1741,7 +1739,7 @@ function getPayCycleInfo() {
   const today  = localToday();
   // ابحث عن راتب هذا الشهر أو الشهر السابق
   const thisMon = getSalaryForMonth(today.getFullYear(), today.getMonth());
-  const prevMon = getSalaryForMonth(today.getFullYear(), today.getMonth()-1 < 0 ? 11 : today.getMonth()-1);
+  const prevMon = getSalaryForMonth(today.getMonth() === 0 ? today.getFullYear() - 1 : today.getFullYear(), today.getMonth() === 0 ? 11 : today.getMonth() - 1);
   const payday  = (thisMon.day > 0 ? thisMon.day : null) ?? (state.settings.payday || 27);
   const salary  = (thisMon.amount > 0 ? thisMon.amount : null) ?? (state.settings.salary || 0);
 
@@ -1807,16 +1805,17 @@ function zoomReset() { setZoom(1.0); }
 function renderTop() {
   const info = getPayCycleInfo();
   const pct = info.pct;
-  const r = 28, cx = 32, cy = 32;
+  const r = 30, cx = 36, cy = 36, size = 72;
   const circ = 2 * Math.PI * r;
   const dash = (pct/100) * circ;
   const colors = { green: '#4caf8c', yellow: '#f0a040', red: '#e05c5c' };
   const col = colors[info.status];
-  
+  const spentPct = Math.min(100, (info.spent/Math.max(1,info.totalIncome))*100);
+
   document.getElementById('top-card').innerHTML = `
     <div class="top-left">
       <div class="salary-ring">
-        <svg width="64" height="64" viewBox="0 0 64 64">
+        <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
           <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg4)" stroke-width="5"/>
           <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${col}" stroke-width="5"
             stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
@@ -1829,7 +1828,11 @@ function renderTop() {
       <div class="top-info">
         <h2>المبلغ المتبقي</h2>
         <div class="amount ${info.status}">${fmt(info.remaining)}</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:2px">يوم ${info.daysElapsed} من ${info.totalDays} · ${info.daysLeft} يوم متبقي</div>
+        <div class="sub">
+          <span>يوم ${info.daysElapsed} من ${info.totalDays}</span>
+          <span style="color:var(--text3)">·</span>
+          <span>${info.daysLeft} يوم متبقي</span>
+        </div>
       </div>
     </div>
     <div class="top-stats">
@@ -1842,15 +1845,18 @@ function renderTop() {
         <div class="lbl">المصروف</div>
       </div>
       <div class="stat-box">
-        <div class="val">${fmt(info.avgPerDay)}</div>
+        <div class="val" style="color:var(--accent2)">${fmt(info.avgPerDay)}</div>
         <div class="lbl">يومياً مسموح</div>
       </div>
     </div>
     <div class="burn-bar-wrap">
       <div class="burn-bar">
-        <div class="burn-fill ${info.status}" style="width:${Math.min(100,(info.spent/Math.max(1,info.totalIncome))*100)}%"></div>
+        <div class="burn-fill ${info.status}" style="width:${spentPct}%"></div>
       </div>
-      <span style="font-size:11px;color:var(--text3)">${Math.round((info.spent/Math.max(1,info.totalIncome))*100)}% مصروف</span>
+      <div class="burn-label">
+        <span>${Math.round(spentPct)}% مصروف</span>
+        <span>${fmt(info.totalIncome - info.spent)} متبقي</span>
+      </div>
     </div>
   `;
 }
@@ -2502,6 +2508,38 @@ function deleteSalaryEntry(year, month) {
   });
 }
 
+function renderSalaryTable() {
+  const container = document.getElementById('salary-cards');
+  const emptyEl = document.getElementById('salary-empty');
+  if (!container) return;
+
+  const year = state.currentYear;
+  const months = [];
+  for (let m = 0; m < 12; m++) {
+    const salEntry = getSalaryForMonth(year, m);
+    const isCustom = state.salaries && state.salaries.some(s => s.year === year && s.month === m);
+    months.push({ month: m, year: year, amount: salEntry.amount, day: salEntry.day, isCustom: isCustom });
+  }
+
+  container.style.display = 'grid';
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  container.innerHTML = months.map(s => {
+    const label = `${MONTH_NAMES[s.month]} ${s.year}`;
+    const isDefault = !s.isCustom;
+    const defaultBadge = isDefault ? '<span style="font-size:9px;color:var(--text3);background:var(--bg4);padding:2px 6px;border-radius:4px;font-weight:500">افتراضي</span>' : '';
+    const deleteBtn = s.isCustom ? `<button class="btn btn-ghost btn-icon btn-sm" onclick="deleteSalaryEntry(${s.year},${s.month})" title="حذف">🗑️</button>` : '';
+    return `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;display:flex;flex-direction:column;gap:6px;position:relative;${isDefault ? 'opacity:0.75;' : ''}">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:12px;font-weight:700;color:var(--accent2)">${label}</span>
+        <div style="display:flex;align-items:center;gap:4px">${defaultBadge}${deleteBtn}</div>
+      </div>
+      <div style="font-size:18px;font-weight:800;color:var(--green);letter-spacing:-0.3px">${fmt(s.amount)}</div>
+      <div style="font-size:10px;color:var(--text3)">📅 يوم النزول: ${s.day}</div>
+    </div>`;
+  }).join('');
+}
+
 function saveCurrency() {
   state.settings.currency = document.getElementById('s-currency').value;
   save(); renderTop();
@@ -2516,15 +2554,27 @@ function renderRecurringList() {
     container.innerHTML = '<p style="color:var(--text3);font-size:13px;text-align:center;padding:10px">لا توجد عمليات متكررة</p>';
     return;
   }
+  container.style.display = 'grid';
+  container.style.gridTemplateColumns = 'repeat(auto-fill, minmax(200px, 1fr))';
+  container.style.gap = '8px';
   container.innerHTML = list.map(r => {
     const cat = getCat(r.category);
-    return `<div class="cat-item" style="padding:8px 0">
-      <div class="cat-emoji">${cat.emoji}</div>
-      <div class="cat-info">
-        <div class="cat-name">${cat.name} · ${fmt(r.amount)}</div>
-        <div style="font-size:11px;color:var(--text3)">يوم ${r.day} من كل شهر · ${r.note || 'بلا ملاحظة'}</div>
+    const typeColor = r.type === 'income' ? 'var(--green)' : 'var(--red)';
+    const typeLabel = r.type === 'income' ? 'دخل' : 'مصروف';
+    return `<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;display:flex;flex-direction:column;gap:6px;position:relative">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:32px;height:32px;background:var(--bg3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">${cat.emoji}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${cat.name}</div>
+          <div style="font-size:11px;color:${typeColor};font-weight:600">${typeLabel}</div>
+        </div>
+        <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteRecurring('${r.id}')" style="flex-shrink:0">🗑️</button>
       </div>
-      <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteRecurring('${r.id}')">🗑️</button>
+      <div style="font-size:16px;font-weight:700;color:${typeColor}">${r.type==='income'?'+':'-'}${fmt(r.amount)}</div>
+      <div style="font-size:11px;color:var(--text3);display:flex;gap:8px;flex-wrap:wrap">
+        <span>📅 يوم ${r.day}</span>
+        ${r.note ? `<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%">📝 ${r.note}</span>` : ''}
+      </div>
     </div>`;
   }).join('');
 }
@@ -2548,7 +2598,6 @@ function renderSettings() {
   document.getElementById('sal-month').value = now.getMonth();
   document.getElementById('sal-year').value  = now.getFullYear();
   renderSalaryTable();
-  renderMergedCatLimits();
   renderMergedCatLimits();
   renderNavSortList();
   renderRecurringList();
@@ -2636,14 +2685,6 @@ function addNewCategoryInline() {
   showToast(`✅ تم إضافة ${emoji} ${name}`, 'var(--green)');
 }
 
-function deleteCategoryInline(id) {
-  showConfirm('حذف الفئة', 'حذف هذه الفئة؟ العمليات المرتبطة بها ستصبح بدون فئة.', '🗑️', () => {
-    state.categories = state.categories.filter(c => c.id !== id);
-    save(); renderMergedCatLimits();
-    showToast('تم حذف الفئة', 'var(--red)');
-  });
-}
-
 function renderMergedCatLimits() {
   // Section 1: Categories
   const catsContainer = document.getElementById('cats-list-merged');
@@ -2655,7 +2696,7 @@ function renderMergedCatLimits() {
           <div class="cat-name">${c.name}</div>
           <div style="font-size:10px;color:var(--text3)">${c.type==='income'?'💰 دخل':c.type==='both'?'🔀 كلاهما':'💸 مصروف'} ${c.keywords?'· '+c.keywords:''}</div>
         </div>
-        <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteCategoryInline('${c.id}')" title="حذف">🗑️</button>
+        <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteCategory('${c.id}')" title="حذف">🗑️</button>
       </div>
     `).join('');
   }
@@ -2712,7 +2753,7 @@ function saveCategory() {
   const keywords = document.getElementById('cat-keywords').value.trim();
   if (!name) return;
   state.categories.unshift({ id: uid(), name, emoji, type, limit, keywords });
-  save(); closeModal('cat-modal'); renderMergedCatLimits(); renderMergedCatLimits();
+  save(); closeModal('cat-modal'); renderMergedCatLimits();
   document.getElementById('cat-name').value = '';
   document.getElementById('cat-emoji-input').value = '';
   document.getElementById('cat-limit').value = '';
@@ -3491,7 +3532,7 @@ function deleteCategory(id) {
   showConfirm('حذف الفئة', `هل تريد حذف فئة "${cat ? cat.name : ''}" نهائياً؟`, '🏷️', () => {
     state.categories = state.categories.filter(c => c.id !== id);
     showToast('🗑️ تم حذف الفئة', 'var(--red)');
-    save(); renderMergedCatLimits(); renderMergedCatLimits();
+    save(); renderMergedCatLimits();
   });
 }
 
@@ -4012,10 +4053,4 @@ renderWeekly();
 </div>
 
 </body>
-</html
-
-        <div class="settings-grid">
-
-          
-          
->
+</html>
