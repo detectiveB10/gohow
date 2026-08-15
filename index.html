@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ميزانيتي</title>
- <link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
-<link rel="shortcut icon" href="favicon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -99,6 +96,11 @@
   body.theme-obsidian  { --bg:#060608; --bg2:#0a0a0e; --bg3:#0e0e14; --bg4:#12121a; --card:#080808; --accent:#6c63ff; --accent2:#9c94ff; }
   body.theme-mocha     { --bg:#100806; --bg2:#1e1210; --bg3:#2c1c1a; --bg4:#3a2624; --card:#160a08; --accent:#bcaaa4; --accent2:#d7ccc8; }
   body.theme-electric  { --bg:#000814; --bg2:#001028; --bg3:#00183c; --bg4:#002050; --card:#000510; --accent:#00e5ff; --accent2:#84ffff; --green:#00e676; --red:#ff1744; --yellow:#ffea00; }
+
+  body.theme-peacock { --bg:#001a1a; --bg2:#002e2e; --bg3:#004040; --bg4:#005454; --card:#002828; --accent:#00d4aa; --accent2:#40e0d0; --green:#00d4aa; --red:#ff6b6b; --yellow:#ffd700; }
+  body.theme-dragon  { --bg:#1a0000; --bg2:#2e0a0a; --bg3:#401414; --bg4:#541e1e; --card:#280a0a; --accent:#d4a017; --accent2:#ff4500; --green:#4caf50; --red:#ff4444; --yellow:#ffd700; }
+  body.theme-lemon   { --bg:#1a1a00; --bg2:#2e2e0a; --bg3:#404014; --bg4:#54541e; --card:#28280a; --accent:#e6e600; --accent2:#ffff66; --green:#9acd32; --red:#ff6347; --yellow:#ffd700; }
+  body.theme-berry   { --bg:#1a0010; --bg2:#2e0a1e; --bg3:#40142e; --bg4:#541e3e; --card:#280a1a; --accent:#c71585; --accent2:#ff69b4; --green:#90ee90; --red:#ff1493; --yellow:#ffb6c1; }
 
   /* LAYOUT */
   .app { display: flex; height: 100vh; overflow: hidden; }
@@ -545,6 +547,15 @@
       <span class="nav-icon">📈</span>
       <span class="nav-label">تحليل</span>
     </button>
+    <!-- Zoom Controls -->
+    <div style="margin-top:auto;padding:10px 6px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px;align-items:center">
+      <span style="font-size:10px;color:var(--text3);font-weight:600">التكبير</span>
+      <div style="display:flex;gap:4px;align-items:center">
+        <button class="btn btn-ghost btn-icon btn-sm" id="zoom-out-btn" onclick="zoomOut()" title="تصغير" style="font-size:14px">➖</button>
+        <span id="zoom-reset-btn" style="font-size:11px;color:var(--text3);min-width:36px;text-align:center;font-weight:700">100%</span>
+        <button class="btn btn-ghost btn-icon btn-sm" id="zoom-in-btn" onclick="zoomIn()" title="تكبير" style="font-size:14px">➕</button>
+      </div>
+    </div>
   </nav>
 
   <div class="main">
@@ -562,7 +573,7 @@
             <div class="date-display" onclick="openModal('date-picker-modal')" id="day-title" style="font-size:16px;font-weight:700;cursor:pointer">اليوم</div>
             <button class="btn btn-ghost btn-icon" onclick="changeDay(1)">←</button>
           </div>
-          <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="openAddTx()">+ إضافة عملية</button>
+          <button class="btn btn-primary" style="width:100%;margin-bottom:12px;background:linear-gradient(135deg,#66bb6a,#43a047);box-shadow:0 4px 15px rgba(76,175,80,0.3)" onclick="openAddTx()">+ إضافة عملية</button>
           <div id="daily-txs"></div>
           <div class="card" style="margin-top:8px">
             <div style="display:flex;justify-content:space-between;align-items:center">
@@ -588,12 +599,83 @@
         <div class="week-grid" id="week-grid"></div>
       </div>
 
+      <!-- العمليات المتكررة -->
+<div class="card" style="grid-column:1/-1">
+            <div class="card-title" style="justify-content:space-between">
+              <span>🔄 العمليات المتكررة الشهرية</span>
+              <span style="font-size:11px;color:var(--text3)">تُضاف تلقائياً بداية كل شهر</span>
+            </div>
+            <div id="recurring-list"></div>
+          </div>
+
       <!-- MONTHLY PAGE -->
       <div class="page" id="page-monthly">
         <div class="month-bar" id="month-bar"></div>
         <div class="summary-row" id="month-summary"></div>
+        
+          <div class="card">
+            <div class="card-title" style="justify-content:space-between;align-items:center">
+              <div style="display:flex;align-items:center;gap:10px">
+                <div style="width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px">💵</div>
+                <div>
+                  <div style="font-size:15px;font-weight:700">الرواتب الشهرية</div>
+                  <div style="font-size:11px;color:var(--text3)">القيم الفعلية لكل شهر</div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="openModal('add-salary-modal')">+ راتب</button>
+            </div>
+
+            <!-- Salary Cards Grid -->
+            <div id="salary-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:14px"></div>
+            <div id="salary-empty" style="display:none;text-align:center;padding:24px 16px">
+              <div style="font-size:36px;margin-bottom:8px">💼</div>
+              <div style="font-size:13px;color:var(--text3);margin-bottom:4px">لا توجد رواتب مسجلة</div>
+              <div style="font-size:11px;color:var(--text3)">اضغط "+ راتب" لإضافة أول راتب</div>
+            </div>
+
+            <!-- Default Salary -->
+            <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:14px;border:1px solid var(--border)">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+                <span style="font-size:14px">⚙️</span>
+                <span style="font-size:12px;font-weight:600;color:var(--text2)">الراتب الافتراضي</span>
+                <span style="font-size:10px;color:var(--text3)">(يُستخدم عند غياب راتب الشهر)</span>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <div style="flex:1;min-width:100px">
+                  <label style="font-size:10px;color:var(--text3);display:block;margin-bottom:4px">المبلغ</label>
+                  <input type="number" id="s-salary" placeholder="مثال: 15000" style="width:100%">
+                </div>
+                <div style="flex:1;min-width:100px">
+                  <label style="font-size:10px;color:var(--text3);display:block;margin-bottom:4px">يوم النزول</label>
+                  <input type="number" id="s-payday" min="1" max="31" placeholder="مثال: 27" style="width:100%">
+                </div>
+                <div style="width:100px">
+                  <label style="font-size:10px;color:var(--text3);display:block;margin-bottom:4px">العملة</label>
+                  <select id="s-currency" style="width:100%;font-size:12px;padding:6px" onchange="saveCurrency()">
+                    <option value="⃁">ريال ⃁</option>
+                    <option value="$">دولار $</option>
+                    <option value="€">يورو €</option>
+                    <option value="£">جنيه £</option>
+                    <option value="د.إ">درهم د.إ</option>
+                    <option value="د.ك">دينار كويتي د.ك</option>
+                    <option value="د.ب">دينار بحريني د.ب</option>
+                    <option value="ر.ع">ريال عماني ر.ع</option>
+                    <option value="ر.ق">ريال قطري ر.ق</option>
+                  </select>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="saveSettings()" style="margin-top:16px">💾 حفظ</button>
+              </div>
+            </div>
+          </div>
+
+          
         <div class="card">
-          <div class="card-title">📅 التقويم الشهري</div>
+          <div class="card-title" style="justify-content:space-between;align-items:center">
+            <span>📅 التقويم الشهري</span>
+            <button class="btn btn-ghost btn-sm" onclick="openSearch()" style="display:flex;align-items:center;gap:4px">
+              <span>🔍</span><span>بحث</span>
+            </button>
+          </div>
           <div class="cal-header-row">
             <div class="cal-header-cell">أحد</div><div class="cal-header-cell">اثنين</div>
             <div class="cal-header-cell">ثلاثاء</div><div class="cal-header-cell">أربعاء</div>
@@ -658,80 +740,76 @@
       <div class="page" id="page-settings">
         <div class="section-title">⚙️ الإعدادات</div>
 
-        <!-- 🔀 تخصيص القوائم — فوق كل شيء بتصميم جديد -->
-        <div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <div style="font-size:15px;font-weight:700">🔀 تخصيص القوائم</div>
-            <div style="display:flex;gap:8px">
-              <button class="btn btn-ghost btn-sm" onclick="resetNavOrder()">↺ إعادة تعيين</button>
+        <!-- 🔀 تخصيص القوائم -->
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title" style="justify-content:space-between;align-items:center">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:18px">🔀</span>
+              <span>تخصيص القوائم</span>
+            </div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-ghost btn-sm" onclick="resetNavOrder()">↺ إعادة</button>
               <button class="btn btn-primary btn-sm" onclick="saveNavOrder()">💾 حفظ</button>
             </div>
           </div>
-          <p style="font-size:12px;color:var(--text3);margin-bottom:16px">اسحب لإعادة الترتيب · 👁️ لإخفاء أو إظهار القائمة</p>
-          <div id="nav-sort-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px"></div>
+          <p style="font-size:12px;color:var(--text3);margin-bottom:12px">📱 على الجوال: استخدم الأسهم للترتيب · 👁️ لإخفاء/إظهار · على الكمبيوتر: اسحب وأسقط</p>
+          <div id="nav-sort-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px"></div>
         </div>
+          
 
-        <div class="settings-grid">
-
-          <!-- إعدادات الراتب -->
-          <div class="card" style="grid-column:1/-1">
-            <div class="card-title" style="justify-content:space-between">
-              <span>💵 الرواتب الشهرية</span>
-              <div style="display:flex;gap:8px;align-items:center">
-                <select id="s-currency" style="font-size:12px;padding:4px 8px;width:auto" onchange="saveCurrency()">
-                  <option value="⃁">ريال سعودي (⃁)</option>
-                  <option value="$">دولار ($)</option>
-                  <option value="€">يورو (€)</option>
-                  <option value="£">جنيه (£)</option>
-                  <option value="د.إ">درهم إماراتي (د.إ)</option>
-                  <option value="د.ك">دينار كويتي (د.ك)</option>
-                  <option value="د.ب">دينار بحريني (د.ب)</option>
-                  <option value="ر.ع">ريال عماني (ر.ع)</option>
-                  <option value="ر.ق">ريال قطري (ر.ق)</option>
-                </select>
-                <button class="btn btn-primary btn-sm" onclick="openModal('add-salary-modal')">+ إضافة راتب</button>
-              </div>
-            </div>
-            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">سجّل راتب كل شهر باليوم الفعلي الذي نزل فيه — يُستخدم لحساب الدورات والمتبقي بدقة.</p>
-            <div id="salary-table-wrap">
-              <div style="overflow-x:auto">
-                <table class="plan-table" id="salary-table">
-                  <thead>
-                    <tr>
-                      <th>الشهر</th>
-                      <th style="text-align:center">يوم النزول</th>
-                      <th style="text-align:center">المبلغ</th>
-                      <th style="text-align:center">حذف</th>
-                    </tr>
-                  </thead>
-                  <tbody id="salary-tbody"></tbody>
-                </table>
-              </div>
-              <div id="salary-empty" style="display:none;text-align:center;padding:20px;color:var(--text3);font-size:13px">لا توجد رواتب مسجلة بعد</div>
-            </div>
-            <!-- راتب افتراضي للحسابات -->
-            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-              <div style="font-size:12px;color:var(--text3);margin-bottom:8px">⚙️ راتب افتراضي (يُستخدم عند غياب راتب الشهر)</div>
-              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-                <input type="number" id="s-salary" placeholder="المبلغ الافتراضي" style="flex:1;min-width:120px">
-                <input type="number" id="s-payday" min="1" max="31" placeholder="يوم النزول الافتراضي (مثال: 27)" style="flex:1;min-width:150px">
-                <button class="btn btn-ghost btn-sm" onclick="saveSettings()">حفظ</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- الفئات -->
+          <!-- الفئات والحدود -->
           <div class="card">
-            <div class="card-title">🏷️ الفئات المخصصة</div>
-            <div id="cats-list"></div>
-            <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="openModal('cat-modal')">+ إضافة فئة</button>
+            <div class="card-title" style="justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleMergedCatLimits()">
+              <span>🏷️ الفئات والحدود</span>
+              <button class="btn btn-ghost btn-sm" id="cat-limits-toggle-btn" style="font-size:11px">👁️ إخفاء</button>
+            </div>
+
+            <div id="merged-cat-limits-content">
+              <!-- القسم 1: الفئات -->
+              <div style="margin-bottom:16px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">
+                  <span style="font-size:13px;font-weight:700">📂 الفئات المخصصة</span>
+                  <span style="font-size:10px;color:var(--text3)">(${state.categories.length - 1} فئة)</span>
+                </div>
+                <div id="cats-list-merged"></div>
+                <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)">
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:6px">➕ إضافة فئة جديدة</div>
+                  <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+                    <input type="text" id="new-cat-name" placeholder="اسم الفئة" style="flex:1;min-width:100px;font-size:12px">
+                    <input type="text" id="new-cat-emoji" placeholder="🍔" style="width:50px;font-size:14px;text-align:center">
+                    <select id="new-cat-type" style="width:90px;font-size:12px">
+                      <option value="expense">💸 مصروف</option>
+                      <option value="income">💰 دخل</option>
+                      <option value="both">🔀 كلاهما</option>
+                    </select>
+                    <input type="text" id="new-cat-keywords" placeholder="كلمات مفتاحية" style="flex:1;min-width:100px;font-size:12px">
+                    <button class="btn btn-primary btn-sm" onclick="addNewCategoryInline()">إضافة</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- القسم 2: الحدود -->
+              <div style="padding-top:12px;border-top:2px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+                  <span style="font-size:13px;font-weight:700">🎯 حدود الإنفاق</span>
+                  <span style="font-size:10px;color:var(--text3)">(للمصاريف فقط)</span>
+                </div>
+                <div id="limits-list-merged"></div>
+                <div style="margin-top:8px;padding-top:8px;border-top:1px dashed var(--border)">
+                  <div style="font-size:11px;color:var(--text3);margin-bottom:6px">➕ إضافة حد جديد</div>
+                  <div style="display:flex;gap:6px;align-items:center">
+                    <select id="limit-cat-select-merged" style="flex:1;font-size:12px"></select>
+                    <input type="number" id="limit-amount-input-merged" placeholder="المبلغ" style="width:90px;font-size:12px">
+                    <button class="btn btn-primary btn-sm" onclick="addNewLimitMerged()">إضافة</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- حدود الإنفاق -->
-          <div class="card">
-            <div class="card-title">🎯 حدود الإنفاق الشهرية</div>
-            <div id="limits-list"></div>
-          </div>
+          
+          <!-- العمليات المتكررة -->
+          
 
           <!-- تصدير واستيراد -->
           <div class="card">
@@ -742,10 +820,10 @@
             <div class="card-title" style="margin-bottom:8px">📥 استيراد</div>
             <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="margin-bottom:10px">
             <div style="display:flex;gap:8px;margin-bottom:8px">
-              <button class="btn btn-ghost" style="flex:1" onclick="importData('merge')">دمج</button>
-              <button class="btn btn-danger" style="flex:1" onclick="importData('replace')">استبدال</button>
+              <button class="btn btn-ghost" style="flex:1" onclick="confirmImportMerge()">جمع</button>
+              <button class="btn btn-danger" style="flex:1" onclick="confirmImportReplace()">استبدال</button>
             </div>
-            <p style="font-size:11px;color:var(--text3)">دمج: يضيف فوق الموجودة · استبدال: يمسح الكل</p>
+            <p style="font-size:11px;color:var(--text3)">جمع: يضيف فوق الموجودة · استبدال: يمسح الكل</p>
           </div>
 
           <!-- الدليل -->
@@ -813,8 +891,11 @@
           <div id="analysis-cats-bars"></div>
         </div>
 
-        <!-- ── صف 5: توقع + أفضل/أسوأ ── -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px" id="analysis-forecast-row"></div>
+        <!-- ── صف 5: قائمة تحليل موحدة ── -->
+        <div class="card" style="margin-bottom:10px">
+          <div class="card-title">📋 ملخص التحليل</div>
+          <div id="analysis-unified-list" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
 
         <!-- ── صف 6: بطاقات الأشهر (قابلة للطي) ── -->
         <details class="card" style="margin-bottom:10px;padding:12px">
@@ -891,6 +972,7 @@
         </div>
 
         <!-- الدورة الكاملة (السنة كلها) -->
+        <div id="db-insights" style="margin-bottom:12px"></div>
         <div id="db-full-summary" style="margin-bottom:16px"></div>
 
         <!-- دورة / الفترة الحالية -->
@@ -923,7 +1005,10 @@
 
       <!-- COLORS PAGE -->
       <div class="page" id="page-colors">
-        <div class="section-title">🎨 أنماط الألوان</div>
+        <div class="section-title">
+          🎨 أنماط الألوان
+          <span style="font-size:13px;color:var(--text3);background:var(--bg3);padding:3px 12px;border-radius:20px;margin-right:8px">${THEMES.length} ثيم</span>
+        </div>
         <div class="theme-grid" id="theme-grid"></div>
       </div>
 
@@ -944,21 +1029,31 @@
     </div>
     <div class="form-group" style="margin-bottom:10px">
       <label>المبلغ</label>
-      <input type="number" id="tx-amount" placeholder="0.00" min="0">
+      <input type="number" id="tx-amount" placeholder="0.00" min="0" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('tx-note').focus();}">
     </div>
     <div class="form-group" style="margin-bottom:10px">
       <label>الفئة</label>
-      <select id="tx-category"></select>
+      <select id="tx-category" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('tx-date').focus();}"></select>
     </div>
     <div class="form-group" style="margin-bottom:10px">
       <label>ملاحظة (اختياري) — التصنيف التلقائي</label>
-      <input type="text" id="tx-note" placeholder="مثال: قهوة، بنزين، تسوق..." oninput="autoClassify(this.value)">
+      <input type="text" id="tx-note" placeholder="مثال: قهوة، بنزين، تسوق..." oninput="autoClassify(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();saveTx();}">
       <div id="auto-classify-hint" style="font-size:11px;color:var(--accent2);margin-top:4px;min-height:16px"></div>
     </div>
     <div class="form-group" style="margin-bottom:14px">
       <label>التاريخ</label>
-      <input type="date" id="tx-date">
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="date" id="tx-date" style="flex:1" onchange="document.getElementById('tx-date-text').value=this.value">
+        <input type="text" id="tx-date-text" placeholder="yyyy-mm-dd" style="flex:1;font-size:13px" oninput="if(this.value.match(/^\d{4}-\d{2}-\d{2}$/))document.getElementById('tx-date').value=this.value" onkeydown="if(event.key==='Enter'){event.preventDefault();saveTx();}">
+      </div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px">📅 اختر من التقويم أو اكتب التاريخ يدوياً (مثال: 2026-08-14)</div>
     </div>
+
+    <div class="form-group" style="margin-bottom:14px;display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="tx-recurring" style="width:auto;accent-color:var(--accent)">
+      <label for="tx-recurring" style="margin:0;font-size:13px;cursor:pointer">🔄 تكرار شهري (يضاف تلقائياً كل شهر)</label>
+    </div>
+
     <div style="display:flex;gap:8px">
       <button class="btn btn-primary" style="flex:1" onclick="saveTx()">حفظ</button>
       <button class="btn btn-ghost" style="flex:1" onclick="closeModal('add-tx-modal')">إلغاء</button>
@@ -1201,6 +1296,244 @@ function showToast(msg, color) {
   setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity 0.4s'; setTimeout(()=>t.remove(),400); }, 2800);
 }
 
+
+function autoClassify(note) {
+  const hint = document.getElementById('auto-classify-hint');
+  if (!note || !hint) return;
+  const lower = note.toLowerCase();
+  for (const cat of state.categories) {
+    if (!cat.keywords) continue;
+    const kws = cat.keywords.split(/[,،]/).map(k => k.trim()).filter(Boolean);
+    for (const kw of kws) {
+      if (kw && lower.includes(kw.toLowerCase())) {
+        const sel = document.getElementById('tx-category');
+        if (sel && sel.querySelector(`option[value="${cat.id}"]`)) {
+          sel.value = cat.id;
+          hint.textContent = `🔮 تم اختيار: ${cat.emoji} ${cat.name}`;
+          hint.style.color = 'var(--accent2)';
+          return;
+        }
+      }
+    }
+  }
+  hint.textContent = '';
+}
+
+// ================== DUPLICATE & RECURRING ==================
+function duplicateTx(id, nextMonth) {
+  const tx = state.transactions.find(t => t.id === id);
+  if (!tx) return;
+  const [y, m, d] = tx.date.split('-').map(Number);
+  let newDate;
+  if (nextMonth) {
+    const nm = m === 12 ? 1 : m + 1;
+    const ny = m === 12 ? y + 1 : y;
+    const dim = new Date(ny, nm, 0).getDate();
+    newDate = `${ny}-${String(nm).padStart(2,'0')}-${String(Math.min(d, dim)).padStart(2,'0')}`;
+  } else {
+    newDate = tx.date;
+  }
+  state.transactions.push({
+    id: uid(), amount: tx.amount, category: tx.category,
+    note: (tx.note || '') + (nextMonth ? ' (تكرار)' : ' (نسخ)'),
+    date: newDate, type: tx.type
+  });
+  save();
+  refreshDayWeek();
+  showToast(nextMonth ? '🔄 تم التكرار للشهر القادم' : '📋 تم النسخ', 'var(--accent)');
+}
+
+function processRecurring() {
+  if (!state.recurring || !state.recurring.length) return;
+  const today = localToday();
+  const curY = today.getFullYear();
+  const curM = today.getMonth();
+  let added = 0;
+  state.recurring.forEach(rec => {
+    // Check if already added this month
+    const prefix = `${curY}-${String(curM+1).padStart(2,'0')}`;
+    const exists = state.transactions.some(t =>
+      t.date.startsWith(prefix) && t.recurringId === rec.id &&
+      t.amount === rec.amount && t.category === rec.category
+    );
+    if (!exists) {
+      const day = Math.min(rec.day, new Date(curY, curM+1, 0).getDate());
+      const dateStr = `${curY}-${String(curM+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      state.transactions.push({
+        id: uid(), amount: rec.amount, category: rec.category,
+        note: rec.note || '', date: dateStr, type: rec.type,
+        recurringId: rec.id
+      });
+      added++;
+    }
+  });
+  if (added) {
+    save();
+    showToast(`🔄 تم إضافة ${added} عملية متكررة`, 'var(--accent)');
+  }
+}
+
+// ================== SEARCH ==================
+function openSearch() {
+  document.getElementById('search-query').value = '';
+  document.getElementById('search-results').innerHTML = `
+    <div class="empty-state" style="padding:40px 20px">
+      <div class="empty-icon" style="font-size:56px">🔍</div>
+      <p style="font-size:15px;color:var(--text2);margin-bottom:6px">ابحث في كل عملياتك</p>
+      <p style="font-size:12px;color:var(--text3)">اكتب ملاحظة، فئة، مبلغ، أو تاريخ</p>
+    </div>`;
+  document.getElementById('search-stats').style.display = 'none';
+  // Populate category filter
+  const catSel = document.getElementById('search-filter-cat');
+  catSel.innerHTML = '<option value="all">كل الفئات</option>' +
+    state.categories.map(c => `<option value="${c.id}">${c.emoji} ${c.name}</option>`).join('');
+  // Clear date filters
+  document.getElementById('search-filter-from').value = '';
+  document.getElementById('search-filter-to').value = '';
+  document.getElementById('search-filter-type').value = 'all';
+  openModal('search-modal');
+  setTimeout(() => document.getElementById('search-query').focus(), 100);
+}
+
+function clearSearchFilters() {
+  document.getElementById('search-filter-type').value = 'all';
+  document.getElementById('search-filter-cat').value = 'all';
+  document.getElementById('search-filter-from').value = '';
+  document.getElementById('search-filter-to').value = '';
+  doSearch();
+}
+
+function doSearch() {
+  const q = document.getElementById('search-query').value.trim().toLowerCase();
+  const typeFilter = document.getElementById('search-filter-type').value;
+  const catFilter = document.getElementById('search-filter-cat').value;
+  const fromDate = document.getElementById('search-filter-from').value;
+  const toDate = document.getElementById('search-filter-to').value;
+  const container = document.getElementById('search-results');
+  const statsEl = document.getElementById('search-stats');
+
+  let results = state.transactions.slice();
+
+  // Text search
+  if (q) {
+    results = results.filter(t => {
+      const cat = getCat(t.category);
+      return (t.note && t.note.toLowerCase().includes(q)) ||
+             cat.name.toLowerCase().includes(q) ||
+             String(t.amount).includes(q) ||
+             t.date.includes(q);
+    });
+  }
+
+  // Type filter
+  if (typeFilter !== 'all') {
+    results = results.filter(t => t.type === typeFilter);
+  }
+
+  // Category filter
+  if (catFilter !== 'all') {
+    results = results.filter(t => t.category === catFilter);
+  }
+
+  // Date range
+  if (fromDate) results = results.filter(t => t.date >= fromDate);
+  if (toDate) results = results.filter(t => t.date <= toDate);
+
+  results.sort((a,b) => b.date.localeCompare(a.date));
+
+  // Stats
+  const totalIncome = results.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const totalExpense = results.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const net = totalIncome - totalExpense;
+
+  if (!results.length) {
+    statsEl.style.display = 'none';
+    container.innerHTML = `
+      <div class="empty-state" style="padding:40px 20px">
+        <div class="empty-icon" style="font-size:48px">😕</div>
+        <p style="font-size:14px;color:var(--text3)">لا توجد نتائج ${q ? `لـ "${q}"` : 'بهذه الفلاتر'}</p>
+      </div>`;
+    return;
+  }
+
+  // Show stats
+  statsEl.style.display = 'flex';
+  statsEl.innerHTML = `
+    <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;flex:1">
+      <div style="text-align:center">
+        <div style="font-size:20px;font-weight:800">${results.length}</div>
+        <div style="font-size:10px;color:var(--text3)">عملية</div>
+      </div>
+      <div style="width:1px;height:30px;background:var(--border)"></div>
+      <div style="text-align:center">
+        <div style="font-size:16px;font-weight:700;color:var(--green)">${fmt(totalIncome)}</div>
+        <div style="font-size:10px;color:var(--text3)">💰 إجمالي الدخل</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:16px;font-weight:700;color:var(--red)">${fmt(totalExpense)}</div>
+        <div style="font-size:10px;color:var(--text3)">💸 إجمالي المصاريف</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:16px;font-weight:700;color:${net>=0?'var(--green)':'var(--red)'}">${fmt(net)}</div>
+        <div style="font-size:10px;color:var(--text3)">🏦 الصافي</div>
+      </div>
+    </div>
+  `;
+
+  // Group by date
+  const byDate = {};
+  results.forEach(t => { byDate[t.date] = byDate[t.date] || []; byDate[t.date].push(t); });
+
+  container.innerHTML = Object.entries(byDate).map(([date, txs]) => {
+    const d = parseLocalDate(date);
+    const isToday = date === dateKey(localToday());
+    const label = `${DAY_NAMES[d.getDay()]} ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+    const dayTotal = txs.reduce((s,t) => s + (t.type==='income'?t.amount:-t.amount), 0);
+    const dayNetColor = dayTotal >= 0 ? 'var(--green)' : 'var(--red)';
+    const dayNetSign = dayTotal >= 0 ? '+' : '';
+
+    return `<div style="margin-bottom:14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden">
+      <!-- Date header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg3);border-bottom:1px solid var(--border);cursor:pointer" onclick="jumpToDayFromSearch('${date}')" title="انتقل لهذا اليوم">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;font-weight:700">${label}</span>
+          ${isToday ? '<span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--accent);color:white;font-weight:600">اليوم</span>' : ''}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:13px;font-weight:700;color:${dayNetColor}">${dayNetSign}${fmt(dayTotal)}</span>
+          <span style="font-size:11px;color:var(--accent2)">📅 انتقل →</span>
+        </div>
+      </div>
+      <!-- Transactions -->
+      <div style="padding:8px">
+        ${txs.map(t => {
+          const cat = getCat(t.category);
+          return `<div class="tx-item-new ${t.type}" style="margin-bottom:4px;border-radius:8px">
+            <div class="tx-icon-new">${cat.emoji}</div>
+            <div class="tx-body">
+              <div class="tx-name-new">${cat.name}</div>
+              ${t.note ? `<div class="tx-note-new">📝 ${t.note}</div>` : ''}
+            </div>
+            <div class="tx-right">
+              <div class="tx-amt-new ${t.type}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
+              <div class="tx-act-new">
+                <button onclick="event.stopPropagation();editTx('${t.id}');closeModal('search-modal');" title="تعديل">✏️</button>
+                <button onclick="event.stopPropagation();duplicateTx('${t.id}', true);doSearch();" title="تكرار">📋</button>
+                <button onclick="event.stopPropagation();deleteTx('${t.id}');doSearch();" title="حذف">🗑️</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function jumpToDayFromSearch(dateStr) {
+  closeModal('search-modal');
+  jumpToDay(dateStr);
+}
+
 function showConfirm(title, msg, icon, onOk) {
   document.getElementById('confirm-title').textContent = title;
   document.getElementById('confirm-msg').textContent   = msg;
@@ -1282,12 +1615,17 @@ const THEMES = [
   {id:'theme-obsidian',  name:'الأوبسيديان',   colors:['#060608','#6c63ff','#9c94ff']},
   {id:'theme-mocha',     name:'موكا',          colors:['#100806','#bcaaa4','#d7ccc8']},
   {id:'theme-electric',  name:'إلكتريك',       colors:['#000814','#00e5ff','#84ffff']},
+  {id:'theme-peacock', name:'طاووس', colors:['#001a1a','#00d4aa','#40e0d0']},
+  {id:'theme-dragon',  name:'تنين',  colors:['#1a0000','#d4a017','#ff4500']},
+  {id:'theme-lemon',   name:'ليمون', colors:['#1a1a00','#e6e600','#ffff66']},
+  {id:'theme-berry',   name:'توت',   colors:['#1a0010','#c71585','#ff69b4']},
 ];
 const MONTH_NAMES = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const DAY_NAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 
 let state = {
   transactions: [],
+  zoom: 1.0,
   categories: [
     {id:'c1',name:'الأكل والشرب',emoji:'🍔',type:'expense',limit:0,keywords:'مطعم,أكل,شرب,قهوة,عشاء,غداء,فطور,كافيه,وجبة,بيتزا,برجر,شاورما,سوشي'},
     {id:'c2',name:'المواصلات',emoji:'🚗',type:'expense',limit:0,keywords:'بنزين,سيارة,تاكسي,أوبر,كريم,باص,مترو,قطار,طيران,رحلة'},
@@ -1297,9 +1635,16 @@ let state = {
     {id:'c6',name:'الفواتير',emoji:'⚡',type:'expense',limit:0,keywords:'كهرباء,ماء,إنترنت,هاتف,إيجار,اشتراك,جوال,فاتورة'},
     {id:'c7',name:'راتب',emoji:'💰',type:'income',limit:0,keywords:'راتب,مرتب,أجر,معاش'},
     {id:'c8',name:'دخل إضافي',emoji:'💼',type:'income',limit:0,keywords:'مكافأة,عمولة,مشروع,فريلانس,بيع,أرباح'},
-    {id:'c9',name:'تحويل داخلي',emoji:'💵',type:'both',limit:0,keywords:'تحويل,نقل,صرف'},
-    {id:'c10',name:'ادخار تلقائي',emoji:'💧',type:'income',limit:0,keywords:'ادخار,توفير,احتياطي'},
-    {id:'c11',name:'م أدري',emoji:'🙈',type:'expense',limit:0,keywords:'متفرقات,غير محدد,أخرى'},
+    {id:'c9',name:'سحب - الصراف الآلي',emoji:'🏧',type:'expense',limit:0,keywords:'سحب,صراف,ATM,ماكينة,نقد'},
+    {id:'c10',name:'شراء عبر نقاط البيع Apple Pay (محلي)',emoji:'🍎',type:'expense',limit:0,keywords:'apple,pay,تفاح,شراء,pos,نقاط'},
+    {id:'c11',name:'شراء انترنت Apple Pay (محلي)',emoji:'🍏',type:'expense',limit:0,keywords:'apple,pay,انترنت,اونلاين,تفاح,شراء'},
+    {id:'c12',name:'شراء عبر نقاط البيع أثير (محلي)',emoji:'💳',type:'expense',limit:0,keywords:'أثير,اثير,شراء,pos,نقاط,بطاقة'},
+    {id:'c13',name:'إيداع - الصراف الآلي',emoji:'🏧',type:'income',limit:0,keywords:'إيداع,ايداع,صراف,ATM,ماكينة'},
+    {id:'c14',name:'حوالات سريع الواردة',emoji:'🔚',type:'income',limit:0,keywords:'حوالة,حوالات,سريع,واردة,تحويل,استلام'},
+    {id:'c15',name:'عملية ادخار تلقائي',emoji:'💧',type:'income',limit:0,keywords:'ادخار,توفير,احتياطي,تلقائي'},
+    {id:'c16',name:'عملية تحويل داخلية',emoji:'🔛',type:'both',limit:0,keywords:'تحويل,نقل,صرف,داخلي'},
+    {id:'c17',name:'عملية تحويل بين حسابات',emoji:'↔️',type:'both',limit:0,keywords:'تحويل,نقل,حسابات,بين,تبديل'},
+    {id:'c18',name:'م أدري',emoji:'🙈',type:'expense',limit:0,keywords:'متفرقات,غير محدد,أخرى'},
   ],
   goals: [],
   settings: { salary: 0, currency: '⃁', payday: null },
@@ -1327,11 +1672,18 @@ function load() {
         return { ...sc, keywords: sc.keywords || (def ? def.keywords : '') };
       });
     }
-    state.goals = d.goals || [];
+    state.goals    = d.goals || [];
     state.settings = d.settings || state.settings;
-    state.salaries = d.salaries || [];
+    // normalize salaries to ensure all fields are Numbers (يمنع type mismatch بعد JSON.parse)
+    state.salaries = (d.salaries || []).map(s => ({
+      year:   Number(s.year),
+      month:  Number(s.month),
+      day:    Number(s.day),
+      amount: Number(s.amount)
+    }));
     state.theme = d.theme || 'theme-default';
     state.plan = d.plan || { salary: 0, categories: {} };
+    state.recurring = d.recurring || [];
   }
   applyTheme(state.theme);
 }
@@ -1345,6 +1697,7 @@ function save() {
     salaries:     state.salaries,
     theme:        state.theme,
     plan:         state.plan,
+    recurring:    state.recurring || [],
   }));
 }
 
@@ -1386,8 +1739,8 @@ function getPayCycleInfo() {
   // ابحث عن راتب هذا الشهر أو الشهر السابق
   const thisMon = getSalaryForMonth(today.getFullYear(), today.getMonth());
   const prevMon = getSalaryForMonth(today.getFullYear(), today.getMonth()-1 < 0 ? 11 : today.getMonth()-1);
-  const payday  = thisMon.day || state.settings.payday || 27;
-  const salary  = thisMon.amount || state.settings.salary || 0;
+  const payday  = (thisMon.day > 0 ? thisMon.day : null) ?? (state.settings.payday || 27);
+  const salary  = (thisMon.amount > 0 ? thisMon.amount : null) ?? (state.settings.salary || 0);
 
   let cycleStart, cycleEnd;
   if (today.getDate() >= payday) {
@@ -1421,6 +1774,33 @@ function getPayCycleInfo() {
 }
 
 // ================== RENDER TOP ==================
+
+// ================== ZOOM ==================
+function setZoom(level) {
+  state.zoom = Math.max(0.7, Math.min(1.5, level));
+  applyZoom();
+  save();
+}
+
+function applyZoom() {
+  const main = document.querySelector('.main');
+  if (main) {
+    main.style.transform = `scale(${state.zoom})`;
+    main.style.transformOrigin = 'top center';
+  }
+  // Update button states
+  const zoomIn = document.getElementById('zoom-in-btn');
+  const zoomOut = document.getElementById('zoom-out-btn');
+  const zoomReset = document.getElementById('zoom-reset-btn');
+  if (zoomIn) zoomIn.style.opacity = state.zoom >= 1.5 ? '0.3' : '1';
+  if (zoomOut) zoomOut.style.opacity = state.zoom <= 0.7 ? '0.3' : '1';
+  if (zoomReset) zoomReset.textContent = `${Math.round(state.zoom * 100)}%`;
+}
+
+function zoomIn() { setZoom(state.zoom + 0.1); }
+function zoomOut() { setZoom(state.zoom - 0.1); }
+function zoomReset() { setZoom(1.0); }
+
 function renderTop() {
   const info = getPayCycleInfo();
   const pct = info.pct;
@@ -1506,6 +1886,7 @@ function renderDaily() {
           <div class="tx-amt-new ${type}">${type==='income'?'+':'-'}${fmt(t.amount)}</div>
           <div class="tx-act-new">
             <button onclick="editTx('${t.id}')" title="تعديل">✏️</button>
+            <button onclick="duplicateTx('${t.id}', true)" title="تكرار للشهر القادم">📋</button>
             <button onclick="deleteTx('${t.id}')" title="حذف">🗑️</button>
           </div>
         </div>
@@ -1653,17 +2034,22 @@ function renderMonthly() {
   monthBar.innerHTML = MONTH_NAMES.map((m,i) => 
     `<div class="month-pill ${i===state.currentMonth&&state.currentYear===new Date().getFullYear()?'active':''}" onclick="setMonth(${i})">${m}</div>`
   ).join('');
-  
+
   const txs = getMonthTxs(state.currentYear, state.currentMonth);
-  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  // Get actual salary for this month
+  const salEntry = getSalaryForMonth(state.currentYear, state.currentMonth);
+  const actualSalary = (salEntry.amount > 0 ? salEntry.amount : null) ?? (state.settings.salary || 0);
+  const incomeFromTx = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const income = actualSalary + incomeFromTx;
   const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  
+
   document.getElementById('month-summary').innerHTML = `
-    <div class="summary-box"><div class="s-label">الإيرادات</div><div class="s-value green">${fmt(income)}</div></div>
-    <div class="summary-box"><div class="s-label">المصاريف</div><div class="s-value red">${fmt(expense)}</div></div>
-    <div class="summary-box"><div class="s-label">الصافي</div><div class="s-value ${income-expense>=0?'green':'red'}">${fmt(income-expense)}</div></div>
+    <div class="summary-box"><div class="s-label">💰 الراتب الفعلي</div><div class="s-value" style="color:var(--accent2)">${fmt(actualSalary)}</div></div>
+    <div class="summary-box"><div class="s-label">📥 إيرادات إضافية</div><div class="s-value green">${fmt(incomeFromTx)}</div></div>
+    <div class="summary-box"><div class="s-label">💸 المصاريف</div><div class="s-value red">${fmt(expense)}</div></div>
+    <div class="summary-box"><div class="s-label">🏦 الصافي</div><div class="s-value ${income-expense>=0?'green':'red'}">${fmt(income-expense)}</div></div>
   `;
-  
+
   renderCalendar();
   renderDonut(txs);
   renderBarChart();
@@ -1674,6 +2060,7 @@ function renderMonthly() {
 function setMonth(m) {
   state.currentMonth = m;
   renderMonthly();
+  renderSalaryTable();
 }
 
 function renderCalendar() {
@@ -2046,63 +2433,105 @@ function openPlanModal() {
 // ================== SETTINGS ==================
 // ================== SALARY TABLE ==================
 function getSalaryForMonth(year, month) {
-  // ابحث عن راتب مسجل لهذا الشهر أولاً
-  const entry = state.salaries.find(s => s.year === year && s.month === month);
-  if (entry) return entry;
-  // وإلا ارجع الافتراضي
+  // استخدم Number() للمقارنة لتجنب type mismatch بعد JSON.parse
+  const y = Number(year), m = Number(month);
+  const entry = state.salaries.find(s => Number(s.year) === y && Number(s.month) === m);
+  if (entry) return { amount: Number(entry.amount), day: Number(entry.day) };
+  // الافتراضي
   return { amount: state.settings.salary || 0, day: state.settings.payday || 27 };
 }
 
 function addSalaryEntry() {
-  const month  = parseInt(document.getElementById('sal-month').value);
-  const year   = parseInt(document.getElementById('sal-year').value) || new Date().getFullYear();
-  const day    = parseInt(document.getElementById('sal-day').value) || 27;
+  const month  = parseInt(document.getElementById('sal-month').value, 10);
+  const year   = parseInt(document.getElementById('sal-year').value, 10) || new Date().getFullYear();
+  const dayVal = document.getElementById('sal-day').value.trim();
+  const day    = dayVal !== '' ? parseInt(dayVal, 10) : 27;
   const amount = parseFloat(document.getElementById('sal-amount').value) || 0;
-  if (!amount) { showToast('⚠️ أدخل المبلغ', 'var(--yellow)'); return; }
-  // استبدل إذا موجود
-  const idx = state.salaries.findIndex(s => s.year===year && s.month===month);
-  if (idx >= 0) state.salaries[idx] = { year, month, day, amount };
-  else state.salaries.push({ year, month, day, amount });
-  state.salaries.sort((a,b) => b.year!==a.year ? b.year-a.year : b.month-a.month);
-  save(); closeModal('add-salary-modal'); renderSalaryTable(); renderTop();
-  showToast(`✅ راتب ${MONTH_NAMES[month]} ${year} — ${fmt(amount)}`, 'var(--green)');
-  // reset
+
+  if (!amount || amount <= 0) { showToast('⚠️ أدخل المبلغ', 'var(--yellow)'); return; }
+  if (day < 1 || day > 31)   { showToast('⚠️ يوم النزول يجب أن يكون بين 1 و 31', 'var(--yellow)'); return; }
+  if (isNaN(year) || year < 2000) { showToast('⚠️ أدخل سنة صحيحة', 'var(--yellow)'); return; }
+
+  // Save salary entry
+  const entry = { year: Number(year), month: Number(month), day: Number(day), amount: Number(amount) };
+  const idx = state.salaries.findIndex(s => Number(s.year) === entry.year && Number(s.month) === entry.month);
+  if (idx >= 0) state.salaries[idx] = entry;
+  else state.salaries.push(entry);
+  state.salaries.sort((a,b) => b.year !== a.year ? b.year - a.year : b.month - a.month);
+
+  // Also create/update a transaction so it shows in calendar/day/week
+  const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+  const salaryCat = state.categories.find(c => c.name.includes('راتب'))?.id || 'c7';
+  const existingTx = state.transactions.find(t => t.date === dateStr && t.category === salaryCat && t.type === 'income');
+  if (existingTx) {
+    existingTx.amount = amount;
+  } else {
+    state.transactions.push({
+      id: uid(), amount: amount, category: salaryCat,
+      note: `راتب ${MONTH_NAMES[month]} ${year}`,
+      date: dateStr, type: 'income'
+    });
+  }
+
+  save();
+  closeModal('add-salary-modal');
+  renderSalaryTable();
+  renderTop();
+  refreshDayWeek();
+  showToast(`✅ راتب ${MONTH_NAMES[month]} ${year} — ${fmt(amount)} · يوم ${day}`, 'var(--green)');
   document.getElementById('sal-amount').value = '';
   document.getElementById('sal-day').value = '';
 }
 
 function deleteSalaryEntry(year, month) {
   showConfirm('حذف الراتب', `حذف راتب ${MONTH_NAMES[month]} ${year}؟`, '💵', () => {
+    // Find the salary entry to get the day
+    const sal = state.salaries.find(s => s.year===year && s.month===month);
     state.salaries = state.salaries.filter(s => !(s.year===year && s.month===month));
-    save(); renderSalaryTable(); renderTop();
+    // Also remove associated transaction
+    if (sal) {
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(sal.day).padStart(2,'0')}`;
+      const salaryCat = state.categories.find(c => c.name.includes('راتب'))?.id || 'c7';
+      state.transactions = state.transactions.filter(t => !(t.date === dateStr && t.category === salaryCat && t.type === 'income' && t.note && t.note.includes('راتب')));
+    }
+    save(); renderSalaryTable(); renderTop(); refreshDayWeek();
     showToast('تم الحذف', 'var(--red)');
   });
-}
-
-function renderSalaryTable() {
-  const tbody = document.getElementById('salary-tbody');
-  const empty = document.getElementById('salary-empty');
-  if (!tbody) return;
-  if (!state.salaries.length) {
-    tbody.innerHTML = '';
-    if (empty) empty.style.display = 'block';
-    return;
-  }
-  if (empty) empty.style.display = 'none';
-  tbody.innerHTML = state.salaries.map(s => `
-    <tr>
-      <td><b>${MONTH_NAMES[s.month]}</b> <span style="color:var(--text3);font-size:11px">${s.year}</span></td>
-      <td style="text-align:center;color:var(--text2)">${s.day}</td>
-      <td style="text-align:center;color:var(--green);font-weight:700">${fmt(s.amount)}</td>
-      <td style="text-align:center">
-        <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteSalaryEntry(${s.year},${s.month})">🗑️</button>
-      </td>
-    </tr>`).join('');
 }
 
 function saveCurrency() {
   state.settings.currency = document.getElementById('s-currency').value;
   save(); renderTop();
+}
+
+
+function renderRecurringList() {
+  const container = document.getElementById('recurring-list');
+  if (!container) return;
+  const list = state.recurring || [];
+  if (!list.length) {
+    container.innerHTML = '<p style="color:var(--text3);font-size:13px;text-align:center;padding:10px">لا توجد عمليات متكررة</p>';
+    return;
+  }
+  container.innerHTML = list.map(r => {
+    const cat = getCat(r.category);
+    return `<div class="cat-item" style="padding:8px 0">
+      <div class="cat-emoji">${cat.emoji}</div>
+      <div class="cat-info">
+        <div class="cat-name">${cat.name} · ${fmt(r.amount)}</div>
+        <div style="font-size:11px;color:var(--text3)">يوم ${r.day} من كل شهر · ${r.note || 'بلا ملاحظة'}</div>
+      </div>
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteRecurring('${r.id}')">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+function deleteRecurring(id) {
+  showConfirm('حذف تكرار', 'إيقاف هذه العملية المتكررة؟', '🔄', () => {
+    state.recurring = (state.recurring || []).filter(r => r.id !== id);
+    save(); renderRecurringList();
+    showToast('تم إيقاف التكرار', 'var(--red)');
+  });
 }
 
 function renderSettings() {
@@ -2116,9 +2545,10 @@ function renderSettings() {
   document.getElementById('sal-month').value = now.getMonth();
   document.getElementById('sal-year').value  = now.getFullYear();
   renderSalaryTable();
-  renderCatsList();
-  renderLimitsList();
+  renderMergedCatLimits();
+  renderMergedCatLimits();
   renderNavSortList();
+  renderRecurringList();
 }
 
 function saveSettings() {
@@ -2129,8 +2559,8 @@ function saveSettings() {
   showToast('✅ تم حفظ الإعدادات', 'var(--green)');
 }
 
-function renderCatsList() {
-  const container = document.getElementById('cats-list');
+function renderMergedCatLimits() {
+  const container = document.getElementById('cats-list-merged');
   container.innerHTML = state.categories.map(c => `
     <div class="cat-item">
       <div class="cat-emoji">${c.emoji}</div>
@@ -2143,28 +2573,127 @@ function renderCatsList() {
   `).join('');
 }
 
-function renderLimitsList() {
-  const container = document.getElementById('limits-list');
+function toggleMergedCatLimits() {
+  const content = document.getElementById('merged-cat-limits-content');
+  const btn = document.getElementById('cat-limits-toggle-btn');
+  if (!content || !btn) return;
+  if (content.style.display === 'none') {
+    content.style.display = '';
+    btn.textContent = '👁️ إخفاء';
+  } else {
+    content.style.display = 'none';
+    btn.textContent = '👁️ إظهار';
+  }
+}
+
+function deleteLimitMerged(catId) {
+  showConfirm('حذف الحد', 'حذف حد الإنفاق لهذه الفئة؟', '🗑️', () => {
+    const cat = state.categories.find(c => c.id === catId);
+    if (cat) { cat.limit = 0; save(); renderMergedCatLimits(); }
+    showToast('تم حذف الحد', 'var(--red)');
+  });
+}
+
+function addNewLimitMerged() {
+  const catSel = document.getElementById('limit-cat-select-merged');
+  const amtInput = document.getElementById('limit-amount-input-merged');
+  const catId = catSel?.value;
+  const amount = parseFloat(amtInput?.value) || 0;
+  if (!catId || amount <= 0) {
+    showToast('⚠️ اختر فئة وأدخل مبلغ', 'var(--yellow)');
+    return;
+  }
+  setCatLimit(catId, amount);
+  renderMergedCatLimits();
+  if (amtInput) amtInput.value = '';
+  showToast('✅ تم إضافة الحد', 'var(--green)');
+}
+
+function addNewCategoryInline() {
+  const name = document.getElementById('new-cat-name')?.value.trim();
+  const emoji = document.getElementById('new-cat-emoji')?.value.trim() || '🏷️';
+  const type = document.getElementById('new-cat-type')?.value || 'expense';
+  const keywords = document.getElementById('new-cat-keywords')?.value.trim() || '';
+
+  if (!name) { showToast('⚠️ أدخل اسم الفئة', 'var(--yellow)'); return; }
+  if (state.categories.find(c => c.name === name)) { showToast('⚠️ الفئة موجودة', 'var(--yellow)'); return; }
+
+  state.categories.push({
+    id: 'c' + Date.now(),
+    name, emoji, type, limit: 0, keywords
+  });
+  save();
+  renderMergedCatLimits();
+
+  // Clear inputs
+  document.getElementById('new-cat-name').value = '';
+  document.getElementById('new-cat-emoji').value = '';
+  document.getElementById('new-cat-keywords').value = '';
+
+  showToast(`✅ تم إضافة ${emoji} ${name}`, 'var(--green)');
+}
+
+function deleteCategoryInline(id) {
+  showConfirm('حذف الفئة', 'حذف هذه الفئة؟ العمليات المرتبطة بها ستصبح بدون فئة.', '🗑️', () => {
+    state.categories = state.categories.filter(c => c.id !== id);
+    save(); renderMergedCatLimits();
+    showToast('تم حذف الفئة', 'var(--red)');
+  });
+}
+
+function renderMergedCatLimits() {
+  // Section 1: Categories
+  const catsContainer = document.getElementById('cats-list-merged');
+  if (catsContainer) {
+    catsContainer.innerHTML = state.categories.map(c => `
+      <div class="cat-item" style="align-items:center">
+        <div class="cat-emoji">${c.emoji}</div>
+        <div class="cat-info" style="flex:1">
+          <div class="cat-name">${c.name}</div>
+          <div style="font-size:10px;color:var(--text3)">${c.type==='income'?'💰 دخل':c.type==='both'?'🔀 كلاهما':'💸 مصروف'} ${c.keywords?'· '+c.keywords:''}</div>
+        </div>
+        <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteCategoryInline('${c.id}')" title="حذف">🗑️</button>
+      </div>
+    `).join('');
+  }
+
+  // Section 2: Limits
+  const limitsContainer = document.getElementById('limits-list-merged');
+  const catSelect = document.getElementById('limit-cat-select-merged');
   const expCats = state.categories.filter(c => c.type !== 'income');
   const today = new Date();
   const txs = getMonthTxs(today.getFullYear(), today.getMonth());
-  container.innerHTML = expCats.map(c => {
-    const spent = txs.filter(t=>t.type==='expense'&&t.category===c.id).reduce((s,t)=>s+t.amount,0);
-    const limit = c.limit || 0;
-    const pct = limit ? Math.min(100, (spent/limit)*100) : 0;
-    const status = pct > 90 ? 'red' : pct > 70 ? 'yellow' : 'green';
-    return `<div class="cat-item">
-      <div class="cat-emoji">${c.emoji}</div>
-      <div class="cat-info">
-        <div class="cat-name">${c.name}</div>
-        ${limit ? `<div class="cat-limit-bar">
-          <div class="cat-limit-text">${fmt(spent)} / ${fmt(limit)}</div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--${status})"></div></div>
-        </div>` : '<div style="font-size:11px;color:var(--text3)">بلا حد</div>'}
-      </div>
-      <input type="number" placeholder="حد" value="${limit||''}" style="width:80px" onchange="setCatLimit('${c.id}',this.value)">
-    </div>`;
-  }).join('');
+
+  if (catSelect) {
+    catSelect.innerHTML = '<option value="">اختر فئة...</option>' + 
+      expCats.map(c => `<option value="${c.id}">${c.emoji} ${c.name}</option>`).join('');
+  }
+
+  const catsWithLimits = expCats.filter(c => c.limit > 0);
+  if (!catsWithLimits.length) {
+    if (limitsContainer) limitsContainer.innerHTML = '<div style="text-align:center;padding:12px;color:var(--text3);font-size:12px">لا توجد حدود مسجلة</div>';
+  } else if (limitsContainer) {
+    limitsContainer.innerHTML = catsWithLimits.map(c => {
+      const spent = txs.filter(t=>t.type==='expense'&&t.category===c.id).reduce((s,t)=>s+t.amount,0);
+      const limit = c.limit || 0;
+      const pct = limit ? Math.min(100, (spent/limit)*100) : 0;
+      const status = pct > 90 ? 'red' : pct > 70 ? 'yellow' : 'green';
+      return `<div class="cat-item" style="align-items:center">
+        <div class="cat-emoji">${c.emoji}</div>
+        <div class="cat-info" style="flex:1">
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-limit-bar">
+            <div class="cat-limit-text">${fmt(spent)} / ${fmt(limit)}</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:var(--${status})"></div></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:4px;align-items:center">
+          <input type="number" placeholder="حد" value="${limit||''}" style="width:60px;font-size:11px" onchange="setCatLimit('${c.id}',this.value);renderMergedCatLimits();">
+          <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteLimitMerged('${c.id}')" title="حذف الحد">🗑️</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
 }
 
 function setCatLimit(id, val) {
@@ -2180,7 +2709,7 @@ function saveCategory() {
   const keywords = document.getElementById('cat-keywords').value.trim();
   if (!name) return;
   state.categories.unshift({ id: uid(), name, emoji, type, limit, keywords });
-  save(); closeModal('cat-modal'); renderCatsList(); renderLimitsList();
+  save(); closeModal('cat-modal'); renderMergedCatLimits(); renderMergedCatLimits();
   document.getElementById('cat-name').value = '';
   document.getElementById('cat-emoji-input').value = '';
   document.getElementById('cat-limit').value = '';
@@ -2194,10 +2723,14 @@ function openAddTx(dateStr) {
   document.getElementById('add-tx-title').textContent = 'إضافة عملية';
   document.getElementById('tx-amount').value = '';
   document.getElementById('tx-note').value = '';
-  document.getElementById('tx-date').value = dateStr || dateKey(state.currentDate);
+  const d = dateStr || dateKey(state.currentDate);
+  document.getElementById('tx-date').value = d;
+  document.getElementById('tx-date-text').value = d;
+  document.getElementById('tx-recurring').checked = false;
   setTxType('expense');
   populateCategorySelect('expense');
   openModal('add-tx-modal');
+  setTimeout(() => document.getElementById('tx-amount').focus(), 100);
 }
 
 function editTx(id) {
@@ -2208,6 +2741,8 @@ function editTx(id) {
   document.getElementById('tx-amount').value = tx.amount;
   document.getElementById('tx-note').value = tx.note || '';
   document.getElementById('tx-date').value = tx.date;
+  document.getElementById('tx-date-text').value = tx.date;
+  document.getElementById('tx-recurring').checked = false;
   setTxType(tx.type);
   populateCategorySelect(tx.type);
   document.getElementById('tx-category').value = tx.category;
@@ -2232,18 +2767,28 @@ function saveTx() {
   const amount   = parseFloat(document.getElementById('tx-amount').value);
   const category = document.getElementById('tx-category').value;
   const note     = document.getElementById('tx-note').value.trim();
-  const date     = document.getElementById('tx-date').value;
+  const date     = document.getElementById('tx-date').value || document.getElementById('tx-date-text').value;
 
   if (!amount || amount <= 0) { showToast('⚠️ أدخل مبلغاً صحيحاً', 'var(--yellow)'); return; }
   if (!category)              { showToast('⚠️ اختر الفئة', 'var(--yellow)'); return; }
   if (!date)                  { showToast('⚠️ اختر التاريخ', 'var(--yellow)'); return; }
 
+  const isRecurring = document.getElementById('tx-recurring')?.checked || false;
   if (state.editingTx) {
     const tx = state.transactions.find(t => t.id === state.editingTx);
     if (tx) { tx.amount = amount; tx.category = category; tx.note = note; tx.date = date; tx.type = currentTxType; }
     state.editingTx = null;
   } else {
-    state.transactions.push({ id: uid(), amount, category, note, date, type: currentTxType });
+    const newTx = { id: uid(), amount, category, note, date, type: currentTxType };
+    state.transactions.push(newTx);
+    if (isRecurring) {
+      const [ry, rm, rd] = date.split('-').map(Number);
+      state.recurring.push({
+        id: uid(), amount, category, note, type: currentTxType,
+        day: rd, created: date
+      });
+      showToast('🔄 تم حفظها كعملية متكررة', 'var(--accent)');
+    }
   }
   save();
   closeModal('add-tx-modal');
@@ -2289,6 +2834,18 @@ function downloadFile(name, type, content) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([content], {type}));
   a.download = name; a.click();
+}
+
+
+function confirmImportMerge() {
+  showConfirm('تأكيد الجمع', 'هل أنت متأكد من الإضافة فوق الموجودة؟', '📥', () => {
+    importData('merge');
+  });
+}
+function confirmImportReplace() {
+  showConfirm('تأكيد الاستبدال', 'سيتم مسح جميع البيانات الحالية واستبدالها بالملف الجديد. هل أنت متأكد؟', '⚠️', () => {
+    importData('replace');
+  });
 }
 
 function importData(mode) {
@@ -2355,12 +2912,46 @@ function importData(mode) {
 
 // ================== THEMES ==================
 function renderThemes() {
-  document.getElementById('theme-grid').innerHTML = THEMES.map(t => `
-    <div class="theme-swatch ${state.theme === t.id ? 'active' : ''}" onclick="applyTheme('${t.id}')">
-      <div class="theme-swatch-preview" style="background:linear-gradient(135deg,${t.colors[0]} 50%,${t.colors[1]} 50%)"></div>
-      <div class="theme-swatch-name">${t.name}</div>
-    </div>
-  `).join('');
+  const groups = [
+    { name: '☀️ فاتحة', color: '#f5a623', themes: ['theme-light','theme-light-blue','theme-cream','theme-paper','theme-ice','theme-sand','theme-blush','theme-arctic-day'] },
+    { name: '🖤 داكنة محايدة', color: '#78909c', themes: ['theme-default','theme-slate','theme-charcoal','theme-steel','theme-iron','theme-obsidian','theme-midnight-blue'] },
+    { name: '💙 أزرق وسماوي', color: '#2196f3', themes: ['theme-ocean','theme-ocean-deep','theme-arctic','theme-glacier','theme-storm','theme-cobalt','theme-blueberry'] },
+    { name: '💚 أخضر وطبيعة', color: '#4caf50', themes: ['theme-forest','theme-mint','theme-emerald','theme-pine','theme-moss','theme-sage','theme-jade','theme-olive'] },
+    { name: '💜 بنفسجي', color: '#9c27b0', themes: ['theme-grape','theme-purple-haze','theme-twilight','theme-plum','theme-royal','theme-dusk','theme-mulberry','theme-space'] },
+    { name: '❤️ أحمر ووردي', color: '#e91e63', themes: ['theme-rose','theme-rose-gold','theme-sakura','theme-candy','theme-wine','theme-coral','theme-lava','theme-infrared'] },
+    { name: '🧡 برتقالي وذهبي', color: '#ff9800', themes: ['theme-sunset','theme-gold','theme-volcano','theme-amber','theme-brick','theme-brass','theme-retro','theme-tangerine','theme-desert'] },
+    { name: '🤎 بني', color: '#8d6e63', themes: ['theme-coffee','theme-mocha'] },
+    { name: '⚡ نيون وحيوية', color: '#00e676', themes: ['theme-neon','theme-cyberpunk','theme-electric','theme-aurora','theme-teal-dark','theme-indigo','theme-matrix','theme-toxic','theme-khaki'] },
+    { name: '🌈 جديدة', color: '#ff69b4', themes: ['theme-peacock','theme-dragon','theme-lemon','theme-berry'] }
+  ];
+
+  const container = document.getElementById('theme-grid');
+  container.style.display = 'flex';
+  container.style.flexDirection = 'column';
+  container.style.gap = '0';
+
+  container.innerHTML = groups.map(g => {
+    const groupThemes = g.themes.map(tid => THEMES.find(t => t.id === tid)).filter(Boolean);
+    if (!groupThemes.length) return '';
+    return `
+      <div style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:8px 12px;background:var(--bg3);border-radius:var(--radius-sm);border-right:3px solid ${g.color}">
+          <div style="width:14px;height:14px;border-radius:50%;background:${g.color};box-shadow:0 0 10px ${g.color}60;flex-shrink:0"></div>
+          <span style="font-size:14px;font-weight:700;color:var(--text)">${g.name}</span>
+          <span style="font-size:11px;color:var(--text3);background:var(--bg4);padding:2px 8px;border-radius:10px">${groupThemes.length}</span>
+          <div style="flex:1;height:1px;background:var(--border);opacity:0.4"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px">
+          ${groupThemes.map(t => `
+            <div class="theme-swatch ${state.theme === t.id ? 'active' : ''}" onclick="applyTheme('${t.id}')">
+              <div class="theme-swatch-preview" style="background:linear-gradient(135deg,${t.colors[0]} 50%,${t.colors[1]} 50%)"></div>
+              <div class="theme-swatch-name">${t.name}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 function applyTheme(themeId) {
@@ -2433,7 +3024,7 @@ function showPage(name) {
   });
 
   if (name === 'dayweek')  { renderDaily(); renderWeekly(); }
-  if (name === 'monthly')  renderMonthly();
+  if (name === 'monthly')  { renderMonthly(); renderSalaryTable(); }
   if (name === 'planning') renderPlanning();
   if (name === 'settings') renderSettings();
   if (name === 'colors')   renderThemes();
@@ -2486,8 +3077,8 @@ let dbBarChart = null;
 function getCycles(count) {
   const today  = localToday();
   // احسب بداية الدورة الحالية
-  const curMon  = getSalaryForMonth(today.getFullYear(), today.getMonth());
-  const paydayNow = curMon.day || state.settings.payday || 27;
+  const curMon    = getSalaryForMonth(today.getFullYear(), today.getMonth());
+  const paydayNow = (curMon.day > 0 ? curMon.day : null) ?? (state.settings.payday || 27);
   let cycleStart, cycleEnd;
   if (today.getDate() >= paydayNow) {
     cycleStart = new Date(today.getFullYear(), today.getMonth(), paydayNow);
@@ -2504,7 +3095,7 @@ function getCycles(count) {
     const e = new Date(cycleEnd.getFullYear(),   cycleEnd.getMonth()-i,   cycleEnd.getDate());
     const sStr = dateKey(s), eStr = dateKey(e);
     const salEntry = getSalaryForMonth(s.getFullYear(), s.getMonth());
-    const salAmt   = salEntry.amount || state.settings.salary || 0;
+    const salAmt   = (salEntry.amount > 0 ? salEntry.amount : null) ?? (state.settings.salary || 0);
     const txs      = state.transactions.filter(t=>t.date>=sStr&&t.date<=eStr);
     const income   = salAmt + txs.filter(t=>t.type==='income').reduce((a,t)=>a+t.amount,0);
     const expense  = txs.filter(t=>t.type==='expense').reduce((a,t)=>a+t.amount,0);
@@ -2517,6 +3108,37 @@ function getCycles(count) {
       label:`${MONTH_NAMES[s.getMonth()]} ${s.getFullYear()}` });
   }
   return cycles;
+}
+
+
+function renderInsights() {
+  const el = document.getElementById('db-insights');
+  if (!el) return;
+  const today = localToday();
+  const txs = getMonthTxs(today.getFullYear(), today.getMonth());
+  const alerts = [];
+  // Category limits
+  state.categories.filter(c => c.type !== 'income' && c.limit > 0).forEach(c => {
+    const spent = txs.filter(t => t.type === 'expense' && t.category === c.id).reduce((s,t) => s + t.amount, 0);
+    if (spent >= c.limit) alerts.push({ icon: '⚠️', text: `تجاوزت حد ${c.name}: ${fmt(spent)} من ${fmt(c.limit)}`, color: 'var(--red)' });
+    else if (spent >= c.limit * 0.85) alerts.push({ icon: '🔔', text: `اقتربت من حد ${c.name}: ${Math.round((spent/c.limit)*100)}%`, color: 'var(--yellow)' });
+  });
+  // Cycle check
+  const info = getPayCycleInfo();
+  if (info.remaining < 0) alerts.push({ icon: '🚨', text: 'ميزانية الدورة الحالية سالبة!', color: 'var(--red)' });
+  else if (info.daysLeft <= 3 && info.remaining < info.avgPerDay * 3) alerts.push({ icon: '⏳', text: `${info.daysLeft} أيام متبقية والرصيد منخفض`, color: 'var(--yellow)' });
+
+  if (!alerts.length) {
+    el.innerHTML = `<div style="background:rgba(76,175,140,0.1);border:1px solid rgba(76,175,140,0.3);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:18px">✅</span>
+      <span style="font-size:13px;color:var(--green);font-weight:600">وضعك المالي طيب هذا الشهر</span>
+    </div>`;
+  } else {
+    el.innerHTML = alerts.map(a => `<div style="background:${a.color}15;border:1px solid ${a.color}40;border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:18px">${a.icon}</span>
+      <span style="font-size:13px;color:${a.color};font-weight:600">${a.text}</span>
+    </div>`).join('');
+  }
 }
 
 function renderDashboard() {
@@ -2563,6 +3185,7 @@ function renderDashboard() {
   const fullSpendPct = totalFullIncome>0 ? Math.min(100,(totalFullExpense/totalFullIncome)*100) : 0;
   const fullCol = fullSpendPct>90?'var(--red)':fullSpendPct>70?'var(--yellow)':'var(--green)';
 
+  renderInsights();
   document.getElementById('db-full-summary').innerHTML = `
     <div style="background:linear-gradient(145deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;overflow:hidden">
       <div style="padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
@@ -2865,7 +3488,7 @@ function deleteCategory(id) {
   showConfirm('حذف الفئة', `هل تريد حذف فئة "${cat ? cat.name : ''}" نهائياً؟`, '🏷️', () => {
     state.categories = state.categories.filter(c => c.id !== id);
     showToast('🗑️ تم حذف الفئة', 'var(--red)');
-    save(); renderCatsList(); renderLimitsList();
+    save(); renderMergedCatLimits(); renderMergedCatLimits();
   });
 }
 
@@ -3069,19 +3692,51 @@ function renderAnalysis() {
   const worstMonth = dataMonths.length ? dataMonths.reduce((a,b)=>a.expense>b.expense?a:b) : null;
   const forecastVal = typeof forecast === 'object' ? forecast.forecast : forecast;
   const slopeVal = typeof forecast === 'object' ? forecast.slope : 0;
-  document.getElementById('analysis-forecast-row').innerHTML = `
-    <div class="forecast-card">
-      <div class="fc-label">🔮 توقع الشهر القادم</div>
-      <div class="fc-value" style="color:var(--accent2)">${fmt(forecastVal)}</div>
-      <div class="fc-sub">${slopeVal > 0 ? '📈 الإنفاق في ارتفاع' : slopeVal < 0 ? '📉 الإنفاق في انخفاض' : '➡️ إنفاق مستقر'} (متوسط آخر 3 أشهر)</div>
+  document.getElementById('analysis-unified-list').innerHTML = `
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);border-right:3px solid var(--accent2)">
+      <span style="font-size:20px">🔮</span>
+      <div style="flex:1">
+        <div style="font-size:12px;color:var(--text3)">توقع الشهر القادم</div>
+        <div style="font-size:16px;font-weight:700;color:var(--accent2)">${fmt(forecastVal)}</div>
+      </div>
+      <span style="font-size:11px;color:var(--text3);padding:2px 8px;background:var(--bg4);border-radius:10px">${slopeVal > 0 ? '📈 ارتفاع' : slopeVal < 0 ? '📉 انخفاض' : '➡️ مستقر'}</span>
     </div>
-    <div class="forecast-card" style="border-color:rgba(76,175,140,0.3)">
-      <div class="fc-label" style="color:var(--green)">🏆 أفضل شهر (أقل إنفاق)</div>
-      ${bestMonth ? `<div class="fc-value" style="color:var(--green)">${bestMonth.name}</div><div class="fc-sub">مصروف: ${fmt(bestMonth.expense)} · متبقي: ${fmt(bestMonth.remaining)}</div>` : '<div class="fc-sub">لا بيانات كافية</div>'}
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);border-right:3px solid var(--green)">
+      <span style="font-size:20px">🏆</span>
+      <div style="flex:1">
+        <div style="font-size:12px;color:var(--text3)">أفضل شهر (أقل إنفاق)</div>
+        <div style="font-size:16px;font-weight:700;color:var(--green)">${bestMonth ? bestMonth.name : '—'}</div>
+      </div>
+      ${bestMonth ? `<span style="font-size:13px;font-weight:600;color:var(--green)">${fmt(bestMonth.expense)}</span>` : ''}
     </div>
-    <div class="forecast-card" style="border-color:rgba(224,92,92,0.3)">
-      <div class="fc-label" style="color:var(--red)">📉 أعلى إنفاق</div>
-      ${worstMonth ? `<div class="fc-value" style="color:var(--red)">${worstMonth.name}</div><div class="fc-sub">مصروف: ${fmt(worstMonth.expense)} · متبقي: ${fmt(worstMonth.remaining)}</div>` : '<div class="fc-sub">لا بيانات كافية</div>'}
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);border-right:3px solid var(--red)">
+      <span style="font-size:20px">📉</span>
+      <div style="flex:1">
+        <div style="font-size:12px;color:var(--text3)">أعلى إنفاق</div>
+        <div style="font-size:16px;font-weight:700;color:var(--red)">${worstMonth ? worstMonth.name : '—'}</div>
+      </div>
+      ${worstMonth ? `<span style="font-size:13px;font-weight:600;color:var(--red)">${fmt(worstMonth.expense)}</span>` : ''}
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);border-right:3px solid #4caf50">
+      <span style="font-size:20px">📥</span>
+      <div style="flex:1">
+        <div style="font-size:12px;color:var(--text3)">إجمالي الإيرادات</div>
+        <div style="font-size:16px;font-weight:700;color:var(--green)">${fmt(totalIncome)}</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);border-right:3px solid var(--red)">
+      <span style="font-size:20px">📤</span>
+      <div style="flex:1">
+        <div style="font-size:12px;color:var(--text3)">إجمالي المصاريف</div>
+        <div style="font-size:16px;font-weight:700;color:var(--red)">${fmt(totalExpense)}</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg3);border-radius:var(--radius-sm);border-right:3px solid ${totalRemaining>=0?'var(--green)':'var(--red)'}">
+      <span style="font-size:20px">💰</span>
+      <div style="flex:1">
+        <div style="font-size:12px;color:var(--text3)">الصافي</div>
+        <div style="font-size:16px;font-weight:700;color:${totalRemaining>=0?'var(--green)':'var(--red)'}">${fmt(totalRemaining)}</div>
+      </div>
     </div>
   `;
 
@@ -3145,9 +3800,8 @@ const ALL_NAV_PAGES = [
   { id:'dayweek',   icon:'📅', label:'يوم/أسبوع' },
   { id:'monthly',   icon:'🗓️', label:'شهري'       },
   { id:'colors',    icon:'🎨', label:'ألوان'       },
-  { id:'analysis',  icon:'📈', label:'تحليل'       },
-  { id:'planning',  icon:'🎯', label:'تخطيط'      },
-  { id:'settings',  icon:'⚙️', label:'إعداد', permanent:true },
+  { id:'analysis',  icon:'🎯', label:'تحليل'       },
+  { id:'settings',  icon:'⚙️', label:'تخطيط', permanent:true },
 ];
 
 function getNavOrder() {
@@ -3210,28 +3864,38 @@ function renderNavSortList() {
     if (!items.find(i => i.id === p.id)) items.push({ ...p, visible: true });
   });
 
-  container.innerHTML = items.map((item) => {
+  container.innerHTML = items.map((item, index) => {
     const isPermanent = item.permanent;
+    const canMoveUp = !isPermanent && index > 0;
+    const canMoveDown = !isPermanent && index < items.length - 1;
     return `
     <div class="nav-sort-item ${!isPermanent && !item.visible ? 'hidden-nav' : ''} ${isPermanent ? 'nav-permanent' : ''}"
          data-id="${item.id}"
          draggable="${!isPermanent}"
          ${!isPermanent ? `ondragstart="navDragStart(event)" ondragover="navDragOver(event)" ondrop="navDrop(event)" ondragend="navDragEnd(event)"` : ''}
-         style="flex-direction:column;align-items:center;justify-content:center;padding:14px 10px;gap:6px;position:relative;min-height:80px;text-align:center">
-      <!-- مقبض السحب أو قفل -->
-      <span style="position:absolute;top:5px;right:6px;font-size:12px;color:var(--text3)">${isPermanent ? '' : '⠿'}</span>
-      <!-- الأيقونة -->
-      <span style="font-size:26px;line-height:1">${item.icon}</span>
-      <!-- الاسم -->
+         style="flex-direction:column;align-items:center;justify-content:center;padding:14px 8px 32px 8px;gap:6px;position:relative;min-height:80px;text-align:center">
+      <!-- Drag handle -->
+      <span style="position:absolute;top:5px;right:6px;font-size:12px;color:var(--text3);opacity:0.5">${isPermanent ? '🔒' : '⠿'}</span>
+      <!-- Icon -->
+      <span style="font-size:24px;line-height:1">${item.icon}</span>
+      <!-- Label -->
       <span style="font-size:12px;font-weight:600;color:${(!isPermanent && !item.visible)?'var(--text3)':'var(--text)'}">${item.label}</span>
-      <!-- زر الإخفاء أو شعار دائم -->
+      <!-- Toggle visibility -->
       ${isPermanent
-        ? `<span style="position:absolute;top:4px;left:6px;font-size:14px" title="لا يمكن إخفاؤه">👊🏻</span>`
+        ? `<span style="position:absolute;top:4px;left:6px;font-size:12px" title="دائم">🔒</span>`
         : `<button class="nav-sort-eye" onclick="toggleNavVisible(this)" title="${item.visible ? 'إخفاء' : 'إظهار'}"
-                  style="position:absolute;top:5px;left:6px;font-size:13px;background:transparent;border:none;cursor:pointer;opacity:0.7">
+                  style="position:absolute;top:5px;left:6px;font-size:12px;background:transparent;border:none;cursor:pointer;opacity:0.7">
              ${item.visible ? '👁️' : '🙈'}
            </button>`
       }
+      <!-- Mobile reorder buttons: ▲ up / ▼ down -->
+      ${!isPermanent ? `
+      <div style="position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:center;gap:6px">
+        <button onclick="moveNavItem('${item.id}', -1)" ${!canMoveUp ? 'disabled' : ''}
+                style="font-size:10px;width:28px;height:20px;border-radius:5px;border:none;background:${canMoveUp ? 'var(--bg4)' : 'transparent'};color:var(--text3);cursor:${canMoveUp ? 'pointer' : 'default'};opacity:${canMoveUp ? 1 : 0.2}">▲</button>
+        <button onclick="moveNavItem('${item.id}', 1)" ${!canMoveDown ? 'disabled' : ''}
+                style="font-size:10px;width:28px;height:20px;border-radius:5px;border:none;background:${canMoveDown ? 'var(--bg4)' : 'transparent'};color:var(--text3);cursor:${canMoveDown ? 'pointer' : 'default'};opacity:${canMoveDown ? 1 : 0.2}">▼</button>
+      </div>` : ''}
     </div>`;
   }).join('');
 }
@@ -3245,6 +3909,29 @@ function toggleNavVisible(btn) {
 
 // ── Drag & Drop ──
 let dragSrc = null;
+function moveNavItem(id, direction) {
+  const container = document.getElementById('nav-sort-list');
+  if (!container) return;
+  const items = Array.from(container.children);
+  const idx = items.findIndex(el => el.dataset.id === id);
+  if (idx === -1) return;
+  const newIdx = idx + direction;
+  if (newIdx < 0 || newIdx >= items.length) return;
+
+  // Swap in DOM
+  const item = items[idx];
+  const target = items[newIdx];
+  if (direction < 0) {
+    container.insertBefore(item, target);
+  } else {
+    container.insertBefore(item, target.nextSibling);
+  }
+
+  // Re-render to update button states
+  saveNavOrder();
+  renderNavSortList();
+}
+
 function navDragStart(e) {
   dragSrc = e.currentTarget;
   e.currentTarget.classList.add('dragging');
@@ -3276,9 +3963,56 @@ function navDragEnd() {
 }
 load();
 applyNavOrder();
+applyZoom();
+processRecurring();
 renderTop();
 renderDaily();
 renderWeekly();
 </script>
+
+<!-- SEARCH MODAL -->
+<div class="modal-overlay hidden" id="search-modal">
+  <div class="modal" style="max-width:640px;max-height:85vh;display:flex;flex-direction:column">
+    <div class="modal-title" style="flex-shrink:0">
+      <span>🔍 البحث في العمليات</span>
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="closeModal('search-modal')">✕</button>
+    </div>
+
+    <!-- Search bar -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-shrink:0">
+      <input type="text" id="search-query" placeholder="ابحث بملاحظة، فئة، مبلغ، أو تاريخ..." style="flex:1;font-size:14px;padding:10px 14px" onkeydown="if(event.key==='Enter')doSearch()">
+      <button class="btn btn-primary" style="padding:10px 20px" onclick="doSearch()">🔍 بحث</button>
+    </div>
+
+    <!-- Filters row -->
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;flex-shrink:0;background:var(--bg3);padding:10px;border-radius:var(--radius-sm);align-items:center">
+      <span style="font-size:12px;color:var(--text3);font-weight:600">🎚️ فلتر:</span>
+      <select id="search-filter-type" style="width:auto;font-size:12px;padding:5px 8px;min-width:100px" onchange="doSearch()">
+        <option value="all">الكل</option>
+        <option value="expense">💸 مصاريف فقط</option>
+        <option value="income">💰 دخل فقط</option>
+      </select>
+      <select id="search-filter-cat" style="width:auto;font-size:12px;padding:5px 8px;min-width:140px" onchange="doSearch()">
+        <option value="all">كل الفئات</option>
+      </select>
+      <input type="date" id="search-filter-from" style="width:auto;font-size:12px;padding:5px 8px" onchange="doSearch()" title="من تاريخ">
+      <input type="date" id="search-filter-to" style="width:auto;font-size:12px;padding:5px 8px" onchange="doSearch()" title="إلى تاريخ">
+      <button class="btn btn-ghost btn-sm" onclick="clearSearchFilters()" style="font-size:11px">✕ مسح</button>
+    </div>
+
+    <!-- Stats bar -->
+    <div id="search-stats" style="display:none;flex-shrink:0;margin-bottom:10px;padding:10px 14px;background:linear-gradient(135deg,var(--bg3),var(--bg4));border-radius:var(--radius-sm);border:1px solid var(--border)"></div>
+
+    <!-- Results -->
+    <div id="search-results" style="flex:1;overflow-y:auto;padding-right:4px;min-height:200px"></div>
+  </div>
+</div>
+
 </body>
-</html>
+</html
+
+        <div class="settings-grid">
+
+          
+          
+>
