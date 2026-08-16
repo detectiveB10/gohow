@@ -376,6 +376,27 @@ tr:hover td { background:var(--bg3); }
 .goal-fill::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); }
 .goal-stats { display:flex; justify-content:space-between; font-size:11px; color:var(--text3); }
 
+/* ── Monthly Operations Cards ── */
+.month-ops-list { display:flex; flex-direction:column; gap:8px; }
+.month-op-card { display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); transition:var(--transition); }
+.month-op-card:hover { background:var(--bg2); transform:translateX(-4px); }
+.month-op-card.expense { border-right:3px solid var(--red); }
+.month-op-card.income { border-right:3px solid var(--green); }
+.month-op-date { min-width:60px; text-align:center; }
+.month-op-day { font-size:16px; font-weight:800; color:var(--accent); }
+.month-op-dname { font-size:10px; color:var(--text3); }
+.month-op-icon { width:36px; height:36px; border-radius:50%; background:var(--bg4); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+.month-op-info { flex:1; min-width:0; }
+.month-op-cat { font-size:13px; font-weight:700; color:var(--text); }
+.month-op-note { font-size:11px; color:var(--text3); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.month-op-amount { font-size:15px; font-weight:800; min-width:80px; text-align:left; }
+.month-op-amount.expense { color:var(--red); }
+.month-op-amount.income { color:var(--green); }
+.month-op-actions { display:flex; gap:4px; }
+.month-op-actions button { background:none; border:none; cursor:pointer; font-size:13px; padding:4px 6px; border-radius:6px; }
+.month-op-actions button:hover { background:var(--bg4); }
+.month-op-empty { text-align:center; padding:30px; color:var(--text3); }
+
 /* ── About / Help Page ── */
 .about-hero { text-align:center; padding:24px; margin-bottom:20px; }
 .about-hero-icon { font-size:48px; margin-bottom:8px; }
@@ -1021,13 +1042,8 @@ tr:hover td { background:var(--bg3); }
           <div id="cats-breakdown-monthly"></div>
         </div>
         <div class="card">
-          <div class="card-title">📋 جدول العمليات</div>
-          <div style="overflow-x:auto">
-            <table>
-              <thead><tr><th>اليوم</th><th>الفئة</th><th>المبلغ</th><th>الملاحظة</th><th></th></tr></thead>
-              <tbody id="monthly-tbody"></tbody>
-            </table>
-          </div>
+          <div class="card-title">📋 عمليات الشهر</div>
+          <div id="monthly-ops"></div>
         </div>
       </div>
 
@@ -1044,7 +1060,7 @@ tr:hover td { background:var(--bg3); }
         <div class="plan-section">
           <div class="plan-section-header">
             <span class="plan-section-title">📅 أقساط قادمة</span>
-            <button class="btn btn-primary btn-sm" onclick="openModal('installment-modal')">+ قسط</button>
+            <button class="btn btn-primary btn-sm" onclick="openAddInstallment()">+ قسط</button>
           </div>
           <div id="installments-list"></div>
         </div>
@@ -1053,7 +1069,7 @@ tr:hover td { background:var(--bg3); }
         <div class="plan-section">
           <div class="plan-section-header">
             <span class="plan-section-title">💳 الديون</span>
-            <button class="btn btn-primary btn-sm" onclick="openModal('debt-modal')">+ دين</button>
+            <button class="btn btn-primary btn-sm" onclick="openAddDebt()">+ دين</button>
           </div>
           <div class="plan-debt-grid" id="debt-grid">
             <div class="plan-debt-card debt-on-me">
@@ -1082,7 +1098,7 @@ tr:hover td { background:var(--bg3); }
         <div class="card" style="margin-top:16px">
           <div class="card-title" style="justify-content:space-between">
             📋 الخطة الشهرية الافتراضية
-            <button class="btn btn-ghost btn-sm" onclick="openModal('plan-modal')">تعديل</button>
+            <button class="btn btn-ghost btn-sm" onclick="openPlanModal()">تعديل</button>
           </div>
           <div id="monthly-plan-display"></div>
         </div>
@@ -1125,6 +1141,10 @@ tr:hover td { background:var(--bg3); }
           <div class="bar-chart-wrap"><canvas id="db-bar-chart"></canvas></div>
         </div>
         <div class="card">
+          <div class="card-title">📈 أداء آخر 12 شهر (حركة الأسهم)</div>
+          <div class="bar-chart-wrap"><canvas id="db-stock-chart"></canvas></div>
+        </div>
+        <div class="card">
           <div class="card-title">🍩 توزيع المصاريف</div>
           <div id="db-donut"></div>
         </div>
@@ -1147,6 +1167,10 @@ tr:hover td { background:var(--bg3); }
         <div class="card">
           <div class="card-title">📊 أداء آخر 12 شهر</div>
           <div class="bar-chart-wrap"><canvas id="bar-chart"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📈 حركة الصافي (شبيهة الأسهم)</div>
+          <div class="bar-chart-wrap"><canvas id="line-chart"></canvas></div>
         </div>
         <div class="card">
           <div class="card-title">📋 ملخص سنوي</div>
@@ -1243,6 +1267,32 @@ tr:hover td { background:var(--bg3); }
             </div>
           </div>
           <button class="btn btn-primary" style="margin-top:14px" onclick="saveSettings()">💾 حفظ الإعدادات</button>
+        </div>
+
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">🔤 مظهر الخط</div>
+          <div class="settings-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+            <div>
+              <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">لون الخط</label>
+              <input type="color" id="s-font-color" onchange="updateFontPreview()">
+              <input type="text" id="s-font-color-text" placeholder="#e8e8f0" style="margin-top:6px" onchange="document.getElementById('s-font-color').value=this.value;updateFontPreview()">
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">نوع الخط</label>
+              <select id="s-font-family" onchange="updateFontPreview()">
+                <option value="'Segoe UI',system-ui,sans-serif">Segoe UI (افتراضي)</option>
+                <option value="'Tajawal',sans-serif">Tajawal</option>
+                <option value="'Cairo',sans-serif">Cairo</option>
+                <option value="'Almarai',sans-serif">Almarai</option>
+                <option value="'Changa',sans-serif">Changa</option>
+                <option value="'Noto Sans Arabic',sans-serif">Noto Sans Arabic</option>
+              </select>
+            </div>
+          </div>
+          <div id="font-preview" style="margin-top:12px;padding:12px;background:var(--bg3);border-radius:var(--radius-sm);border:1px solid var(--border);font-size:14px;text-align:center">
+            نص تجريبي — ميزانيتي
+          </div>
+          <button class="btn btn-primary" style="margin-top:14px" onclick="saveFontSettings()">💾 حفظ مظهر الخط</button>
         </div>
 
         <div class="card" style="margin-bottom:16px">
@@ -1470,7 +1520,7 @@ tr:hover td { background:var(--bg3); }
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
       <div style="flex:1;min-width:120px">
         <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">المبلغ</label>
-        <input type="number" id="tx-amount" placeholder="0" style="font-size:16px;font-weight:700" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('tx-category').focus();}">
+        <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" id="tx-amount" placeholder="0" style="font-size:16px;font-weight:700" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('tx-category').focus();}">
       </div>
       <div style="flex:1;min-width:120px">
         <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:4px">التاريخ</label>
@@ -1491,282 +1541,6 @@ tr:hover td { background:var(--bg3); }
     </div>
   </div>
 </div>
-
-<style>
-.type-btn { flex:1; padding:10px; border:2px solid var(--border); background:var(--bg3); border-radius:var(--radius-sm); cursor:pointer; font-size:14px; font-weight:600; color:var(--text2); transition:0.2s; font-family:inherit; }
-.type-btn.active { border-color:var(--accent); background:var(--accent-glow); color:var(--accent); }
-
-    /* ======== COMPLETELY NEW DESIGN OVERRIDE ======== */
-    
-    /* Animated mesh gradient background */
-    body {
-      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a1a2e);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
-    }
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    
-    /* Glassmorphism cards - stronger effect */
-    .card {
-      background: rgba(255,255,255,0.03);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.05);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    .card:hover {
-      transform: translateY(-4px) scale(1.01);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.15);
-    }
-    
-    /* Neumorphism sidebar */
-    .sidebar {
-      background: linear-gradient(180deg, var(--bg2) 0%, rgba(20,20,40,0.95) 100%);
-      box-shadow: 4px 0 24px rgba(0,0,0,0.3);
-      border-left: none;
-      border-right: 1px solid rgba(255,255,255,0.05);
-    }
-    .sidebar-logo {
-      font-size: 32px;
-      margin-bottom: 16px;
-      filter: drop-shadow(0 0 12px rgba(124,77,255,0.4));
-      animation: pulse 3s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-    }
-    
-    /* Nav buttons - pill style */
-    .nav-btn {
-      width: 60px;
-      height: 56px;
-      border-radius: 16px;
-      margin: 2px 0;
-      background: transparent;
-      position: relative;
-      overflow: hidden;
-    }
-    .nav-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      opacity: 0;
-      transition: opacity 0.3s;
-      border-radius: 16px;
-    }
-    .nav-btn:hover::before { opacity: 0.1; }
-    .nav-btn.active::before { opacity: 1; }
-    .nav-btn.active {
-      box-shadow: 0 4px 20px var(--accent-glow), 0 0 0 1px rgba(255,255,255,0.1);
-    }
-    .nav-btn .nav-icon { font-size: 22px; position: relative; z-index: 1; }
-    .nav-btn .nav-label { font-size: 10px; position: relative; z-index: 1; }
-    .nav-btn.active .nav-icon, .nav-btn.active .nav-label { color: #fff; }
-    
-    /* Top card - floating glass */
-    .top-card {
-      background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(30px);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      border-radius: 0 0 24px 24px;
-      margin: 0 0 16px 0;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-    }
-    
-    /* Salary ring - glow effect */
-    .salary-ring {
-      box-shadow: 0 0 30px var(--accent-glow), inset 0 0 20px rgba(124,77,255,0.1);
-    }
-    
-    /* Transaction items - glass rows */
-    .tx-item-new {
-      background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 14px 16px;
-      margin-bottom: 10px;
-    }
-    .tx-item-new:hover {
-      background: rgba(255,255,255,0.05);
-      transform: translateX(-6px) scale(1.01);
-      border-color: rgba(255,255,255,0.12);
-    }
-    .tx-icon-new {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.05);
-      font-size: 24px;
-    }
-    
-    /* Week cards - glass */
-    .week-card {
-      background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
-    }
-    .week-card:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
-    }
-    
-    /* Calendar cells - glass */
-    .cal-cell-new {
-      background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.04);
-      border-radius: 12px;
-    }
-    .cal-cell-new:hover {
-      background: rgba(255,255,255,0.06);
-      transform: scale(1.08);
-      z-index: 5;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-    }
-    
-    /* Summary boxes - neumorphism */
-    .summary-box {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 20px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.03);
-    }
-    .summary-box:hover {
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 12px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
-    }
-    
-    /* Goal cards - premium glass */
-    .goal-card {
-      background: rgba(255,255,255,0.02);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-    }
-    .goal-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.25);
-      border-color: rgba(255,255,255,0.12);
-    }
-    
-    /* Buttons - premium style */
-    .btn-primary {
-      border-radius: 14px;
-      box-shadow: 0 4px 16px var(--accent-glow), 0 0 0 1px rgba(255,255,255,0.1);
-      position: relative;
-      overflow: hidden;
-    }
-    .btn-primary::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-      transform: rotate(45deg);
-      transition: all 0.5s;
-    }
-    .btn-primary:hover::after {
-      left: 100%;
-    }
-    
-    /* Inputs - glass */
-    input, select, textarea {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      backdrop-filter: blur(10px);
-    }
-    input:focus, select:focus, textarea:focus {
-      background: rgba(255,255,255,0.05);
-      box-shadow: 0 0 0 3px var(--accent-glow), 0 4px 16px rgba(0,0,0,0.1);
-    }
-    
-    /* Modal - stronger glass */
-    .modal {
-      background: rgba(20, 20, 40, 0.85);
-      backdrop-filter: blur(40px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 28px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05);
-    }
-    
-    /* Toast - floating glass */
-    .toast {
-      background: rgba(20, 20, 40, 0.9);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-    }
-    
-    /* Chips - pill glass */
-    .chip {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 24px;
-      backdrop-filter: blur(8px);
-    }
-    .chip:hover {
-      background: rgba(255,255,255,0.08);
-      transform: scale(1.05);
-    }
-    
-    /* Progress bars - glow */
-    .burn-fill, .goal-fill, .cat-bar-fill {
-      box-shadow: 0 0 10px currentColor;
-    }
-    
-    /* Section titles - gradient text */
-    .section-title {
-      font-size: 20px;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--text), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    /* Scrollbar - premium */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-    
-    /* Mobile sidebar - floating dock */
-    @media (max-width: 768px) {
-      .sidebar {
-        background: rgba(20, 20, 40, 0.85);
-        backdrop-filter: blur(30px);
-        border-top: 1px solid rgba(255,255,255,0.08);
-        border-right: none;
-        box-shadow: 0 -8px 32px rgba(0,0,0,0.3);
-        padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
-      }
-      .nav-btn {
-        border-radius: 14px;
-        height: 50px;
-      }
-      .nav-btn.active {
-        box-shadow: 0 4px 16px var(--accent-glow);
-      }
-      .main { padding-bottom: 100px; }
-    }
-
-  </style>
 
 <!-- CAT MODAL -->
 <div class="modal-overlay hidden" id="cat-modal">
@@ -2971,29 +2745,35 @@ function renderMonthly() {
     salaryEmpty.style.display = 'block';
   }
 
-  // Default salary inputs (محذوفة من HTML، موجودة فقط في صفحة الإعدادات)
-  const sSalary = document.getElementById('s-salary');
-  const sPayday = document.getElementById('s-payday');
-  const sCurrency = document.getElementById('s-currency');
-  if (sSalary) sSalary.value = state.settings.salary || '';
-  if (sPayday) sPayday.value = state.settings.payday || '';
-  if (sCurrency) sCurrency.value = state.settings.currency || '⃁';
-
-  // Monthly table
+  // Monthly operations cards
   const sorted = [...monthTxs].sort((a, b) => a.date.localeCompare(b.date));
-  document.getElementById('monthly-tbody').innerHTML = sorted.map(t => {
-    const cat = getCat(t.category);
-    return `<tr>
-      <td>${t.date.slice(8)}</td>
-      <td>${cat.emoji} ${esc(cat.name)}</td>
-      <td style="color:${t.type === 'income' ? 'var(--green)' : 'var(--red)'};font-weight:700">${t.type === 'income' ? '+' : '-'}${fmt(t.amount)}</td>
-      <td style="color:var(--text3);font-size:12px">${esc(t.note || '')}</td>
-      <td>
-        <button class="btn btn-ghost btn-icon btn-sm" onclick="editTx('${t.id}')">✏️</button>
-        <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteTx('${t.id}')">🗑️</button>
-      </td>
-    </tr>`;
-  }).join('') || `<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:30px">لا توجد عمليات هذا الشهر</td></tr>`;
+  const opsContainer = document.getElementById('monthly-ops');
+  if (!sorted.length) {
+    opsContainer.innerHTML = `<div class="month-op-empty"><div class="empty-icon">📋</div><p>لا توجد عمليات هذا الشهر</p><p style="font-size:12px;margin-top:8px">اضغط 💸 مصروف أو 💰 دخل لإضافة عملية</p></div>`;
+  } else {
+    opsContainer.innerHTML = `<div class="month-ops-list">${sorted.map(t => {
+      const cat = getCat(t.category);
+      const d = new Date(t.date + 'T00:00:00');
+      const dayName = DAY_NAMES[d.getDay()];
+      return `<div class="month-op-card ${t.type}">
+        <div class="month-op-date">
+          <div class="month-op-day">${t.date.slice(8)}</div>
+          <div class="month-op-dname">${dayName}</div>
+        </div>
+        <div class="month-op-icon">${cat.emoji}</div>
+        <div class="month-op-info">
+          <div class="month-op-cat">${esc(cat.name)}</div>
+          ${t.note ? `<div class="month-op-note">${esc(t.note)}</div>` : ''}
+        </div>
+        <div class="month-op-amount ${t.type}">${t.type === 'income' ? '+' : '-'}${fmt(t.amount)}</div>
+        <div class="month-op-actions">
+          <button onclick="editTx('${t.id}')" title="تعديل">✏️</button>
+          <button onclick="duplicateTx('${t.id}', true)" title="تكرار للشهر القادم">📋</button>
+          <button onclick="deleteTx('${t.id}')" title="حذف">🗑️</button>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  }
 
   // Cat breakdown
   const catTotals = {};
@@ -3108,9 +2888,28 @@ function deleteSalary(id) {
   });
 }
 
+function openPlanModal() {
+  const cats = state.categories.filter(c => c.type !== 'income');
+  document.getElementById('plan-cats-list').innerHTML = cats.map(c => `
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:18px">${c.emoji}</span>
+      <span style="flex:1;font-size:13px">${esc(c.name)}</span>
+      <input type="number" id="plan-cat-${c.id}" placeholder="0" value="${state.plan.categories[c.id] || ''}" style="width:120px;text-align:center">
+    </div>
+  `).join('');
+  openModal('plan-modal');
+}
+
 // ═══════════════════════════════════════
 //  PLANNING
 // ═══════════════════════════════════════
+
+function getMonthSalary(y, m) {
+  return getSalaryForMonth(y, m).amount || state.settings.salary || 0;
+}
+function getMonthTotal(y, m) {
+  return getMonthTxs(y, m).filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+}
 
 function renderPlanning() {
   // 💰 إجمالي المدخرات
@@ -3279,6 +3078,18 @@ function savePlan() {
 // ── INSTALLMENTS ──
 let editingInstallment = null;
 
+function openAddInstallment() {
+  editingInstallment = null;
+  document.getElementById('installment-modal-title').textContent = 'قسط جديد';
+  document.getElementById('inst-name').value = '';
+  document.getElementById('inst-total').value = '';
+  document.getElementById('inst-paid').value = '';
+  document.getElementById('inst-monthly').value = '';
+  document.getElementById('inst-due-day').value = '';
+  openModal('installment-modal');
+  setTimeout(() => document.getElementById('inst-name').focus(), 100);
+}
+
 function saveInstallment() {
   const name = document.getElementById('inst-name').value.trim();
   const totalAmount = parseFloat(document.getElementById('inst-total').value) || 0;
@@ -3329,6 +3140,17 @@ function deleteInstallment(id) {
 
 // ── DEBTS ──
 let editingDebt = null;
+
+function openAddDebt() {
+  editingDebt = null;
+  document.getElementById('debt-modal-title').textContent = 'دين جديد';
+  document.getElementById('debt-name').value = '';
+  document.getElementById('debt-amount').value = '';
+  document.getElementById('debt-type').value = 'on-me';
+  document.getElementById('debt-date').value = '';
+  openModal('debt-modal');
+  setTimeout(() => document.getElementById('debt-name').focus(), 100);
+}
 
 function saveDebt() {
   const name = document.getElementById('debt-name').value.trim();
@@ -3392,7 +3214,7 @@ function openPlanModal() {
 //  DASHBOARD
 // ═══════════════════════════════════════
 
-let dbBarChart = null;
+let dbBarChart = null, dbStockChart = null;
 
 function renderDashboard() {
   const today = localToday();
@@ -3513,7 +3335,7 @@ function renderDashboard() {
 //  ANALYSIS
 // ═══════════════════════════════════════
 
-let barChart = null, analysisBarChart = null;
+let barChart = null, analysisBarChart = null, lineChart = null;
 
 function changeAnalysisYear(delta) {
   state.analysisYear += delta;
@@ -3557,6 +3379,81 @@ function renderAnalysis() {
           scales: {
             x: { ticks: { color: 'var(--text3)', font: { family: 'Segoe UI' } }, grid: { color: 'var(--border)' } },
             y: { ticks: { color: 'var(--text3)', font: { family: 'Segoe UI' } }, grid: { color: 'var(--border)' } }
+          }
+        }
+      });
+    }
+  }
+
+  // Line chart — net movement like stock
+  if (window.chartJsReady) {
+    const ctxLine = document.getElementById('line-chart')?.getContext('2d');
+    if (ctxLine) {
+      if (lineChart) lineChart.destroy();
+      const netData = data.map(d => d.net);
+      const netColors = netData.map(v => v >= 0 ? '#00e676' : '#ff5252');
+      const maxNet = Math.max(...netData.map(Math.abs), 1);
+
+      // Create gradient under line
+      const gradient = ctxLine.createLinearGradient(0, 0, 0, 220);
+      gradient.addColorStop(0, 'rgba(124,77,255,0.25)');
+      gradient.addColorStop(1, 'rgba(124,77,255,0.0)');
+
+      lineChart = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+          labels: data.map(d => d.label),
+          datasets: [{
+            label: 'الصافي',
+            data: netData,
+            borderColor: '#7c4dff',
+            backgroundColor: gradient,
+            borderWidth: 3,
+            pointBackgroundColor: netColors,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: true,
+            tension: 0.4,
+            segment: {
+              borderColor: ctx => ctx.p0.parsed.y >= 0 && ctx.p1.parsed.y >= 0 ? '#00e676' :
+                                   ctx.p0.parsed.y < 0 && ctx.p1.parsed.y < 0 ? '#ff5252' : '#7c4dff'
+            }
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { intersect: false, mode: 'index' },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(15,15,26,0.95)',
+              titleColor: '#e8e8f0',
+              bodyColor: '#e8e8f0',
+              borderColor: 'rgba(255,255,255,0.1)',
+              borderWidth: 1,
+              callbacks: {
+                label: ctx => `الصافي: ${ctx.parsed.y >= 0 ? '+' : ''}${fmt(ctx.parsed.y)}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: 'var(--text3)', font: { family: 'Segoe UI' } },
+              grid: { color: 'var(--border)' }
+            },
+            y: {
+              ticks: {
+                color: 'var(--text3)',
+                font: { family: 'Segoe UI' },
+                callback: v => fmt(v)
+              },
+              grid: { color: 'var(--border)' },
+              suggestedMin: -maxNet * 1.1,
+              suggestedMax: maxNet * 1.1
+            }
           }
         }
       });
@@ -4466,6 +4363,10 @@ function confirmReset() {
   });
 }
 
+function applyZoom() {
+  document.body.style.zoom = state.zoom || 1;
+}
+
 // ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
@@ -4508,6 +4409,5 @@ function init() {
 
 init();
 </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4655f3c58dd6497fb7ddb85b68480db7"}' crossorigin="anonymous"></script>
 </body>
 </html>
