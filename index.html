@@ -495,7 +495,15 @@
   .nav-sort-item.drag-over { border-color:var(--accent); background:rgba(108,99,255,0.12); box-shadow:0 0 0 2px var(--accent); }
   .nav-sort-item.nav-permanent { border-color:rgba(108,99,255,0.4); background:rgba(108,99,255,0.06); cursor:default; }
   .nav-sort-item.nav-permanent:hover { border-color:rgba(108,99,255,0.4); transform:none; }
-  /* Analysis collapsible details */
+  /* Settings tabs */
+  .settings-tab { background:var(--bg3); border:1px solid var(--border); color:var(--text3); cursor:pointer; font-family:var(--font); font-size:12px; font-weight:600; padding:7px 14px; transition:all 0.2s; }
+  .settings-tab:first-child { border-radius:8px 0 0 8px; border-left: 1px solid var(--border); }
+  .settings-tab:last-child  { border-radius:0 8px 8px 0; border-right:1px solid var(--border); }
+  .settings-tab.active { background:var(--accent); border-color:var(--accent); color:white; }
+  /* Guide button in nav */
+  .nav-guide-btn { background:transparent; border:none; cursor:pointer; opacity:0.7; transition:opacity 0.2s; color:var(--text2); display:flex; align-items:center; gap:4px; font-family:var(--font); font-size:12px; font-weight:500; padding:4px 10px; white-space:nowrap; }
+  .nav-guide-btn:hover { opacity:1; }
+  /* Analysis collapsible */
   details.card { padding: 12px; }
   details > summary { outline: none; }
   details > summary::-webkit-details-marker { display: none; }
@@ -541,6 +549,8 @@
     #analysis-big-cards { grid-template-columns:1fr !important; }
     #analysis-small-cards { grid-template-columns:1fr !important; }
     #analysis-forecast-row { grid-template-columns:1fr !important; }
+    #db-cycles-compare + *, [style*="grid-template-columns:1fr 1fr"] { grid-template-columns:1fr !important; }
+    [style*="grid-template-columns:3fr 2fr"] { grid-template-columns:1fr !important; }
   }
   @media (max-width: 390px) {
     .week-grid { grid-template-columns:repeat(3,1fr) !important; }
@@ -564,9 +574,12 @@
       <!-- يتم تعبئته بواسطة renderTop() -->
     </div>
 
-    <!-- الصف الثاني: القوائم -->
-    <nav class="nav-tabs" id="nav-tabs-el">
-      <!-- تُبنى بواسطة applyNavOrder() -->
+    <!-- الصف الثاني: القوائم + دليل -->
+    <nav class="nav-tabs" id="nav-tabs-el" style="justify-content:space-between">
+      <div id="nav-tabs-main" style="display:flex;gap:2px;flex:1;overflow-x:auto;scrollbar-width:none">
+        <!-- تُبنى بواسطة applyNavOrder() -->
+      </div>
+      <button class="nav-guide-btn" onclick="openModal('guide-modal')" title="دليل الاستخدام">❓ دليل</button>
     </nav>
   </header>
 
@@ -683,7 +696,7 @@
       <div class="page" id="page-settings">
         <div class="section-title">⚙️ الإعدادات</div>
 
-        <!-- 🔀 تخصيص القوائم — فوق كل شيء بتصميم جديد -->
+        <!-- 🔀 تخصيص القوائم -->
         <div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
             <div style="font-size:15px;font-weight:700">🔀 تخصيص القوائم</div>
@@ -698,7 +711,7 @@
 
         <div class="settings-grid">
 
-          <!-- إعدادات الراتب -->
+          <!-- الرواتب -->
           <div class="card" style="grid-column:1/-1">
             <div class="card-title" style="justify-content:space-between">
               <span>💵 الرواتب الشهرية</span>
@@ -717,70 +730,50 @@
                 <button class="btn btn-primary btn-sm" onclick="openModal('add-salary-modal')">+ إضافة راتب</button>
               </div>
             </div>
-            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">سجّل راتب كل شهر باليوم الفعلي الذي نزل فيه — يُستخدم لحساب الدورات والمتبقي بدقة.</p>
-            <div id="salary-table-wrap">
-              <div style="overflow-x:auto">
-                <table class="plan-table" id="salary-table">
-                  <thead>
-                    <tr>
-                      <th>الشهر</th>
-                      <th style="text-align:center">يوم النزول</th>
-                      <th style="text-align:center">المبلغ</th>
-                      <th style="text-align:center">حذف</th>
-                    </tr>
-                  </thead>
-                  <tbody id="salary-tbody"></tbody>
-                </table>
-              </div>
-              <div id="salary-empty" style="display:none;text-align:center;padding:20px;color:var(--text3);font-size:13px">لا توجد رواتب مسجلة بعد</div>
+            <p style="font-size:12px;color:var(--text3);margin-bottom:12px">سجّل راتب كل شهر باليوم الفعلي الذي نزل فيه.</p>
+            <div style="overflow-x:auto">
+              <table class="plan-table">
+                <thead><tr><th>الشهر</th><th style="text-align:center">يوم النزول</th><th style="text-align:center">المبلغ</th><th style="text-align:center">حذف</th></tr></thead>
+                <tbody id="salary-tbody"></tbody>
+              </table>
             </div>
-            <!-- راتب افتراضي للحسابات -->
-            <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
-              <div style="font-size:12px;color:var(--text3);margin-bottom:8px">⚙️ راتب افتراضي (يُستخدم عند غياب راتب الشهر)</div>
-              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div id="salary-empty" style="display:none;text-align:center;padding:16px;color:var(--text3);font-size:13px">لا توجد رواتب مسجلة بعد</div>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+              <div style="font-size:11px;color:var(--text3);margin-bottom:6px">⚙️ راتب افتراضي</div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
                 <input type="number" id="s-salary" placeholder="المبلغ الافتراضي" style="flex:1;min-width:120px">
-                <input type="number" id="s-payday" min="1" max="31" placeholder="يوم النزول الافتراضي (مثال: 27)" style="flex:1;min-width:150px">
+                <input type="number" id="s-payday" min="1" max="31" placeholder="يوم النزول (مثال: 27)" style="flex:1;min-width:140px">
                 <button class="btn btn-ghost btn-sm" onclick="saveSettings()">حفظ</button>
               </div>
             </div>
           </div>
 
-          <!-- الفئات -->
-          <div class="card">
-            <div class="card-title">🏷️ الفئات المخصصة</div>
-            <div id="cats-list"></div>
-            <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="openModal('cat-modal')">+ إضافة فئة</button>
-          </div>
-
-          <!-- حدود الإنفاق -->
-          <div class="card">
-            <div class="card-title" style="justify-content:space-between">
-              <span>🎯 حدود الإنفاق الشهرية</span>
+          <!-- 🏷️ الفئات + 🎯 الحدود — مربع موحد بتبويبين -->
+          <div class="card" style="grid-column:1/-1">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <div style="display:flex;gap:0">
+                <button id="tab-cats" class="settings-tab active" onclick="switchSettingsTab('cats')">🏷️ الفئات المخصصة</button>
+                <button id="tab-limits" class="settings-tab" onclick="switchSettingsTab('limits')">🎯 حدود الإنفاق</button>
+              </div>
               <button class="btn btn-primary btn-sm" onclick="openModal('cat-modal')">+ إضافة فئة</button>
             </div>
-            <div id="limits-list"></div>
+            <div id="panel-cats"><div id="cats-list"></div></div>
+            <div id="panel-limits" style="display:none"><div id="limits-list"></div></div>
           </div>
 
           <!-- تصدير واستيراد -->
           <div class="card">
-            <div class="card-title">⇩ تصدير واستيراد البيانات</div>
-            <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="exportXLSX()">📊 تصدير XLSX (إكسل)</button>
+            <div class="card-title">⇩ تصدير واستيراد</div>
+            <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="exportXLSX()">📊 تصدير XLSX</button>
             <button class="btn btn-ghost" style="width:100%;margin-bottom:12px" onclick="exportCSV()">📄 تصدير CSV</button>
             <div style="height:1px;background:var(--border);margin-bottom:12px"></div>
-            <div class="card-title" style="margin-bottom:8px">📥 استيراد</div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">📥 استيراد</div>
             <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="margin-bottom:10px">
             <div style="display:flex;gap:8px;margin-bottom:8px">
               <button class="btn btn-ghost" style="flex:1" onclick="importDataConfirm('merge')">جمع</button>
               <button class="btn btn-danger" style="flex:1" onclick="importDataConfirm('replace')">استبدال</button>
             </div>
             <p style="font-size:11px;color:var(--text3)">جمع: يضيف فوق الموجودة · استبدال: يمسح الكل</p>
-          </div>
-
-          <!-- الدليل -->
-          <div class="card">
-            <div class="card-title">❓ دليل الاستخدام</div>
-            <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.7">شرح كامل لجميع أقسام وميزات التطبيق.</p>
-            <button class="btn btn-ghost" style="width:100%" onclick="openModal('guide-modal')">📖 فتح الدليل</button>
           </div>
 
           <!-- إدارة البيانات -->
@@ -924,28 +917,28 @@
         <!-- دورة / الفترة الحالية -->
         <div id="db-cycle-card" style="margin-bottom:16px"></div>
 
-        <!-- شريط الإنفاق التفصيلي -->
-        <div class="card">
-          <div class="card-title">🎯 توزيع المصاريف — الدورة الحالية</div>
-          <div id="db-cats-breakdown"></div>
+        <!-- جدولا المقارنة والرسم جنباً لجنب -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div class="card" style="margin-bottom:0">
+            <div class="card-title">🔄 مقارنة الدورات السابقة</div>
+            <div id="db-cycles-compare"></div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div class="card-title">📆 الإنفاق حسب أيام الأسبوع</div>
+            <div id="db-weekdays"></div>
+          </div>
         </div>
 
-        <!-- مقارنة الدورات السابقة -->
-        <div class="card">
-          <div class="card-title">🔄 مقارنة مع الدورات السابقة</div>
-          <div id="db-cycles-compare"></div>
-        </div>
-
-        <!-- رسم بياني للدورات -->
-        <div class="card">
-          <div class="card-title">📉 الإنفاق عبر الدورات الأخيرة</div>
-          <div style="height:220px"><canvas id="db-bar-chart"></canvas></div>
-        </div>
-
-        <!-- أيام الأسبوع -->
-        <div class="card">
-          <div class="card-title">📆 إنفاقك حسب أيام الأسبوع</div>
-          <div id="db-weekdays"></div>
+        <!-- الرسم البياني والفئات جنباً لجنب -->
+        <div style="display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:16px">
+          <div class="card" style="margin-bottom:0">
+            <div class="card-title">📉 الإنفاق عبر الدورات</div>
+            <div style="height:200px"><canvas id="db-bar-chart"></canvas></div>
+          </div>
+          <div class="card" style="margin-bottom:0">
+            <div class="card-title">🎯 توزيع المصاريف</div>
+            <div id="db-cats-breakdown"></div>
+          </div>
         </div>
       </div>
 
@@ -2595,20 +2588,23 @@ function goToDate() {
     renderDaily();
   }
 }
+function switchSettingsTab(tab) {
+  document.getElementById('panel-cats').style.display   = tab==='cats'   ? 'block' : 'none';
+  document.getElementById('panel-limits').style.display = tab==='limits' ? 'block' : 'none';
+  document.getElementById('tab-cats').classList.toggle('active',   tab==='cats');
+  document.getElementById('tab-limits').classList.toggle('active', tab==='limits');
+}
+
 function showPage(name) {
   if (name === 'daily' || name === 'weekly') name = 'dayweek';
   const pageEl = document.getElementById('page-' + name);
   if (!pageEl) return;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   pageEl.classList.add('active');
-  // تحديث الأزرار النشطة في شريط التنقل العلوي
-  const navEl = document.getElementById('nav-tabs-el');
-  if (navEl) {
-    navEl.querySelectorAll('.nav-btn').forEach(b => {
-      const oc = b.getAttribute('onclick') || '';
-      b.classList.toggle('active', oc.includes(`'${name}'`));
-    });
-  }
+  const navEl = document.getElementById('nav-tabs-main') || document.getElementById('nav-tabs-el');
+  if (navEl) navEl.querySelectorAll('.nav-btn').forEach(b => {
+    b.classList.toggle('active', (b.getAttribute('onclick')||'').includes(`'${name}'`));
+  });
   if (name === 'dayweek')   { renderDaily(); renderWeekly(); }
   if (name === 'monthly')   renderMonthly();
   if (name === 'planning')  renderPlanning();
@@ -3346,8 +3342,7 @@ function saveNavOrder() {
 
 function applyNavOrder() {
   const order = getNavOrder();
-  // ابنِ الأزرار في شريط التنقل العلوي
-  const navEl = document.getElementById('nav-tabs-el');
+  const navEl = document.getElementById('nav-tabs-main') || document.getElementById('nav-tabs-el');
   if (!navEl) return;
   navEl.innerHTML = '';
   order.forEach(item => {
@@ -3361,7 +3356,6 @@ function applyNavOrder() {
     btn.innerHTML = `<span class="nav-icon">${meta.icon}</span><span class="nav-label">${meta.label}</span>`;
     navEl.appendChild(btn);
   });
-  // تحديد الزر النشط
   const cur = document.querySelector('.page.active')?.id?.replace('page-','');
   navEl.querySelectorAll('.nav-btn').forEach(b => {
     const oc = b.getAttribute('onclick') || '';
