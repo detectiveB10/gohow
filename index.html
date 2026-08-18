@@ -487,27 +487,45 @@
   .forecast-card .fc-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
   .forecast-card .fc-value { font-size: 22px; font-weight: 700; }
   .forecast-card .fc-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
-  /* Nav customization drag */
-  .nav-sort-item { background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:grab; user-select:none; transition:box-shadow 0.2s, opacity 0.2s, border-color 0.2s; }
-  .nav-sort-item:hover { border-color:var(--accent); }
-  .nav-sort-item:active { cursor:grabbing; }
-  .nav-sort-item.dragging { opacity:0.35; box-shadow:0 8px 24px rgba(0,0,0,0.5); transform:scale(0.97); }
-  .nav-sort-item.drag-over { border-color:var(--accent); background:rgba(108,99,255,0.12); box-shadow:0 0 0 2px var(--accent); }
-  .nav-sort-item.nav-permanent { border-color:rgba(108,99,255,0.4); background:rgba(108,99,255,0.06); cursor:default; }
-  .nav-sort-item.nav-permanent:hover { border-color:rgba(108,99,255,0.4); transform:none; }
+  /* ── nsort: تخصيص القوائم ── */
+  .nsort-card {
+    position: relative; display: flex; flex-direction: column; align-items: center;
+    gap: 6px; padding: 14px 8px 10px; border-radius: 14px;
+    background: var(--bg3); border: 1.5px solid var(--border);
+    cursor: grab; user-select: none; touch-action: none;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s, opacity 0.2s;
+    min-height: 90px; text-align: center;
+  }
+  .nsort-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.25); }
+  .nsort-card.dragging { opacity: 0.35; transform: scale(0.95); box-shadow: 0 12px 32px rgba(0,0,0,0.5); }
+  .nsort-card.drag-over { border-color: var(--accent); background: rgba(108,99,255,0.12); box-shadow: 0 0 0 2px var(--accent); }
+  .nsort-card.nsort-hidden { opacity: 0.4; }
+  .nsort-card.nsort-permanent { border-color: rgba(108,99,255,0.35); background: rgba(108,99,255,0.07); cursor: default; }
+  .nsort-card.nsort-permanent:hover { transform: none; box-shadow: none; }
+  .nsort-icon { font-size: 26px; line-height: 1; }
+  .nsort-label { font-size: 11px; font-weight: 600; color: var(--text); }
+  .nsort-hidden .nsort-label { color: var(--text3); text-decoration: line-through; }
+  .nsort-ctrl { display: flex; align-items: center; gap: 3px; }
+  .nsort-arr { background: var(--bg4); border: none; border-radius: 6px; cursor: pointer; color: var(--text2); font-size: 11px; width: 24px; height: 22px; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .nsort-arr:hover:not(:disabled) { background: var(--accent); color: white; }
+  .nsort-arr:disabled { opacity: 0.25; cursor: default; }
+  .nsort-eye { background: transparent; border: none; cursor: pointer; font-size: 14px; padding: 0 2px; }
+  .nsort-lock { font-size: 14px; }
+  .nsort-num { position: absolute; top: 5px; left: 7px; font-size: 10px; font-weight: 700; color: var(--text3); }
+  /* old classes kept for compat */
+  .nav-sort-item { display:none; }
   /* Settings tabs */
   .settings-tab { background:var(--bg3); border:1px solid var(--border); color:var(--text3); cursor:pointer; font-family:var(--font); font-size:12px; font-weight:600; padding:7px 14px; transition:all 0.2s; }
-  .settings-tab:first-child { border-radius:8px 0 0 8px; border-left: 1px solid var(--border); }
-  .settings-tab:last-child  { border-radius:0 8px 8px 0; border-right:1px solid var(--border); }
+  .settings-tab:first-child { border-radius:8px 0 0 8px; }
+  .settings-tab:last-child  { border-radius:0 8px 8px 0; }
   .settings-tab.active { background:var(--accent); border-color:var(--accent); color:white; }
-  /* Guide button in nav */
+  /* Guide button */
   .nav-guide-btn { background:transparent; border:none; cursor:pointer; opacity:0.7; transition:opacity 0.2s; color:var(--text2); display:flex; align-items:center; gap:4px; font-family:var(--font); font-size:12px; font-weight:500; padding:4px 10px; white-space:nowrap; }
   .nav-guide-btn:hover { opacity:1; }
   /* Analysis collapsible */
   details.card { padding: 12px; }
   details > summary { outline: none; }
   details > summary::-webkit-details-marker { display: none; }
-
   /* ══ MEDIA QUERIES ══ */
   @media (max-width: 768px) {
     .top-header { padding: 8px 12px; gap: 8px; }
@@ -519,10 +537,10 @@
     .th-stat:nth-child(3) { display: none; }
     .th-bar-wrap { display: none; }
     .nav-tabs { padding: 4px 8px; gap: 2px; }
-    .nav-btn { padding: 5px 10px; font-size: 11px; gap: 4px; }
+    .nav-btn { padding: 5px 10px; gap: 4px; }
     .nav-btn .nav-icon { font-size: 15px; }
     .nav-btn .nav-label { font-size: 10px; }
-    .main { height: calc(100vh - var(--nav-height, 90px)); overflow-y: auto; padding-bottom: 8px; }
+    .main { height: calc(100vh - 90px); overflow-y: auto; }
     .content { padding: 10px 12px; }
     .week-grid { display:grid; grid-template-columns:repeat(4,1fr) !important; gap:4px; }
     .wc-body { display:none !important; }
@@ -531,7 +549,7 @@
     .wc-add { width:20px; height:20px; font-size:14px; }
     .cal-cell-new { min-height:42px; padding:3px 2px; }
     .ccn-num { font-size:11px; }
-    .ccn-exp, .ccn-inc { font-size:9px; overflow:hidden; text-overflow:ellipsis; }
+    .ccn-exp,.ccn-inc { font-size:9px; overflow:hidden; text-overflow:ellipsis; }
     .cal-header-cell { font-size:10px; }
     .section-title { font-size:15px; }
     .summary-box { min-width:75px; padding:8px 6px; }
@@ -545,12 +563,10 @@
     .goal-card { padding:12px; }
     .donut-wrap { flex-direction:column; }
     .compare-table { font-size:11px; }
-    .compare-table th, .compare-table td { padding:5px 6px; }
-    #analysis-big-cards { grid-template-columns:1fr !important; }
-    #analysis-small-cards { grid-template-columns:1fr !important; }
-    #analysis-forecast-row { grid-template-columns:1fr !important; }
-    #db-cycles-compare + *, [style*="grid-template-columns:1fr 1fr"] { grid-template-columns:1fr !important; }
-    [style*="grid-template-columns:3fr 2fr"] { grid-template-columns:1fr !important; }
+    .compare-table th,.compare-table td { padding:5px 6px; }
+    #analysis-big-cards,#analysis-small-cards,#analysis-forecast-row { grid-template-columns:1fr !important; }
+    .nsort-card { min-height:75px; padding:10px 6px 8px; }
+    .nsort-icon { font-size:22px; }
   }
   @media (max-width: 390px) {
     .week-grid { grid-template-columns:repeat(3,1fr) !important; }
@@ -3323,21 +3339,143 @@ const ALL_NAV_PAGES = [
   { id:'settings',  icon:'⚙️', label:'إعداد', permanent:true },
 ];
 
+// state مؤقت أثناء التعديل — يُحفظ فقط عند الضغط على حفظ
+let _navDraft = null;
+
 function getNavOrder() {
-  const saved = localStorage.getItem('mizaniyati_nav');
-  if (saved) return JSON.parse(saved);
-  return ALL_NAV_PAGES.map(p => ({ id: p.id, visible: true }));
+  try {
+    const saved = localStorage.getItem('mizaniyati_nav');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return ALL_NAV_PAGES.map(p => ({ id:p.id, visible:true }));
+}
+
+function getDraftOrder() {
+  if (_navDraft) return _navDraft;
+  const order = getNavOrder();
+  const full = order.map(o => {
+    const meta = ALL_NAV_PAGES.find(p => p.id === o.id);
+    return meta ? { ...meta, visible: o.visible } : null;
+  }).filter(Boolean);
+  ALL_NAV_PAGES.forEach(p => { if (!full.find(f => f.id === p.id)) full.push({ ...p, visible:true }); });
+  _navDraft = full;
+  return _navDraft;
 }
 
 function saveNavOrder() {
-  const items = document.querySelectorAll('#nav-sort-list .nav-sort-item');
-  const order = Array.from(items).map(el => ({
-    id: el.dataset.id,
-    visible: !el.classList.contains('hidden-nav')
-  }));
-  localStorage.setItem('mizaniyati_nav', JSON.stringify(order));
+  const draft = getDraftOrder();
+  localStorage.setItem('mizaniyati_nav', JSON.stringify(draft.map(i => ({ id:i.id, visible:i.visible }))));
+  _navDraft = null;
   applyNavOrder();
   showToast('✅ تم حفظ ترتيب القوائم', 'var(--green)');
+}
+
+function resetNavOrder() {
+  localStorage.removeItem('mizaniyati_nav');
+  _navDraft = null;
+  renderNavSortList();
+  applyNavOrder();
+  showToast('↺ تم إعادة تعيين الترتيب', 'var(--text3)');
+}
+
+function moveNavItem(id, dir) {
+  const draft = getDraftOrder();
+  const idx   = draft.findIndex(i => i.id === id);
+  if (idx < 0) return;
+  const ni = idx + dir;
+  if (ni < 0 || ni >= draft.length) return;
+  [draft[idx], draft[ni]] = [draft[ni], draft[idx]];
+  renderNavSortList();
+}
+
+function toggleNavVisibleById(id) {
+  const draft = getDraftOrder();
+  const item  = draft.find(i => i.id === id);
+  if (item && !item.permanent) { item.visible = !item.visible; renderNavSortList(); }
+}
+
+function renderNavSortList() {
+  const container = document.getElementById('nav-sort-list');
+  if (!container) return;
+  const draft = getDraftOrder();
+  container.innerHTML = draft.map((item, idx) => {
+    const isFirst = idx === 0, isLast = idx === draft.length - 1;
+    const hidden  = !item.visible && !item.permanent;
+    return `<div class="nsort-card${hidden?' nsort-hidden':''}${item.permanent?' nsort-permanent':''}"
+      data-id="${item.id}"
+      ${!item.permanent ? `draggable="true"
+        ondragstart="nsDragStart(event,this)"
+        ondragover="nsDragOver(event)"
+        ondrop="nsDrop(event,this)"
+        ondragend="nsDragEnd()"
+        ontouchstart="nsTouchStart(this,event)"
+        ontouchmove="nsTouchMove(event)"
+        ontouchend="nsTouchEnd(event)"` : ''}>
+      <div class="nsort-icon">${item.icon}</div>
+      <div class="nsort-label">${item.label}</div>
+      <div class="nsort-ctrl">
+        ${item.permanent
+          ? `<span class="nsort-lock">👊🏻</span>`
+          : `<button class="nsort-arr" onclick="moveNavItem('${item.id}',-1)" ${isFirst?'disabled':''}>◀</button>
+             <button class="nsort-eye" onclick="toggleNavVisibleById('${item.id}')">${item.visible?'👁️':'🙈'}</button>
+             <button class="nsort-arr" onclick="moveNavItem('${item.id}',1)"  ${isLast ?'disabled':''}>▶</button>`}
+      </div>
+      ${!item.permanent?`<span class="nsort-num">${idx+1}</span>`:''}
+    </div>`;
+  }).join('');
+}
+
+// ── Drag & Drop (Desktop) ──
+let _nsSrc = null;
+function nsDragStart(e, el) { _nsSrc = el.dataset.id; el.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; }
+function nsDragOver(e) { e.preventDefault(); }
+function nsDrop(e, targetEl) {
+  e.preventDefault();
+  if (!_nsSrc || _nsSrc === targetEl.dataset.id) return;
+  const d = getDraftOrder();
+  const fi = d.findIndex(i=>i.id===_nsSrc), ti = d.findIndex(i=>i.id===targetEl.dataset.id);
+  if (fi<0||ti<0) return;
+  const [m]=d.splice(fi,1); d.splice(ti,0,m);
+  _nsSrc=null; renderNavSortList();
+}
+function nsDragEnd() { _nsSrc=null; document.querySelectorAll('.nsort-card').forEach(el=>el.classList.remove('dragging','drag-over')); }
+
+// ── Touch Sort (Mobile) ──
+let _nt = {};
+function nsTouchStart(el, e) {
+  if (e.touches.length!==1) return;
+  _nt.src=el; _nt.ox=e.touches[0].clientX; _nt.oy=e.touches[0].clientY;
+  const r=el.getBoundingClientRect();
+  _nt.clone=el.cloneNode(true);
+  Object.assign(_nt.clone.style,{position:'fixed',zIndex:999,opacity:'0.85',pointerEvents:'none',
+    width:r.width+'px',left:r.left+'px',top:r.top+'px',transition:'none'});
+  document.body.appendChild(_nt.clone);
+  el.style.opacity='0.3';
+  e.preventDefault();
+}
+function nsTouchMove(e) {
+  if (!_nt.src) return;
+  const dx=e.touches[0].clientX-_nt.ox, dy=e.touches[0].clientY-_nt.oy;
+  _nt.clone.style.transform=`translate(${dx}px,${dy}px)`;
+  _nt.clone.style.display='none';
+  const over=document.elementFromPoint(e.touches[0].clientX,e.touches[0].clientY)?.closest('.nsort-card');
+  _nt.clone.style.display='';
+  document.querySelectorAll('.nsort-card').forEach(c=>c.classList.remove('drag-over'));
+  if (over&&over!==_nt.src) over.classList.add('drag-over');
+  e.preventDefault();
+}
+function nsTouchEnd(e) {
+  if (!_nt.src) return;
+  _nt.clone?.remove(); _nt.src.style.opacity='';
+  const pt=e.changedTouches[0];
+  const over=document.elementFromPoint(pt.clientX,pt.clientY)?.closest('.nsort-card');
+  document.querySelectorAll('.nsort-card').forEach(c=>c.classList.remove('drag-over'));
+  if (over&&over!==_nt.src&&over.dataset.id) {
+    const d=getDraftOrder();
+    const fi=d.findIndex(i=>i.id===_nt.src.dataset.id), ti=d.findIndex(i=>i.id===over.dataset.id);
+    if (fi>=0&&ti>=0) { const [m]=d.splice(fi,1); d.splice(ti,0,m); }
+  }
+  _nt={}; renderNavSortList();
 }
 
 function applyNavOrder() {
@@ -3347,8 +3485,7 @@ function applyNavOrder() {
   navEl.innerHTML = '';
   order.forEach(item => {
     const meta = ALL_NAV_PAGES.find(p => p.id === item.id);
-    if (!meta) return;
-    if (!meta.permanent && !item.visible) return;
+    if (!meta||(!meta.permanent&&!item.visible)) return;
     const btn = document.createElement('button');
     btn.className = 'nav-btn';
     btn.title = meta.label;
@@ -3357,111 +3494,11 @@ function applyNavOrder() {
     navEl.appendChild(btn);
   });
   const cur = document.querySelector('.page.active')?.id?.replace('page-','');
-  navEl.querySelectorAll('.nav-btn').forEach(b => {
-    const oc = b.getAttribute('onclick') || '';
-    b.classList.toggle('active', !!(cur && oc.includes(`'${cur}'`)));
-  });
+  navEl.querySelectorAll('.nav-btn').forEach(b =>
+    b.classList.toggle('active',!!(cur&&(b.getAttribute('onclick')||'').includes(`'${cur}'`)))
+  );
 }
 
-function renderNavSortList() {
-  const order = getNavOrder();
-  const container = document.getElementById('nav-sort-list');
-  if (!container) return;
-  const items = order.map(o => {
-    const meta = ALL_NAV_PAGES.find(p => p.id === o.id) || {};
-    return { ...meta, ...o };
-  });
-  ALL_NAV_PAGES.forEach(p => {
-    if (!items.find(i => i.id === p.id)) items.push({ ...p, visible: true });
-  });
-
-  container.innerHTML = items.map((item, idx) => {
-    const isPermanent = item.permanent;
-    const isFirst = idx === 0;
-    const isLast  = idx === items.length - 1;
-    return `
-    <div class="nav-sort-item ${!isPermanent && !item.visible ? 'hidden-nav' : ''} ${isPermanent ? 'nav-permanent' : ''}"
-         data-id="${item.id}"
-         draggable="${!isPermanent}"
-         ${!isPermanent ? `ondragstart="navDragStart(event)" ondragover="navDragOver(event)" ondrop="navDrop(event)" ondragend="navDragEnd(event)"` : ''}
-         style="flex-direction:column;align-items:center;justify-content:center;padding:14px 10px 8px;gap:4px;position:relative;min-height:85px;text-align:center">
-      <span style="position:absolute;top:5px;right:6px;font-size:11px;color:var(--text3)">${isPermanent ? '' : '⠿'}</span>
-      <span style="font-size:24px;line-height:1">${item.icon}</span>
-      <span style="font-size:11px;font-weight:600;color:${(!isPermanent && !item.visible)?'var(--text3)':'var(--text)'}">${item.label}</span>
-      <div style="display:flex;gap:2px;margin-top:2px">
-        ${isPermanent
-          ? `<span style="font-size:13px" title="لا يمكن إخفاؤه">👊🏻</span>`
-          : `
-          <button onclick="moveNavItem('${item.id}',-1)" title="يمين" ${isFirst?'disabled':''} style="background:transparent;border:1px solid var(--border);border-radius:4px;cursor:pointer;padding:1px 6px;font-size:12px;color:var(--text2);opacity:${isFirst?'0.3':'1'}">←</button>
-          <button onclick="toggleNavVisible(this)" title="${item.visible ? 'إخفاء' : 'إظهار'}" style="background:transparent;border:none;cursor:pointer;font-size:13px;padding:0 3px">
-            ${item.visible ? '👁️' : '🙈'}
-          </button>
-          <button onclick="moveNavItem('${item.id}',1)" title="يسار" ${isLast?'disabled':''} style="background:transparent;border:1px solid var(--border);border-radius:4px;cursor:pointer;padding:1px 6px;font-size:12px;color:var(--text2);opacity:${isLast?'0.3':'1'}">→</button>
-          `
-        }
-      </div>
-      ${isPermanent ? '' : `<span style="position:absolute;top:4px;left:6px;font-size:10px;color:var(--text3)">${idx+1}</span>`}
-    </div>`;
-  }).join('');
-}
-
-function moveNavItem(id, dir) {
-  const container = document.getElementById('nav-sort-list');
-  const items = Array.from(container.children);
-  const idx = items.findIndex(el => el.dataset.id === id);
-  if (idx < 0) return;
-  const newIdx = idx + dir;
-  if (newIdx < 0 || newIdx >= items.length) return;
-  const el = items[idx];
-  if (dir === -1) container.insertBefore(el, items[newIdx]);
-  else container.insertBefore(el, items[newIdx].nextSibling);
-  // أعد رسم الأرقام والأسهم
-  renderNavSortList();
-}
-
-function toggleNavVisible(btn) {
-  const item = btn.closest('.nav-sort-item');
-  item.classList.toggle('hidden-nav');
-  btn.textContent = item.classList.contains('hidden-nav') ? '🙈' : '👁️';
-  btn.title = item.classList.contains('hidden-nav') ? 'إظهار' : 'إخفاء';
-}
-
-function resetNavOrder() {
-  localStorage.removeItem('mizaniyati_nav');
-  renderNavSortList();
-  applyNavOrder();
-  showToast('↺ تم إعادة تعيين الترتيب', 'var(--text3)');
-}
-let dragSrc = null;
-function navDragStart(e) {
-  dragSrc = e.currentTarget;
-  e.currentTarget.classList.add('dragging');
-  e.dataTransfer.effectAllowed = 'move';
-}
-function navDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
-  document.querySelectorAll('.nav-sort-item').forEach(el => el.classList.remove('drag-over'));
-  if (e.currentTarget !== dragSrc) e.currentTarget.classList.add('drag-over');
-}
-function navDrop(e) {
-  e.preventDefault();
-  const target = e.currentTarget;
-  if (!dragSrc || dragSrc === target) return;
-  const container = document.getElementById('nav-sort-list');
-  const items = Array.from(container.children);
-  const fromIdx = items.indexOf(dragSrc);
-  const toIdx   = items.indexOf(target);
-  if (fromIdx < toIdx) container.insertBefore(dragSrc, target.nextSibling);
-  else container.insertBefore(dragSrc, target);
-  document.querySelectorAll('.nav-sort-item').forEach(el => el.classList.remove('drag-over'));
-}
-function navDragEnd() {
-  document.querySelectorAll('.nav-sort-item').forEach(el => {
-    el.classList.remove('dragging'); el.classList.remove('drag-over');
-  });
-  dragSrc = null;
-}
 load();
 applyNavOrder();
 renderTop();
