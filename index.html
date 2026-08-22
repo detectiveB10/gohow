@@ -893,18 +893,24 @@
           <div class="card">
             <div class="card-title">⇩ تصدير واستيراد</div>
             <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="exportXLSX()">📊 تصدير XLSX</button>
-            <button class="btn btn-ghost" style="width:100%;margin-bottom:12px" onclick="exportCSV()">📄 تصدير CSV</button>
+            <button class="btn btn-ghost" style="width:100%;margin-bottom:8px" onclick="exportCSV()">📄 تصدير CSV</button>
+            <button class="btn btn-ghost" style="width:100%;margin-bottom:12px" onclick="exportBackup()">💾 نسخة احتياطية JSON</button>
             <div style="height:1px;background:var(--border);margin-bottom:10px"></div>
             <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">📥 استيراد</div>
             <div style="font-size:11px;color:var(--text3);margin-bottom:8px;line-height:1.6">
               الصيغة المدعومة: <code style="background:var(--bg3);padding:1px 4px;border-radius:3px">التاريخ | النوع | الفئة | المبلغ | الملاحظة</code><br>
               مثال: <code style="background:var(--bg3);padding:1px 4px;border-radius:3px">2026/05/01 | مصروف | Apple Pay | 150 | بقالة</code>
             </div>
-            <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="margin-bottom:10px">
-            <div style="display:flex;gap:8px;margin-bottom:8px">
+            <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="margin-bottom:8px">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px">جمع: يضيف فوق الموجودة · استبدال: يمسح الكل</div>
+            <div style="display:flex;gap:8px;margin-bottom:10px">
               <button class="btn btn-ghost" style="flex:1" onclick="importDataConfirm('merge')">جمع</button>
               <button class="btn btn-danger" style="flex:1" onclick="importDataConfirm('replace')">استبدال</button>
             </div>
+            <div style="height:1px;background:var(--border);margin-bottom:10px"></div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:6px">📂 استعادة نسخة ميزانيتي (JSON)</div>
+            <input type="file" id="restore-file" accept=".json" style="margin-bottom:8px">
+            <button class="btn btn-ghost" style="width:100%" onclick="restoreBackup()">📂 استعادة النسخة</button>
           </div>
 
           <!-- إدارة البيانات -->
@@ -1368,6 +1374,31 @@
     <div style="display:flex;gap:8px">
       <button class="btn btn-primary" style="flex:1" onclick="addSalaryEntry()">إضافة</button>
       <button class="btn btn-ghost" style="flex:1" onclick="closeModal('add-salary-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT PREVIEW MODAL -->
+<div class="modal-overlay hidden" id="import-preview-modal">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-title">
+      📥 معاينة الاستيراد
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="closeModal('import-preview-modal')">✕</button>
+    </div>
+    <!-- ملخص -->
+    <div id="import-summary-bar" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px"></div>
+    <!-- تحذيرات مطابقة الفئات -->
+    <div id="import-cat-warnings" style="margin-bottom:12px"></div>
+    <!-- معاينة الصفوف -->
+    <div style="overflow-x:auto;max-height:220px;margin-bottom:14px">
+      <table class="plan-table" style="min-width:460px;font-size:11px" id="import-preview-table">
+        <thead><tr><th>التاريخ</th><th>النوع</th><th>الفئة</th><th style="text-align:center">المبلغ</th><th>الملاحظة</th><th style="text-align:center">◉</th></tr></thead>
+        <tbody id="import-preview-body"></tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" id="import-confirm-btn">✅ تأكيد الاستيراد</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('import-preview-modal')">إلغاء</button>
     </div>
   </div>
 </div>
@@ -2728,84 +2759,164 @@ function downloadFile(name, type, content) {
 function importDataConfirm(mode) {
   const file = document.getElementById('import-file').files[0];
   if (!file) { showToast('⚠️ اختر ملفاً أولاً', 'var(--yellow)'); return; }
-  if (mode === 'merge') {
-    showConfirm(
-      'تأكيد الجمع',
-      'هل أنت متأكد من إضافة البيانات فوق الموجودة حالياً؟',
-      '📥',
-      () => importData('merge')
-    );
-  } else {
-    showConfirm(
-      'تأكيد الاستبدال',
-      'سيتم مسح جميع البيانات الحالية واستبدالها بالملف الجديد. هل أنت متأكد؟',
-      '⚠️',
-      () => importData('replace')
-    );
-  }
-}
-
-function importData(mode) {
-  const file = document.getElementById('import-file').files[0];
-  if (!file) { alert('اختر ملفاً أولاً'); return; }
   const ext = file.name.split('.').pop().toLowerCase();
-
-  function processRows(rows) {
-    // rows[0] = header, skip it
-    const data = rows.slice(1).filter(r => r && r.length >= 4);
-    const imported = data.map(parts => {
-      const dateVal = (parts[0] || '').toString().trim();
-      const typeVal = (parts[1] || '').toString().trim();
-      const catName = (parts[2] || '').toString().trim();
-      const amountVal = parseFloat((parts[3] || '0').toString().replace(/[^\d.]/g,'')) || 0;
-      const noteVal = (parts[4] || '').toString().trim();
-      // Try to find matching category, fallback to first
-      const cat = state.categories.find(c => c.name === catName) || state.categories[0];
-      const type = (typeVal === 'دخل' || typeVal === 'income') ? 'income' : 'expense';
-      // Handle Excel serial date numbers
-      let dateStr = dateVal;
-      if (/^\d{5}$/.test(dateVal)) {
-        const excelEpoch = new Date(1899, 11, 30);
-        const d = new Date(excelEpoch.getFullYear(), excelEpoch.getMonth(), excelEpoch.getDate() + parseInt(dateVal));
-        dateStr = dateKey(d);
-      }
-      return { id: uid(), date: dateStr, type, category: cat.id, amount: amountVal, note: noteVal };
-    }).filter(t => t.date && t.amount > 0);
-    return imported;
-  }
-
-  if (ext === 'xlsx' || ext === 'xls') {
-    const reader = new FileReader();
-    reader.onload = e => {
-      try {
-        const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+  const readFile = (onRows) => {
+    if (ext==='xlsx'||ext==='xls') {
+      const r = new FileReader();
+      r.onload = e => {
+        const wb = XLSX.read(new Uint8Array(e.target.result),{type:'array'});
         const ws = wb.Sheets[wb.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
-        const imported = processRows(rows);
-        if (mode === 'replace') state.transactions = imported;
-        else state.transactions = [...state.transactions, ...imported];
-        save(); renderTop(); renderDaily();
-        alert(`✅ تم استيراد ${imported.length} عملية من XLSX`);
-      } catch(err) { alert('خطأ في قراءة الملف: ' + err.message); }
-    };
-    reader.readAsArrayBuffer(file);
-  } else {
-    // CSV
-    const reader = new FileReader();
-    reader.onload = e => {
-      try {
-        const text = e.target.result;
-        const rows = text.split('\n').map(l => l.split(',').map(c => c.trim().replace(/^"|"$/g,'')));
-        const imported = processRows(rows);
-        if (mode === 'replace') state.transactions = imported;
-        else state.transactions = [...state.transactions, ...imported];
-        save(); renderTop(); renderDaily();
-        alert(`✅ تم استيراد ${imported.length} عملية من CSV`);
-      } catch(err) { alert('خطأ في قراءة الملف: ' + err.message); }
-    };
-    reader.readAsText(file, 'UTF-8');
-  }
+        const rows = XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        onRows(rows);
+      };
+      r.readAsArrayBuffer(file);
+    } else {
+      const r = new FileReader();
+      r.onload = e => {
+        const lines = e.target.result.split('\n').filter(l=>l.trim());
+        onRows(lines.map(l => l.includes('|') ? l.split('|') : l.split(',')));
+      };
+      r.readAsText(file,'UTF-8');
+    }
+  };
+
+  readFile(rows => {
+    const { valid, skipped, catIssues } = processImportRowsAdvanced(rows);
+    showImportPreview(valid, skipped, catIssues, mode);
+  });
 }
+
+function processImportRowsAdvanced(rawRows) {
+  const valid = [], skipped = [], catIssues = [];
+  const dataRows = rawRows.filter(r => {
+    const first = String(Array.isArray(r)?r[0]:r).trim();
+    return first && !/^(التاريخ|date|#)/i.test(first);
+  });
+
+  for (const row of dataRows) {
+    let parts = Array.isArray(row) ? row.map(s=>String(s||'').trim()) : [String(row)];
+    if (parts.length === 1 && parts[0].includes('|')) parts = parts[0].split('|').map(s=>s.trim());
+    if (parts.length < 4) { skipped.push({row:parts.join('|'), reason:'أقل من 4 أعمدة'}); continue; }
+
+    let [dateVal, typeVal, catName, amountVal, noteVal=''] = parts;
+
+    // تنظيف المبلغ
+    const amount = parseFloat(String(amountVal).replace(/[,،\s]/g,'').replace(/[^\d.]/g,'')) || 0;
+    if (!amount) { skipped.push({row:parts.join('|'), reason:'مبلغ صفري'}); continue; }
+
+    // تاريخ
+    let dateStr = String(dateVal).trim().replace(/\//g,'-');
+    if (/^\d{5}$/.test(dateStr)) {
+      const d = new Date(1899,11,30+parseInt(dateStr));
+      dateStr = dateKey(d);
+    } else {
+      const m = dateStr.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+      if (m) dateStr = `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+      else { skipped.push({row:parts.join('|'), reason:'تاريخ غير صحيح'}); continue; }
+    }
+
+    // نوع
+    const typeClean = String(typeVal).trim();
+    const type = (typeClean==='دخل'||typeClean.toLowerCase()==='income') ? 'income' : 'expense';
+
+    // مطابقة فئة
+    const catClean = String(catName).trim().toLowerCase();
+    let cat = state.categories.find(c => c.name.toLowerCase()===catClean);
+    if (!cat) cat = state.categories.find(c => c.name.toLowerCase().includes(catClean) || catClean.includes(c.name.toLowerCase()));
+    if (!cat) {
+      catIssues.push({ name:catName, type, suggested: state.categories.filter(c=>c.type===type||c.type==='both')[0] });
+      cat = state.categories.find(c=>c.type===type||c.type==='both') || state.categories[0];
+    }
+
+    const note = String(noteVal||'').trim().replace(/^-$/,'');
+    valid.push({ id:uid(), date:dateStr, type, category:cat.id, catName:cat.name, catEmoji:cat.emoji, amount, note, _origCat:catName });
+  }
+  return { valid, skipped, catIssues };
+}
+
+function showImportPreview(valid, skipped, catIssues, mode) {
+  // شريط الملخص
+  document.getElementById('import-summary-bar').innerHTML = `
+    <div style="background:rgba(76,175,140,0.15);border:1px solid rgba(76,175,140,0.3);border-radius:8px;padding:10px;text-align:center">
+      <div style="font-size:20px;font-weight:800;color:var(--green)">${valid.length}</div>
+      <div style="font-size:10px;color:var(--text3)">✅ جاهزة للاستيراد</div>
+    </div>
+    <div style="background:rgba(224,92,92,0.15);border:1px solid rgba(224,92,92,0.3);border-radius:8px;padding:10px;text-align:center">
+      <div style="font-size:20px;font-weight:800;color:var(--red)">${skipped.length}</div>
+      <div style="font-size:10px;color:var(--text3)">⚠️ تجاهلت</div>
+    </div>
+    <div style="background:rgba(240,160,64,0.15);border:1px solid rgba(240,160,64,0.3);border-radius:8px;padding:10px;text-align:center">
+      <div style="font-size:20px;font-weight:800;color:var(--yellow)">${catIssues.length}</div>
+      <div style="font-size:10px;color:var(--text3)">🔄 فئة معدّلة</div>
+    </div>
+  `;
+
+  // تحذيرات الفئات
+  const catWrap = document.getElementById('import-cat-warnings');
+  if (catIssues.length) {
+    const uniq = [...new Map(catIssues.map(i=>[i.name,i])).values()];
+    catWrap.innerHTML = `<div style="background:rgba(240,160,64,0.1);border:1px solid rgba(240,160,64,0.3);border-radius:8px;padding:10px;margin-bottom:4px">
+      <div style="font-size:11px;font-weight:600;color:var(--yellow);margin-bottom:6px">🔄 فئات لم تُطابَق — أُسندت للأقرب:</div>
+      ${uniq.map(i=>`<div style="font-size:11px;color:var(--text2);padding:2px 0">❌ "${i.name}" → ✅ "${i.suggested?.name||'أخرى'}"</div>`).join('')}
+    </div>`;
+  } else catWrap.innerHTML = '';
+
+  // جدول المعاينة (أول 10)
+  document.getElementById('import-preview-body').innerHTML = valid.slice(0,10).map(t => `
+    <tr>
+      <td>${t.date}</td>
+      <td style="color:${t.type==='income'?'var(--green)':'var(--red)'}">${t.type==='income'?'دخل':'مصروف'}</td>
+      <td>${t.catEmoji} ${t.catName}${t._origCat!==t.catName?` <span style="font-size:9px;color:var(--yellow)">(${t._origCat})</span>`:''}</td>
+      <td style="text-align:center;font-weight:600">${t.amount.toLocaleString('ar-SA')}</td>
+      <td style="color:var(--text3)">${t.note||'—'}</td>
+      <td style="text-align:center;color:var(--green)">✅</td>
+    </tr>`).join('') +
+    (valid.length>10 ? `<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:8px">... و ${valid.length-10} عملية أخرى</td></tr>` : '') +
+    skipped.slice(0,3).map(s=>`<tr style="opacity:0.5"><td colspan="5" style="color:var(--red);font-size:10px">${s.row.slice(0,50)}</td><td style="text-align:center;color:var(--red)">⚠️</td></tr>`).join('');
+
+  // زر التأكيد
+  document.getElementById('import-confirm-btn').textContent = `✅ استيراد ${valid.length} عملية (${mode==='merge'?'جمع':'استبدال'})`;
+  document.getElementById('import-confirm-btn').onclick = () => {
+    closeModal('import-preview-modal');
+    finishImport(valid.map(({_origCat,catName,catEmoji,...t})=>t), mode);
+  };
+
+  openModal('import-preview-modal');
+}
+
+function finishImport(imported, mode) {
+  if (mode==='replace') state.transactions = imported;
+  else state.transactions = [...state.transactions, ...imported];
+  save(); refreshDayWeek();
+  showToast(`✅ تم استيراد ${imported.length} عملية`, 'var(--green)');
+}
+
+// استعادة نسخة ميزانيتي JSON
+function exportBackup() {
+  const data = JSON.stringify({ transactions:state.transactions, categories:state.categories,
+    goals:state.goals, plans:state.plans, settings:state.settings, salaries:state.salaries,
+    plan:state.plan, theme:state.theme, _backup:true, _date:dateKey(localToday()) });
+  downloadFile(`mizaniyati_backup_${dateKey(localToday())}.json`, 'application/json', data);
+}
+
+function restoreBackup() {
+  const file = document.getElementById('restore-file').files[0];
+  if (!file) { showToast('⚠️ اختر ملف JSON أولاً', 'var(--yellow)'); return; }
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (!d._backup) { showToast('⚠️ الملف ليس نسخة ميزانيتي', 'var(--yellow)'); return; }
+      showConfirm('استعادة النسخة', `استعادة نسخة ${d._date}؟ سيتم استبدال البيانات الحالية.`, '📂', () => {
+        localStorage.setItem('mizaniyati', JSON.stringify(d));
+        location.reload();
+      });
+    } catch(err) { showToast('خطأ في قراءة الملف', 'var(--red)'); }
+  };
+  r.readAsText(file, 'UTF-8');
+}
+
+function importData(mode) { importDataConfirm(mode); } // backward compat
 
 // ================== THEMES ==================
 function renderThemes() {
