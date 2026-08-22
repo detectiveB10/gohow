@@ -487,6 +487,16 @@
   .forecast-card .fc-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
   .forecast-card .fc-value { font-size: 22px; font-weight: 700; }
   .forecast-card .fc-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  /* Section visibility */
+  .section-hidden { display: none !important; }
+  .vis-item { display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px; }
+  .vis-item:last-child { border-bottom:none; }
+  .vis-toggle { background:var(--bg4); border:none; border-radius:20px; cursor:pointer; padding:3px 10px; font-size:13px; transition:background 0.2s; }
+  .vis-toggle.on  { background:rgba(76,175,140,0.2); color:var(--green); }
+  .vis-toggle.off { background:rgba(224,92,92,0.15); color:var(--red); }
+  /* Planning */
+  .goal-done { opacity: 0.7; }
+  .goal-done .progress-fill { background: var(--green) !important; }
   /* ── nsort: تخصيص القوائم ── */
   .nsort-card {
     position: relative; display: flex; flex-direction: column; align-items: center;
@@ -528,53 +538,92 @@
   details > summary::-webkit-details-marker { display: none; }
   /* ══ MEDIA QUERIES ══ */
   @media (max-width: 768px) {
-    .top-header { padding: 8px 12px; gap: 8px; }
-    .th-logo { display: none; }
-    .th-ring { width: 38px; height: 38px; }
-    .th-amount { font-size: 17px; }
-    .th-stat-val { font-size: 12px; }
-    .th-stat-lbl { font-size: 9px; }
-    .th-stat:nth-child(3) { display: none; }
-    .th-bar-wrap { display: none; }
-    .nav-tabs { padding: 4px 8px; gap: 2px; }
-    .nav-btn { padding: 5px 10px; gap: 4px; }
-    .nav-btn .nav-icon { font-size: 15px; }
-    .nav-btn .nav-label { font-size: 10px; }
-    .main { height: calc(100vh - 90px); overflow-y: auto; }
-    .content { padding: 10px 12px; }
-    .week-grid { display:grid; grid-template-columns:repeat(4,1fr) !important; gap:4px; }
+    .top-header { padding:7px 10px; gap:6px; flex-wrap:nowrap; }
+    .th-logo { display:none; }
+    .th-ring { width:34px; height:34px; flex-shrink:0; }
+    .th-ring svg { width:34px; height:34px; }
+    .th-amount { font-size:15px; }
+    .th-label { font-size:9px; }
+    .th-stat:nth-child(n+3) { display:none; }
+    .th-bar-wrap { display:none; }
+    .th-stat-val { font-size:11px; }
+    .nav-tabs { padding:3px 6px; gap:1px; }
+    .nav-btn { padding:4px 7px; gap:3px; border-radius:14px; }
+    .nav-btn .nav-icon { font-size:13px; }
+    .nav-btn .nav-label { font-size:9px; }
+    .nav-guide-btn { padding:3px 6px; font-size:10px; }
+    .content { padding:8px 8px; }
+    .card { padding:10px; }
+    .card-title { font-size:12px; margin-bottom:8px; }
+    .section-title { font-size:13px; }
+    /* dayweek */
+    #page-dayweek > div[style*="grid-template-columns:1fr 1fr"] { display:flex !important; flex-direction:column !important; }
+    #page-dayweek > div[style*="grid-template-columns:1fr 1fr 1fr"] { grid-template-columns:repeat(3,1fr) !important; gap:6px !important; }
+    #daily-txs { max-height:180px; }
+    .week-grid { grid-template-columns:repeat(4,1fr) !important; gap:3px; }
     .wc-body { display:none !important; }
-    .wc-head { padding:6px 4px; }
-    .wc-foot { padding:4px 6px; }
-    .wc-add { width:20px; height:20px; font-size:14px; }
-    .cal-cell-new { min-height:42px; padding:3px 2px; }
-    .ccn-num { font-size:11px; }
-    .ccn-exp,.ccn-inc { font-size:9px; overflow:hidden; text-overflow:ellipsis; }
-    .cal-header-cell { font-size:10px; }
-    .section-title { font-size:15px; }
-    .summary-box { min-width:75px; padding:8px 6px; }
-    .summary-box .s-value { font-size:13px; }
-    .month-pill { padding:4px 8px; font-size:11px; }
-    .settings-grid { grid-template-columns:1fr; }
-    #nav-sort-list { grid-template-columns:repeat(4,1fr) !important; }
-    .modal { padding:16px; border-radius:16px; }
-    .modal-overlay { padding:12px; align-items:flex-end; }
-    .day-nav .date-display { font-size:13px; }
-    .goal-card { padding:12px; }
-    .donut-wrap { flex-direction:column; }
-    .compare-table { font-size:11px; }
-    .compare-table th,.compare-table td { padding:5px 6px; }
-    #analysis-big-cards,#analysis-small-cards,#analysis-forecast-row { grid-template-columns:1fr !important; }
-    .nsort-card { min-height:75px; padding:10px 6px 8px; }
-    .nsort-icon { font-size:22px; }
+    .wc-head { padding:4px 2px; }
+    .wc-day { font-size:8px; }
+    .wc-date { font-size:12px; }
+    .wc-foot { padding:3px 4px; }
+    .wc-add { width:18px; height:18px; font-size:12px; }
+    .summary-row { gap:5px; flex-wrap:wrap; }
+    .summary-box { min-width:65px; padding:6px 5px; }
+    .summary-box .s-label { font-size:9px; }
+    .summary-box .s-value { font-size:12px; }
+    /* monthly */
+    #page-monthly div[style*="grid-template-columns:1fr 1fr"] { display:flex !important; flex-direction:column !important; }
+    .cal-cell-new { min-height:36px; padding:2px 1px; }
+    .ccn-num { font-size:9px; }
+    .ccn-exp,.ccn-inc { font-size:7px; }
+    .cal-header-cell { font-size:8px; padding:1px 0; }
+    .month-pill { padding:3px 5px; font-size:9px; }
+    /* analysis */
+    #page-analysis div[style*="grid-template-columns:1fr 1fr"] { display:flex !important; flex-direction:column !important; }
+    #analysis-big-cards { grid-template-columns:repeat(3,1fr) !important; gap:5px !important; }
+    #analysis-big-cards > div { padding:7px 5px !important; }
+    #analysis-small-cards div[style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns:repeat(2,1fr) !important; gap:6px !important; }
+    #analysis-forecast-row { grid-template-columns:1fr !important; }
+    #page-analysis div[style*="height:200px"] { height:130px !important; }
+    /* dashboard */
+    #page-dashboard div[style*="grid-template-columns:1fr 1fr"] { display:flex !important; flex-direction:column !important; }
+    #page-dashboard div[style*="grid-template-columns:3fr 2fr"] { display:flex !important; flex-direction:column !important; }
+    #db-cycle-card div[style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns:repeat(2,1fr) !important; }
+    #db-full-summary div[style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns:repeat(2,1fr) !important; }
+    #page-dashboard div[style*="height:200px"] { height:130px !important; }
+    /* settings */
+    .settings-grid { grid-template-columns:1fr !important; }
+    #page-settings > div[style*="grid-template-columns:1fr 1fr"] { display:flex !important; flex-direction:column !important; }
+    #nav-sort-list { grid-template-columns:repeat(3,1fr) !important; }
+    /* modals */
+    .modal { padding:14px; border-radius:16px; max-width:96vw !important; }
+    .modal-overlay { padding:6px; align-items:flex-end; }
+    /* tables */
+    .compare-table { font-size:10px; }
+    .compare-table th,.compare-table td { padding:4px 4px; }
+    .plan-table { font-size:10px; }
+    /* planning */
+    .goal-card { padding:10px; }
+    .nsort-card { min-height:70px; padding:8px 4px 6px; }
+    .nsort-icon { font-size:20px; }
+    .nsort-label { font-size:10px; }
   }
   @media (max-width: 390px) {
     .week-grid { grid-template-columns:repeat(3,1fr) !important; }
-    .nav-btn .nav-label { display: none; }
-    .nav-btn { padding: 6px 8px; }
-    .nav-btn .nav-icon { font-size: 18px; }
+    .nav-btn .nav-label { display:none; }
+    .nav-btn { padding:5px 6px; }
+    .nav-btn .nav-icon { font-size:15px; }
+    .nav-guide-btn span { display:none; }
     #nav-sort-list { grid-template-columns:repeat(3,1fr) !important; }
-    .th-right { display: none; }
+    .th-right { display:none; }
+    #analysis-big-cards { grid-template-columns:1fr !important; }
+    .content { padding:6px; }
+  }
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    @media (max-width: 768px) {
+      .top-nav { padding-top:env(safe-area-inset-top); }
+      .main { padding-bottom:env(safe-area-inset-bottom); }
+    }
   }
 </style>
 </head>
@@ -607,63 +656,103 @@
       <!-- DAY/WEEK MERGED PAGE -->
       <div class="page active" id="page-dayweek">
 
-        <!-- ─── القسم اليومي ─── -->
-        <div style="margin-bottom:20px">
-          <div class="day-nav">
+        <!-- صف التنقل بين الأيام والأسابيع -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+          <div class="day-nav" style="margin-bottom:0">
             <button class="btn btn-ghost btn-icon" onclick="changeDay(-1)">→</button>
-            <div class="date-display" onclick="openModal('date-picker-modal')" id="day-title" style="font-size:16px;font-weight:700;cursor:pointer">اليوم</div>
+            <div class="date-display" onclick="openModal('date-picker-modal')" id="day-title" style="font-size:14px;font-weight:700;cursor:pointer">اليوم</div>
             <button class="btn btn-ghost btn-icon" onclick="changeDay(1)">←</button>
           </div>
-          <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="openAddTx()">+ إضافة عملية</button>
-          <div id="daily-txs"></div>
-          <div class="card" style="margin-top:8px">
+          <div style="display:flex;gap:6px;align-items:center">
+            <button class="btn btn-ghost btn-sm" onclick="changeWeek(-1)">→ أسبوع</button>
+            <button class="btn btn-ghost btn-sm" onclick="changeWeek(1)">أسبوع ←</button>
+          </div>
+        </div>
+
+        <!-- ── صفان كبيران: اليوم يمين + الأسبوع يسار ── -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+
+          <!-- اليوم (يمين) -->
+          <div class="card" id="dw-daily-col" style="margin-bottom:0;display:flex;flex-direction:column;gap:8px">
             <div style="display:flex;justify-content:space-between;align-items:center">
-              <span id="daily-total-label" style="color:var(--text3);font-size:13px">إجمالي اليوم</span>
-              <span id="daily-total" style="font-size:18px;font-weight:700"></span>
+              <span style="font-size:12px;font-weight:700;color:var(--text2)">📅 اليوم</span>
+              <button class="btn btn-primary btn-sm" onclick="openAddTx()">+ إضافة</button>
+            </div>
+            <div id="daily-txs" style="flex:1;overflow-y:auto;max-height:320px"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--border)">
+              <span id="daily-total-label" style="color:var(--text3);font-size:12px">صافي اليوم</span>
+              <span id="daily-total" style="font-size:16px;font-weight:700"></span>
             </div>
           </div>
-        </div>
 
-        <!-- فاصل -->
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-          <span style="font-size:12px;color:var(--text3);white-space:nowrap">العرض الأسبوعي</span>
-          <div style="flex:1;height:1px;background:var(--border)"></div>
-          <div style="display:flex;gap:6px">
-            <button class="btn btn-ghost btn-sm" onclick="changeWeek(-1)">→ السابق</button>
-            <button class="btn btn-ghost btn-sm" onclick="changeWeek(1)">التالي ←</button>
+          <!-- الأسبوع (يسار) -->
+          <div class="card" id="dw-week-col" style="margin-bottom:0">
+            <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px">🗓️ الأسبوع</div>
+            <div class="week-grid" id="week-grid" style="grid-template-columns:repeat(7,1fr)"></div>
+            <div class="summary-row" id="week-summary" style="margin-top:8px;margin-bottom:0"></div>
           </div>
         </div>
 
-        <!-- ─── القسم الأسبوعي ─── -->
-        <div class="summary-row" id="week-summary"></div>
-        <div class="week-grid" id="week-grid"></div>
+        <!-- ── 3 بطاقات صغيرة في الأسفل ── -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          <div class="card" style="margin-bottom:0;padding:12px;text-align:center" id="dw-day-stat">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:4px">📅 صرفت اليوم</div>
+            <div id="dw-today-exp" style="font-size:18px;font-weight:800;color:var(--red)">—</div>
+          </div>
+          <div class="card" style="margin-bottom:0;padding:12px;text-align:center" id="dw-week-stat">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:4px">🗓️ مصاريف الأسبوع</div>
+            <div id="dw-week-exp" style="font-size:18px;font-weight:800;color:var(--red)">—</div>
+          </div>
+          <div class="card" style="margin-bottom:0;padding:12px;text-align:center;cursor:pointer" onclick="openAddTx()">
+            <div style="font-size:10px;color:var(--text3);margin-bottom:4px">⚡ إضافة سريعة</div>
+            <div style="font-size:24px">➕</div>
+          </div>
+        </div>
       </div>
 
       <!-- MONTHLY PAGE -->
       <div class="page" id="page-monthly">
         <div class="month-bar" id="month-bar"></div>
         <div class="summary-row" id="month-summary"></div>
-        <!-- 💵 راتب الشهر الحالي -->
         <div id="monthly-salary-bar" style="margin-bottom:12px"></div>
-        <div class="card">
-          <div class="card-title">📅 التقويم الشهري</div>
-          <div class="cal-header-row">
-            <div class="cal-header-cell">أحد</div><div class="cal-header-cell">اثنين</div>
-            <div class="cal-header-cell">ثلاثاء</div><div class="cal-header-cell">أربعاء</div>
-            <div class="cal-header-cell">خميس</div><div class="cal-header-cell">جمعة</div>
-            <div class="cal-header-cell">سبت</div>
+
+        <!-- أداء الأشهر فوق التقويم -->
+        <details class="card" id="monthly-month-cards-wrap" style="margin-bottom:12px;padding:12px">
+          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between">📅 أداء الأشهر <span style="font-size:11px;color:var(--text3)">▾</span></summary>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px" id="monthly-month-cards"></div>
+        </details>
+
+        <!-- صف كبير: التقويم + آخر 12 شهر -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="card" id="monthly-cal-wrap" style="margin-bottom:0">
+            <div class="card-title">📅 التقويم الشهري</div>
+            <div class="cal-header-row">
+              <div class="cal-header-cell">أحد</div><div class="cal-header-cell">اثنين</div>
+              <div class="cal-header-cell">ثلاثاء</div><div class="cal-header-cell">أربعاء</div>
+              <div class="cal-header-cell">خميس</div><div class="cal-header-cell">جمعة</div>
+              <div class="cal-header-cell">سبت</div>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
           </div>
-          <div class="cal-grid" id="cal-grid"></div>
+          <div class="card" id="monthly-bar-wrap" style="margin-bottom:0">
+            <div class="card-title">📉 أداء آخر 12 شهر</div>
+            <div style="height:240px"><canvas id="bar-chart"></canvas></div>
+          </div>
         </div>
-        <div class="card">
-          <div class="card-title">🎯 توزيع المصاريف بالفئات</div>
-          <div id="cats-breakdown-monthly"></div>
+
+        <!-- صف: توزيع الفئات + قارن بخطتك -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="card" id="monthly-cats-wrap" style="margin-bottom:0">
+            <div class="card-title">🎯 توزيع المصاريف بالفئات</div>
+            <div id="cats-breakdown-monthly"></div>
+          </div>
+          <div class="card" id="monthly-plan-wrap" style="margin-bottom:0">
+            <div class="card-title">📊 قارن بخطتك</div>
+            <div id="plan-compare"></div>
+          </div>
         </div>
-        <div class="card">
-          <div class="card-title">📊 قارن بخطتك</div>
-          <div id="plan-compare"></div>
-        </div>
+
+        <!-- مقارنة بين الأشهر -->
         <div class="card">
           <div class="card-title" style="justify-content:space-between;align-items:center">
             <span>📈 مقارنة بين الأشهر</span>
@@ -672,7 +761,6 @@
               <button class="btn btn-primary btn-sm" onclick="renderMonthCompare()">مقارنة ▶</button>
             </div>
           </div>
-          <!-- اختيار الأشهر -->
           <div id="compare-selects-wrap" style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end;padding-bottom:14px;border-bottom:1px solid var(--border)">
             <div class="compare-sel-wrap">
               <label style="font-size:10px;color:var(--text3)">● شهر 1</label>
@@ -683,22 +771,39 @@
               <select class="compare-month-sel" style="min-width:130px;font-size:12px"></select>
             </div>
           </div>
-          <!-- الجدول -->
           <div id="month-compare-result"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">📉 أداء آخر 12 شهر</div>
-          <div class="bar-chart-wrap"><canvas id="bar-chart"></canvas></div>
         </div>
       </div>
 
       <!-- PLANNING PAGE -->
       <div class="page" id="page-planning">
-        <div class="section-title">
-          التخطيط المستقبلي
-          <button class="btn btn-primary btn-sm" onclick="openModal('goal-modal')">+ هدف جديد</button>
+        <div class="section-title" style="margin-bottom:12px">🎯 التخطيط المالي</div>
+
+        <!-- تبويبان رئيسيان -->
+        <div style="display:flex;gap:0;margin-bottom:16px;background:var(--bg3);padding:4px;border-radius:10px">
+          <button id="plan-tab-goals" class="settings-tab active" onclick="switchPlanTab('goals')" style="flex:1;border:none;border-radius:7px">➕ أهداف التجميع</button>
+          <button id="plan-tab-installments" class="settings-tab" onclick="switchPlanTab('installments')" style="flex:1;border:none;border-radius:7px">💳 أقساط والتزامات</button>
         </div>
-        <div id="goals-list"></div>
+
+        <!-- ── لوحة أهداف التجميع ── -->
+        <div id="panel-goals">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-size:13px;color:var(--text2)">أهداف الادخار المتصلة والشهر الواحد</span>
+            <button class="btn btn-primary btn-sm" onclick="openAddPlanModal('saving')">+ هدف جديد</button>
+          </div>
+          <div id="goals-list"></div>
+        </div>
+
+        <!-- ── لوحة الأقساط ── -->
+        <div id="panel-installments" style="display:none">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <span style="font-size:13px;color:var(--text2)">التزامات وأقساط شهرية ثابتة</span>
+            <button class="btn btn-primary btn-sm" onclick="openAddPlanModal('installment')">+ قسط جديد</button>
+          </div>
+          <div id="installments-list"></div>
+        </div>
+
+        <!-- خطة شهرية افتراضية -->
         <div class="card" style="margin-top:16px">
           <div class="card-title" style="justify-content:space-between">
             📋 الخطة الشهرية الافتراضية
@@ -712,17 +817,24 @@
       <div class="page" id="page-settings">
         <div class="section-title">⚙️ الإعدادات</div>
 
-        <!-- 🔀 تخصيص القوائم -->
-        <div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:20px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <div style="font-size:15px;font-weight:700">🔀 تخصيص القوائم</div>
-            <div style="display:flex;gap:8px">
-              <button class="btn btn-ghost btn-sm" onclick="resetNavOrder()">↺ إعادة تعيين</button>
-              <button class="btn btn-primary btn-sm" onclick="saveNavOrder()">💾 حفظ</button>
+        <!-- 🔀 تخصيص القوائم + 👁️ إظهار/إخفاء -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+          <div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;padding:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <div style="font-size:13px;font-weight:700">🔀 تخصيص القوائم</div>
+              <div style="display:flex;gap:5px">
+                <button class="btn btn-ghost btn-sm" onclick="resetNavOrder()">↺</button>
+                <button class="btn btn-primary btn-sm" onclick="saveNavOrder()">💾</button>
+              </div>
             </div>
+            <p style="font-size:11px;color:var(--text3);margin-bottom:12px">اسحب أو ← → للترتيب</p>
+            <div id="nav-sort-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px"></div>
           </div>
-          <p style="font-size:12px;color:var(--text3);margin-bottom:16px">اسحب أو استخدم ← → للترتيب · 👁️ لإخفاء أو إظهار</p>
-          <div id="nav-sort-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px"></div>
+          <div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;padding:16px">
+            <div style="font-size:13px;font-weight:700;margin-bottom:4px">👁️ إخفاء / إظهار الأقسام</div>
+            <p style="font-size:11px;color:var(--text3);margin-bottom:12px">تحكم في مكونات كل صفحة</p>
+            <div id="section-vis-list" style="overflow-y:auto;max-height:260px"></div>
+          </div>
         </div>
 
         <div class="settings-grid">
@@ -782,14 +894,17 @@
             <div class="card-title">⇩ تصدير واستيراد</div>
             <button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="exportXLSX()">📊 تصدير XLSX</button>
             <button class="btn btn-ghost" style="width:100%;margin-bottom:12px" onclick="exportCSV()">📄 تصدير CSV</button>
-            <div style="height:1px;background:var(--border);margin-bottom:12px"></div>
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">📥 استيراد</div>
+            <div style="height:1px;background:var(--border);margin-bottom:10px"></div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px">📥 استيراد</div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;line-height:1.6">
+              الصيغة المدعومة: <code style="background:var(--bg3);padding:1px 4px;border-radius:3px">التاريخ | النوع | الفئة | المبلغ | الملاحظة</code><br>
+              مثال: <code style="background:var(--bg3);padding:1px 4px;border-radius:3px">2026/05/01 | مصروف | Apple Pay | 150 | بقالة</code>
+            </div>
             <input type="file" id="import-file" accept=".csv,.xlsx,.xls" style="margin-bottom:10px">
             <div style="display:flex;gap:8px;margin-bottom:8px">
               <button class="btn btn-ghost" style="flex:1" onclick="importDataConfirm('merge')">جمع</button>
               <button class="btn btn-danger" style="flex:1" onclick="importDataConfirm('replace')">استبدال</button>
             </div>
-            <p style="font-size:11px;color:var(--text3)">جمع: يضيف فوق الموجودة · استبدال: يمسح الكل</p>
           </div>
 
           <!-- إدارة البيانات -->
@@ -804,7 +919,6 @@
 
       <!-- ANALYSIS PAGE -->
       <div class="page" id="page-analysis">
-
         <!-- رأس + فلتر -->
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -813,128 +927,96 @@
           </div>
           <span style="font-size:12px;color:var(--text3)">📈 التحليل الشامل</span>
         </div>
-
-        <!-- فلتر مخصص -->
         <div id="analysis-filter-row" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;margin-bottom:12px">
           <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
-            <div style="display:flex;flex-direction:column;gap:3px">
-              <label style="font-size:10px;color:var(--text3)">من</label>
-              <input type="date" id="filter-from" style="font-size:12px;padding:5px 8px">
-            </div>
-            <div style="display:flex;flex-direction:column;gap:3px">
-              <label style="font-size:10px;color:var(--text3)">إلى</label>
-              <input type="date" id="filter-to" style="font-size:12px;padding:5px 8px">
-            </div>
+            <div style="display:flex;flex-direction:column;gap:3px"><label style="font-size:10px;color:var(--text3)">من</label><input type="date" id="filter-from" style="font-size:12px;padding:5px 8px"></div>
+            <div style="display:flex;flex-direction:column;gap:3px"><label style="font-size:10px;color:var(--text3)">إلى</label><input type="date" id="filter-to" style="font-size:12px;padding:5px 8px"></div>
             <button class="btn btn-primary btn-sm" onclick="applyAnalysisFilter()">تطبيق</button>
             <button class="btn btn-ghost btn-sm" onclick="clearAnalysisFilter()">✕ مسح</button>
           </div>
         </div>
 
-        <!-- ── صف 1: 3 بطاقات ملخص مضغوطة ── -->
+        <!-- ملخص -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px" id="analysis-big-cards"></div>
-
-        <!-- ── صف 2: ملخص إحصائي مدمج ── -->
         <div style="display:grid;grid-template-columns:1fr;gap:6px;margin-bottom:12px" id="analysis-small-cards"></div>
 
-        <!-- ── صف 3: رسم بياني ── -->
-        <div class="card" style="margin-bottom:10px;padding:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span style="font-size:12px;font-weight:600;color:var(--text2)">📊 الإيرادات مقابل المصاريف</span>
+        <!-- صف 1: رسم بياني + جدول تفصيلي -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="card" style="margin-bottom:0;padding:12px">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">📊 الإيرادات مقابل المصاريف</div>
+            <div style="height:200px"><canvas id="analysis-bar-chart"></canvas></div>
           </div>
-          <div style="height:160px"><canvas id="analysis-bar-chart"></canvas></div>
+          <details class="card" style="margin-bottom:0;padding:12px" open>
+            <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between">📋 الجدول التفصيلي <span style="color:var(--text3)">▾</span></summary>
+            <div style="overflow-x:auto;margin-top:10px;max-height:210px;overflow-y:auto">
+              <table class="plan-table" style="min-width:440px;font-size:11px">
+                <thead><tr><th>الشهر</th><th style="text-align:center">الدخل</th><th style="text-align:center">المصروف</th><th style="text-align:center">المتبقي</th><th style="text-align:center">%</th><th style="text-align:center">◉</th></tr></thead>
+                <tbody id="analysis-tbody"></tbody>
+                <tfoot id="analysis-tfoot"></tfoot>
+              </table>
+            </div>
+          </details>
         </div>
 
-        <!-- ── صف 4: توزيع الفئات (أشرطة أفقية) ── -->
-        <div class="card" style="margin-bottom:10px;padding:12px">
-          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">🎯 توزيع المصاريف</div>
-          <div id="analysis-cats-bars"></div>
+        <!-- صف 2: توزيع الفئات + إنفاق كل فئة شهرياً -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="card" style="margin-bottom:0;padding:12px">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">🎯 توزيع المصاريف</div>
+            <div id="analysis-cats-bars"></div>
+          </div>
+          <details class="card" style="margin-bottom:0;padding:12px" open>
+            <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between">🏷️ إنفاق كل فئة شهرياً <span style="color:var(--text3)">▾</span></summary>
+            <div style="overflow-x:auto;margin-top:10px;max-height:210px;overflow-y:auto">
+              <table class="plan-table" style="min-width:400px;font-size:11px">
+                <thead id="analysis-cats-head"></thead>
+                <tbody id="analysis-cats-body"></tbody>
+              </table>
+            </div>
+          </details>
         </div>
 
-        <!-- ── صف 5: توقع + أفضل/أسوأ ── -->
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px" id="analysis-forecast-row"></div>
+        <!-- توقع + أفضل/أسوأ -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px" id="analysis-forecast-row"></div>
 
-        <!-- ── صف 6: بطاقات الأشهر (قابلة للطي) ── -->
+        <!-- بطاقات الأشهر -->
         <details class="card" style="margin-bottom:10px;padding:12px">
-          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between;align-items:center">
-            📅 أداء الأشهر <span style="font-size:11px;color:var(--text3)">اضغط للعرض ▾</span>
-          </summary>
+          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between">📅 أداء الأشهر <span style="font-size:11px;color:var(--text3)">▾</span></summary>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px" id="analysis-month-cards"></div>
         </details>
-
-        <!-- ── صف 7: الجدول التفصيلي (قابل للطي) ── -->
-        <details class="card" style="margin-bottom:10px;padding:12px">
-          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between;align-items:center">
-            📋 الجدول التفصيلي <span style="font-size:11px;color:var(--text3)">اضغط للعرض ▾</span>
-          </summary>
-          <div style="overflow-x:auto;margin-top:12px">
-            <table class="plan-table" style="min-width:600px;font-size:11px">
-              <thead>
-                <tr>
-                  <th>الشهر</th>
-                  <th style="text-align:center">الدخل</th>
-                  <th style="text-align:center">المصروف</th>
-                  <th style="text-align:center">المتبقي</th>
-                  <th style="text-align:center">الفرق</th>
-                  <th style="text-align:center">%</th>
-                  <th style="text-align:center">الحالة</th>
-                </tr>
-              </thead>
-              <tbody id="analysis-tbody"></tbody>
-              <tfoot id="analysis-tfoot"></tfoot>
-            </table>
-          </div>
-        </details>
-
-        <!-- ── صف 8: جدول الفئات (قابل للطي) ── -->
-        <details class="card" style="margin-bottom:10px;padding:12px">
-          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between;align-items:center">
-            🏷️ إنفاق كل فئة شهرياً <span style="font-size:11px;color:var(--text3)">اضغط للعرض ▾</span>
-          </summary>
-          <div style="overflow-x:auto;margin-top:12px">
-            <table class="plan-table" style="min-width:600px;font-size:11px">
-              <thead id="analysis-cats-head"></thead>
-              <tbody id="analysis-cats-body"></tbody>
-            </table>
-          </div>
-        </details>
-
       </div>
 
       <!-- DASHBOARD PAGE -->
       <div class="page" id="page-dashboard">
-        <div class="section-title" style="margin-bottom:12px">
-          📊 لوحة التحكم
-          <div style="display:flex;gap:8px;align-items:center">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+          <span style="font-size:15px;font-weight:700">📊 لوحة التحكم</span>
+          <div style="display:flex;gap:8px">
             <button class="btn btn-ghost btn-sm" id="db-auto-btn" onclick="setDashboardMode('auto')" style="border-color:var(--accent);color:var(--accent)">دورة الراتب ✓</button>
             <button class="btn btn-ghost btn-sm" id="db-custom-btn" onclick="setDashboardMode('custom')">📅 تحديد الفترة</button>
           </div>
         </div>
 
-        <!-- صف التاريخ المخصص -->
-        <div id="db-custom-row" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px">
+        <!-- فترة مخصصة -->
+        <div id="db-custom-row" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px">
           <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font-size:11px;color:var(--text3)">من</label>
-              <input type="date" id="db-from" style="font-size:12px;width:140px">
-            </div>
-            <div style="display:flex;flex-direction:column;gap:4px">
-              <label style="font-size:11px;color:var(--text3)">إلى</label>
-              <input type="date" id="db-to" style="font-size:12px;width:140px">
-            </div>
+            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;color:var(--text3)">من</label><input type="date" id="db-from" style="font-size:12px;width:140px"></div>
+            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;color:var(--text3)">إلى</label><input type="date" id="db-to" style="font-size:12px;width:140px"></div>
             <button class="btn btn-primary btn-sm" onclick="applyDashboardPeriod()">تطبيق</button>
-            <button class="btn btn-ghost btn-sm" onclick="fillPaydaySuggestion()">💡 اقتراح دورة الراتب</button>
+            <button class="btn btn-ghost btn-sm" onclick="fillPaydaySuggestion()">💡 اقتراح</button>
           </div>
           <div id="db-period-label" style="font-size:11px;color:var(--text3);margin-top:8px"></div>
         </div>
 
-        <!-- الدورة الكاملة (السنة كلها) -->
-        <div id="db-full-summary" style="margin-bottom:16px"></div>
+        <!-- ملخص الدورة الذكي -->
+        <div id="db-cycle-result" style="margin-bottom:12px"></div>
 
-        <!-- دورة / الفترة الحالية -->
-        <div id="db-cycle-card" style="margin-bottom:16px"></div>
+        <!-- صف كبير: الدورة الكاملة + الدورة الحالية -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div id="db-full-summary" style="margin-bottom:0"></div>
+          <div id="db-cycle-card" style="margin-bottom:0"></div>
+        </div>
 
-        <!-- جدولا المقارنة والرسم جنباً لجنب -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <!-- مقارنة + أيام الأسبوع -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
           <div class="card" style="margin-bottom:0">
             <div class="card-title">🔄 مقارنة الدورات السابقة</div>
             <div id="db-cycles-compare"></div>
@@ -945,8 +1027,8 @@
           </div>
         </div>
 
-        <!-- الرسم البياني والفئات جنباً لجنب -->
-        <div style="display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:16px">
+        <!-- رسم + فئات -->
+        <div style="display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:12px">
           <div class="card" style="margin-bottom:0">
             <div class="card-title">📉 الإنفاق عبر الدورات</div>
             <div style="height:200px"><canvas id="db-bar-chart"></canvas></div>
@@ -1175,6 +1257,82 @@
   </div>
 </div>
 
+<!-- ADD PLAN MODAL -->
+<div class="modal-overlay hidden" id="add-plan-modal">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-title">
+      <span id="add-plan-title">خطة جديدة</span>
+      <button class="btn btn-ghost btn-icon btn-sm" onclick="closeModal('add-plan-modal')">✕</button>
+    </div>
+
+    <!-- نوع الهدف: متصل / شهر واحد (يظهر فقط لأهداف التجميع) -->
+    <div id="plan-subtype-row" style="margin-bottom:14px">
+      <div style="display:flex;gap:0;background:var(--bg3);padding:3px;border-radius:8px">
+        <button id="subtype-connected" class="settings-tab active" onclick="setPlanSubtype('connected')" style="flex:1;border:none;border-radius:6px;font-size:12px">🔗 هدف متصل</button>
+        <button id="subtype-oneshot"   class="settings-tab" onclick="setPlanSubtype('oneshot')"   style="flex:1;border:none;border-radius:6px;font-size:12px">📌 شهر واحد</button>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px" id="subtype-desc">يستمر حتى تحقيق الهدف عبر أشهر متعددة</div>
+    </div>
+
+    <div class="form-group" style="margin-bottom:10px">
+      <label>الاسم</label>
+      <input type="text" id="plan-name" placeholder="مثال: شراء سيارة">
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label>الإيموجي</label>
+      <input type="text" id="plan-emoji" placeholder="🎯" style="width:70px">
+    </div>
+    <div class="form-group" style="margin-bottom:10px">
+      <label id="plan-target-label">المبلغ المستهدف</label>
+      <input type="number" id="plan-target" placeholder="0">
+    </div>
+
+    <!-- حقول الأقساط -->
+    <div id="installment-fields" style="display:none">
+      <div class="form-group" style="margin-bottom:10px">
+        <label>عدد الأشهر</label>
+        <select id="plan-months-sel">
+          <option value="1">1 شهر</option>
+          <option value="3">3 أشهر</option>
+          <option value="6">6 أشهر</option>
+          <option value="12" selected>12 شهر</option>
+          <option value="24">24 شهر</option>
+          <option value="custom">مخصص</option>
+        </select>
+      </div>
+      <div class="form-group" style="margin-bottom:10px" id="custom-months-row" style="display:none">
+        <label>عدد مخصص</label>
+        <input type="number" id="plan-months-custom" placeholder="عدد الأشهر" min="1" max="120">
+      </div>
+      <div class="form-group" style="margin-bottom:10px">
+        <label>تاريخ البداية</label>
+        <input type="date" id="plan-start-date">
+      </div>
+      <div style="background:var(--bg3);border-radius:8px;padding:10px;margin-bottom:12px;font-size:12px" id="installment-calc">
+        <span style="color:var(--text3)">قيمة القسط الشهري: </span>
+        <span id="calc-monthly" style="font-weight:700;color:var(--accent2)">—</span>
+      </div>
+    </div>
+
+    <!-- حقول التجميع -->
+    <div id="saving-fields">
+      <div class="form-group" style="margin-bottom:10px">
+        <label>المجموع المحقق حالياً</label>
+        <input type="number" id="plan-current" placeholder="0">
+      </div>
+      <div id="connected-duration" class="form-group" style="margin-bottom:10px">
+        <label>المدة المستهدفة (بالأشهر)</label>
+        <input type="number" id="plan-duration" placeholder="12" min="1">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-primary" style="flex:1" onclick="savePlanItem()">حفظ</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="closeModal('add-plan-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADD SALARY MODAL -->
 <div class="modal-overlay hidden" id="add-salary-modal">
   <div class="modal" style="max-width:380px">
@@ -1356,6 +1514,7 @@ let state = {
   goals: [],
   settings: { salary: 0, currency: '⃁', payday: null },
   salaries: [], // [{year,month,day,amount}]
+  plans: [],    // [{id,type,subtype,name,emoji,target,current,months,startDate,done}]
   theme: 'theme-default',
   currentDate: new Date(),
   weekOffset: 0,
@@ -1383,6 +1542,7 @@ function load() {
       state.categories = [...savedCats, ...newDefaults];
     }
     state.goals    = d.goals || [];
+    state.plans    = d.plans || [];
     state.settings = d.settings || state.settings;
     // normalize salaries to ensure all fields are Numbers (يمنع type mismatch بعد JSON.parse)
     state.salaries = (d.salaries || []).map(s => ({
@@ -1402,6 +1562,7 @@ function save() {
     transactions: state.transactions,
     categories:   state.categories,
     goals:        state.goals,
+    plans:        state.plans,
     settings:     state.settings,
     salaries:     state.salaries,
     theme:        state.theme,
@@ -1602,6 +1763,26 @@ function refreshDayWeek() {
   renderTop();
   renderDaily();
   renderWeekly();
+  updateDayWeekStats();
+}
+
+function updateDayWeekStats() {
+  // صرفت اليوم
+  const todayStr  = dateKey(state.currentDate);
+  const todayExp  = getTxForDate(todayStr).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const todayEl   = document.getElementById('dw-today-exp');
+  if (todayEl) todayEl.textContent = todayExp > 0 ? fmt(todayExp) : '—';
+
+  // مصاريف الأسبوع الحالي
+  const today   = localToday();
+  const startOW = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + state.weekOffset*7);
+  let weekExp = 0;
+  for (let i=0; i<7; i++) {
+    const d = new Date(startOW.getFullYear(), startOW.getMonth(), startOW.getDate()+i);
+    weekExp += getTxForDate(dateKey(d)).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  }
+  const weekEl = document.getElementById('dw-week-exp');
+  if (weekEl) weekEl.textContent = weekExp > 0 ? fmt(weekExp) : '—';
 }
 
 function changeDay(dir) {
@@ -1726,6 +1907,27 @@ function renderMonthly() {
   
   renderCalendar();
   renderMonthlySalaryBar();
+  // أداء الأشهر
+  const mmCards = document.getElementById('monthly-month-cards');
+  if (mmCards) {
+    const allMonths = Array.from({length:12},(_,i)=>i);
+    mmCards.innerHTML = allMonths.map(mi => {
+      const mTxs = getMonthTxs(state.currentYear, mi);
+      const inc  = mTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+      const exp  = mTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+      const net  = inc - exp;
+      const sal  = getSalaryForMonth(state.currentYear, mi).amount || state.settings.salary || 0;
+      const totalInc = sal + inc;
+      const pct  = totalInc ? Math.min(100, (exp/totalInc)*100) : 0;
+      const col  = pct>90?'var(--red)':pct>70?'var(--yellow)':'var(--green)';
+      const isCur = mi === state.currentMonth;
+      return `<div style="background:var(--card);border:1.5px solid ${isCur?'var(--accent)':'var(--border)'};border-radius:10px;padding:10px;cursor:pointer" onclick="goToMonth(${mi})">
+        <div style="font-size:11px;font-weight:600;color:${isCur?'var(--accent)':'var(--text2)'}">${MONTH_NAMES[mi]}</div>
+        <div style="font-size:13px;font-weight:700;color:${net>=0?'var(--green)':'var(--red)'};margin:3px 0">${mTxs.length?fmt(net):'—'}</div>
+        ${mTxs.length?`<div style="height:3px;background:var(--bg4);border-radius:2px;margin-top:3px"><div style="width:${pct}%;height:100%;background:${col};border-radius:2px"></div></div>`:''}
+      </div>`;
+    }).join('');
+  }
   renderDonut(txs);
   renderBarChart();
   renderPlanCompare();
@@ -2016,88 +2218,211 @@ function renderPlanCompare() {
   document.getElementById('plan-compare').innerHTML = rows || '<p style="color:var(--text3);font-size:13px">لا توجد خطة شهرية. أضف خطة من قسم التخطيط.</p>';
 }
 
-// ================== PLANNING ==================
-function renderPlanning() {
-  const goals = state.goals;
-  const container = document.getElementById('goals-list');
-  if (!goals.length) {
-    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>لا توجد أهداف بعد</p></div>';
-  } else {
-    container.innerHTML = goals.map(g => {
-      const pct = g.target ? Math.min(100, (g.current/g.target)*100) : 0;
-      return `<div class="goal-card">
-        <div class="goal-header">
-          <div class="goal-name">${g.emoji||'🎯'} ${g.name}</div>
-          <div style="display:flex;gap:4px">
-            <button class="btn btn-ghost btn-icon btn-sm" onclick="editGoal('${g.id}')">✏️</button>
-            <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteGoal('${g.id}')">🗑️</button>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:space-between">
-          <span class="goal-amounts">${fmt(g.current)} / ${fmt(g.target)}</span>
-          <span class="badge badge-${pct>=100?'green':pct>=50?'yellow':'red'}">${Math.round(pct)}%</span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-      </div>`;
-    }).join('');
-  }
-  
-  // Monthly plan display
-  const plan = state.plan;
-  const planDisplay = document.getElementById('monthly-plan-display');
-  if (!plan.salary && !Object.keys(plan.categories).length) {
-    planDisplay.innerHTML = '<p style="color:var(--text3);font-size:13px">لا توجد خطة شهرية مضافة بعد</p>';
-  } else {
-    const rows = state.categories.filter(c => plan.categories[c.id]).map(c =>
-      `<tr><td>${c.emoji} ${c.name}</td><td style="text-align:left">${fmt(plan.categories[c.id])}</td></tr>`
-    ).join('');
-    planDisplay.innerHTML = `
-      <table class="plan-table" style="margin-bottom:8px">
-        <tr><td><b>الراتب المتوقع</b></td><td style="text-align:left;color:var(--green)">${fmt(plan.salary)}</td></tr>
-        ${rows}
-      </table>
-    `;
-  }
+// ================== PLANNING SYSTEM ==================
+let _planModalType = 'saving'; // 'saving' | 'installment'
+let _planSubtype   = 'connected'; // 'connected' | 'oneshot'
+let _editingPlan   = null;
+
+function switchPlanTab(tab) {
+  document.getElementById('panel-goals').style.display         = tab==='goals'        ? 'block' : 'none';
+  document.getElementById('panel-installments').style.display  = tab==='installments' ? 'block' : 'none';
+  document.getElementById('plan-tab-goals').classList.toggle('active',        tab==='goals');
+  document.getElementById('plan-tab-installments').classList.toggle('active', tab==='installments');
 }
 
-function saveGoal() {
-  const name = document.getElementById('goal-name').value.trim();
-  const target = parseFloat(document.getElementById('goal-target').value) || 0;
-  const current = parseFloat(document.getElementById('goal-current').value) || 0;
-  const emoji = document.getElementById('goal-emoji').value || '🎯';
-  if (!name) return;
-  
-  if (state.editingGoal) {
-    const g = state.goals.find(g => g.id === state.editingGoal);
-    if (g) { g.name = name; g.target = target; g.current = current; g.emoji = emoji; }
-    state.editingGoal = null;
+function openAddPlanModal(type) {
+  _planModalType = type;
+  _editingPlan   = null;
+  _planSubtype   = 'connected';
+  document.getElementById('add-plan-title').textContent = type==='saving' ? '➕ هدف تجميع جديد' : '💳 قسط / التزام جديد';
+  document.getElementById('plan-name').value    = '';
+  document.getElementById('plan-emoji').value   = type==='saving' ? '🎯' : '💳';
+  document.getElementById('plan-target').value  = '';
+  document.getElementById('plan-current').value = '';
+  document.getElementById('plan-duration').value= '';
+  document.getElementById('plan-start-date').value = dateKey(localToday());
+  document.getElementById('plan-months-sel').value = '12';
+  // إظهار/إخفاء الحقول حسب النوع
+  document.getElementById('plan-subtype-row').style.display    = type==='saving'       ? 'block' : 'none';
+  document.getElementById('saving-fields').style.display       = type==='saving'       ? 'block' : 'none';
+  document.getElementById('installment-fields').style.display  = type==='installment'  ? 'block' : 'none';
+  document.getElementById('plan-target-label').textContent     = type==='saving' ? 'المبلغ المستهدف' : 'إجمالي المبلغ';
+  setPlanSubtype('connected');
+  openModal('add-plan-modal');
+}
+
+function setPlanSubtype(sub) {
+  _planSubtype = sub;
+  document.getElementById('subtype-connected').classList.toggle('active', sub==='connected');
+  document.getElementById('subtype-oneshot').classList.toggle('active',   sub==='oneshot');
+  document.getElementById('subtype-desc').textContent = sub==='connected'
+    ? 'يستمر حتى تحقيق الهدف عبر أشهر متعددة'
+    : 'ينتهي بنهاية دورة الشهر الحالي فقط';
+  document.getElementById('connected-duration').style.display = sub==='connected' ? 'block' : 'none';
+}
+
+function savePlanItem() {
+  const name   = document.getElementById('plan-name').value.trim();
+  const emoji  = document.getElementById('plan-emoji').value || (_planModalType==='saving'?'🎯':'💳');
+  const target = parseFloat(document.getElementById('plan-target').value) || 0;
+  if (!name || !target) { showToast('⚠️ أدخل الاسم والمبلغ', 'var(--yellow)'); return; }
+
+  let months = 12, startDate = dateKey(localToday()), current = 0, duration = 12;
+
+  if (_planModalType === 'installment') {
+    const sel = document.getElementById('plan-months-sel').value;
+    months    = sel === 'custom' ? parseInt(document.getElementById('plan-months-custom').value)||12 : parseInt(sel);
+    startDate = document.getElementById('plan-start-date').value || startDate;
   } else {
-    state.goals.push({ id: uid(), name, target, current, emoji });
+    current  = parseFloat(document.getElementById('plan-current').value) || 0;
+    duration = parseInt(document.getElementById('plan-duration').value) || 12;
   }
-  save(); closeModal('goal-modal'); renderPlanning();
+
+  const item = {
+    id:        _editingPlan || uid(),
+    type:      _planModalType,   // 'saving' | 'installment'
+    subtype:   _planSubtype,     // 'connected' | 'oneshot'
+    name, emoji, target, current, months, duration, startDate,
+    done: false,
+    createdAt: _editingPlan ? undefined : dateKey(localToday()),
+  };
+
+  if (_editingPlan) {
+    const idx = state.plans.findIndex(p => p.id === _editingPlan);
+    if (idx >= 0) state.plans[idx] = { ...state.plans[idx], ...item };
+  } else {
+    state.plans.push(item);
+  }
+  _editingPlan = null;
+  save(); closeModal('add-plan-modal'); renderPlanning();
+  showToast(`✅ تمت إضافة "${name}"`, 'var(--green)');
 }
 
-function editGoal(id) {
-  const g = state.goals.find(g => g.id === id);
-  if (!g) return;
-  state.editingGoal = id;
-  document.getElementById('goal-name').value = g.name;
-  document.getElementById('goal-target').value = g.target;
-  document.getElementById('goal-current').value = g.current;
-  document.getElementById('goal-emoji').value = g.emoji||'🎯';
-  document.getElementById('goal-modal-title').textContent = 'تعديل الهدف';
-  openModal('goal-modal');
-}
-
-function deleteGoal(id) {
-  const g = state.goals.find(g => g.id === id);
-  showConfirm('حذف الهدف', `هل تريد حذف هدف "${g ? g.name : ''}" نهائياً؟`, '🎯', () => {
-    state.goals = state.goals.filter(g => g.id !== id);
-    showToast('🗑️ تم حذف الهدف', 'var(--red)');
+function deletePlanItem(id) {
+  const p = state.plans.find(p => p.id === id);
+  showConfirm('حذف الخطة', `حذف "${p?.name}"؟`, '🗑️', () => {
+    state.plans = state.plans.filter(p => p.id !== id);
     save(); renderPlanning();
+    showToast('🗑️ تم الحذف', 'var(--red)');
   });
 }
 
+function addToSaving(id) {
+  const p = state.plans.find(p => p.id === id);
+  if (!p) return;
+  const amt = parseFloat(prompt(`أضف مبلغ للادخار في "${p.name}" (${fmt(p.target - p.current)} متبقي)`));
+  if (!amt || amt <= 0) return;
+  p.current = Math.min(p.target, p.current + amt);
+  if (p.current >= p.target) { p.done = true; showToast(`🎉 أنجزت هدف "${p.name}"!`, 'var(--green)'); }
+  save(); renderPlanning();
+  showToast(`✅ تمت إضافة ${fmt(amt)} للهدف`, 'var(--accent)');
+}
+
+function renderPlanning() {
+  const today = localToday();
+
+  // ── أهداف التجميع ──────────────────────────────────────────
+  const savings = state.plans.filter(p => p.type === 'saving');
+  const goalEl  = document.getElementById('goals-list');
+  if (goalEl) {
+    if (!savings.length) {
+      goalEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><p>لا توجد أهداف تجميع بعد</p></div>';
+    } else {
+      goalEl.innerHTML = savings.map(p => {
+        const pct    = p.target ? Math.min(100, (p.current/p.target)*100) : 0;
+        const remain = Math.max(0, p.target - p.current);
+        const monthly = p.duration > 0 ? Math.ceil(remain/p.duration) : 0;
+        const badgeCol = pct>=100?'green':pct>=50?'yellow':'red';
+        const subtypeLabel = p.subtype==='oneshot'
+          ? '<span class="analysis-chip chip-yellow" style="font-size:10px">📌 شهر واحد</span>'
+          : '<span class="analysis-chip chip-green" style="font-size:10px">🔗 متصل</span>';
+        return `<div class="goal-card${p.done?' goal-done':''}">
+          <div class="goal-header">
+            <div class="goal-name">${p.emoji} ${p.name} ${subtypeLabel}</div>
+            <div style="display:flex;gap:4px">
+              <button class="btn btn-ghost btn-icon btn-sm" onclick="addToSaving('${p.id}')" title="إضافة مبلغ">➕</button>
+              <button class="btn btn-ghost btn-icon btn-sm" onclick="deletePlanItem('${p.id}')">🗑️</button>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-size:12px;color:var(--text3)">${fmt(p.current)} / ${fmt(p.target)}</span>
+            <span class="badge badge-${badgeCol}">${Math.round(pct)}%</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${pct>=100?'var(--green)':pct>=50?'var(--yellow)':'var(--accent)'}"></div></div>
+          ${p.done
+            ? `<div style="margin-top:8px;padding:8px;background:rgba(76,175,140,0.15);border-radius:8px;text-align:center;color:var(--green);font-weight:600">🎉 تم تحقيق الهدف!</div>`
+            : monthly>0&&p.subtype==='connected'
+              ? `<div style="margin-top:6px;font-size:11px;color:var(--accent2)">💡 تحتاج ${fmt(monthly)} شهرياً خلال ${p.duration} شهر</div>`
+              : p.subtype==='oneshot'
+                ? `<div style="margin-top:6px;font-size:11px;color:var(--yellow)">📌 ينتهي بنهاية الدورة الحالية</div>`
+                : ''}
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // ── الأقساط والالتزامات ──────────────────────────────────────
+  const installments = state.plans.filter(p => p.type === 'installment');
+  const instEl = document.getElementById('installments-list');
+  if (instEl) {
+    if (!installments.length) {
+      instEl.innerHTML = '<div class="empty-state"><div class="empty-icon">💳</div><p>لا توجد أقساط أو التزامات بعد</p></div>';
+    } else {
+      instEl.innerHTML = installments.map(p => {
+        const monthly    = p.months > 0 ? Math.ceil(p.target/p.months) : 0;
+        const start      = new Date(p.startDate+'T00:00:00');
+        const endDate    = new Date(start.getFullYear(), start.getMonth()+p.months, start.getDate());
+        const elapsed    = Math.max(0, Math.floor((today-start)/86400000/30));
+        const paidSoFar  = Math.min(p.months, elapsed);
+        const remaining  = Math.max(0, p.months - paidSoFar);
+        const pct        = p.months ? Math.min(100,(paidSoFar/p.months)*100) : 0;
+        const isActive   = today <= endDate;
+        return `<div class="goal-card${!isActive?' goal-done':''}">
+          <div class="goal-header">
+            <div class="goal-name">${p.emoji} ${p.name} ${isActive?'<span class="analysis-chip chip-green" style="font-size:10px">نشط</span>':'<span class="analysis-chip chip-gray" style="font-size:10px">منتهي</span>'}</div>
+            <button class="btn btn-ghost btn-icon btn-sm" onclick="deletePlanItem('${p.id}')">🗑️</button>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:6px">
+            <span>القسط الشهري: <b style="color:var(--accent2)">${fmt(monthly)}</b></span>
+            <span>${paidSoFar}/${p.months} قسط</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:5px">
+            <span>من ${p.startDate}</span>
+            <span>${remaining > 0 ? remaining+' قسط متبقي' : '✅ منتهي'}</span>
+          </div>
+          <div style="margin-top:6px;font-size:11px;color:var(--text3)">إجمالي: ${fmt(p.target)} · حتى ${dateKey(endDate)}</div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // ── الخطة الشهرية الافتراضية ────────────────────────────────
+  const planDisplay = document.getElementById('monthly-plan-display');
+  if (planDisplay) {
+    const plan = state.plan;
+    if (!plan.salary && !Object.keys(plan.categories||{}).length) {
+      planDisplay.innerHTML = '<p style="color:var(--text3);font-size:13px">لا توجد خطة شهرية مضافة بعد</p>';
+    } else {
+      const rows = state.categories.filter(c => plan.categories?.[c.id]).map(c =>
+        `<tr><td>${c.emoji} ${c.name}</td><td style="text-align:left">${fmt(plan.categories[c.id])}</td></tr>`
+      ).join('');
+      planDisplay.innerHTML = `<table class="plan-table"><tr><td><b>الراتب المتوقع</b></td><td style="text-align:left;color:var(--green)">${fmt(plan.salary)}</td></tr>${rows}</table>`;
+    }
+  }
+}
+
+// حساب القسط تلقائياً في المودال
+document.addEventListener('input', e => {
+  if (!['plan-target','plan-months-sel','plan-months-custom'].includes(e.target?.id)) return;
+  const target  = parseFloat(document.getElementById('plan-target')?.value) || 0;
+  const sel     = document.getElementById('plan-months-sel')?.value;
+  const months  = sel==='custom' ? parseInt(document.getElementById('plan-months-custom')?.value)||1 : parseInt(sel)||1;
+  const calcEl  = document.getElementById('calc-monthly');
+  if (calcEl) calcEl.textContent = target && months ? fmt(Math.ceil(target/months)) : '—';
+  const cr = document.getElementById('custom-months-row');
+  if (cr) cr.style.display = sel==='custom' ? 'block' : 'none';
+});
 // ================== PLANNING (old stubs removed — new versions above) ==================
 
 function savePlan() {
@@ -2195,18 +2520,18 @@ function saveCurrency() {
 
 function renderSettings() {
   const s = state.settings;
-  document.getElementById('s-salary').value    = s.salary || '';
-  document.getElementById('s-currency').value  = s.currency || '⃁';
-  document.getElementById('s-payday').value    = s.payday || '';
+  document.getElementById('s-salary').value   = s.salary || '';
+  document.getElementById('s-currency').value = s.currency || '⃁';
+  document.getElementById('s-payday').value   = s.payday || '';
   document.getElementById('s-payday').placeholder = 'مثال: 27';
-  // ضع الشهر والسنة الحالية افتراضياً في مودال إضافة الراتب
   const now = localToday();
-  document.getElementById('sal-month').value = now.getMonth();
-  document.getElementById('sal-year').value  = now.getFullYear();
+  if (document.getElementById('sal-month')) document.getElementById('sal-month').value = now.getMonth();
+  if (document.getElementById('sal-year'))  document.getElementById('sal-year').value  = now.getFullYear();
   renderSalaryTable();
   renderCatsList();
   renderLimitsList();
   renderNavSortList();
+  renderSectionVisList();
 }
 
 function saveSettings() {
@@ -2794,7 +3119,36 @@ function renderDashboard() {
       </div>
     </div>`;
 
-  // ── بطاقة الدورة الحالية ─────────────────────────────────
+  // ── ملخص الدورة الذكي: إغلاق تلقائي ──────────────────
+  const prevCyc = cycles[1] || null;
+  const cycResultEl = document.getElementById('db-cycle-result');
+  if (cycResultEl) {
+    if (prevCyc && prevCyc.expense > 0) {
+      const diff    = prevCyc.income - prevCyc.expense;
+      const isOver  = diff < 0;
+      const isExact = diff === 0;
+      const col     = isOver ? 'var(--red)' : isExact ? 'var(--yellow)' : 'var(--green)';
+      const icon    = isOver ? '🔴' : isExact ? '🟡' : '🟢';
+      const label   = isOver ? 'فوق الميزانية' : isExact ? 'تحت الميزانية' : 'وفرت';
+      cycResultEl.innerHTML = `
+        <div style="background:${isOver?'rgba(224,92,92,0.1)':isExact?'rgba(240,160,64,0.1)':'rgba(76,175,140,0.1)'};border:1px solid ${col};border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:28px">${icon}</span>
+            <div>
+              <div style="font-size:11px;color:var(--text3)">نتيجة دورة ${prevCyc.label}</div>
+              <div style="font-size:16px;font-weight:800;color:${col}">${label}</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <div style="text-align:center"><div style="font-size:14px;font-weight:700;color:var(--green)">${fmt(prevCyc.income)}</div><div style="font-size:10px;color:var(--text3)">الدخل</div></div>
+            <div style="text-align:center"><div style="font-size:14px;font-weight:700;color:var(--red)">${fmt(prevCyc.expense)}</div><div style="font-size:10px;color:var(--text3)">المصاريف</div></div>
+            <div style="text-align:center"><div style="font-size:14px;font-weight:700;color:${col}">${fmt(Math.abs(diff))}</div><div style="font-size:10px;color:var(--text3)">${isOver?'تجاوز':'فائض'}</div></div>
+          </div>
+        </div>`;
+    } else {
+      cycResultEl.innerHTML = '';
+    }
+  }
   const spentPct   = cur.income>0 ? Math.min(100,(cur.expense/cur.income)*100) : 0;
   const daysPct    = Math.min(100,(cur.elapsed/cur.totalDays)*100);
   const statusCol  = spentPct>90?'var(--red)':spentPct>70?'var(--yellow)':'var(--green)';
@@ -3328,7 +3682,85 @@ function renderAnalysis() {
   }).filter(Boolean).join('') || `<tr><td colspan="20" style="text-align:center;color:var(--text3);padding:20px">لا توجد مصاريف لهذه السنة</td></tr>`;
 }
 
-// ================== NAV CUSTOMIZATION ==================
+// ================== SECTION VISIBILITY SYSTEM ==================
+const SECTION_VIS_DEFS = [
+  { page:'dayweek', label:'📅 يوم/أسبوع', items:[
+    { id:'dw-daily-col',  label:'📅 اليوم' },
+    { id:'dw-week-col',   label:'🗓️ الأسبوع' },
+    { id:'dw-day-stat',   label:'📅 صرفت اليوم' },
+    { id:'dw-week-stat',  label:'🗓️ مصاريف الأسبوع' },
+  ]},
+  { page:'monthly', label:'🗓️ شهري', items:[
+    { id:'monthly-month-cards-wrap', label:'📅 أداء الأشهر' },
+    { id:'monthly-cal-wrap',         label:'📅 التقويم' },
+    { id:'monthly-bar-wrap',         label:'📉 آخر 12 شهر' },
+    { id:'monthly-cats-wrap',        label:'🎯 توزيع الفئات' },
+    { id:'monthly-plan-wrap',        label:'📊 قارن بالخطة' },
+  ]},
+  { page:'dashboard', label:'📊 لوحة التحكم', items:[
+    { id:'db-cycle-result',   label:'💡 ملخص الدورة' },
+    { id:'db-full-summary',   label:'🗓️ الدورة الكاملة' },
+    { id:'db-cycle-card',     label:'📅 الدورة الحالية' },
+    { id:'db-cycles-compare', label:'🔄 مقارنة الدورات' },
+    { id:'db-weekdays',       label:'📆 أيام الأسبوع' },
+  ]},
+  { page:'analysis', label:'📈 تحليل', items:[
+    { id:'analysis-big-cards',     label:'📊 ملخص الإيرادات' },
+    { id:'analysis-small-cards',   label:'🔢 إحصاءات' },
+    { id:'analysis-forecast-row',  label:'🔮 التوقع المالي' },
+  ]},
+];
+
+function getSectionVis() {
+  try { return JSON.parse(localStorage.getItem('mizaniyati_vis') || '{}'); } catch(e) { return {}; }
+}
+function saveSectionVis(vis) { localStorage.setItem('mizaniyati_vis', JSON.stringify(vis)); }
+
+function applySectionVis() {
+  const vis = getSectionVis();
+  SECTION_VIS_DEFS.forEach(page => {
+    page.items.forEach(item => {
+      const el = document.getElementById(item.id);
+      if (!el) return;
+      const hidden = vis[item.id] === false;
+      el.classList.toggle('section-hidden', hidden);
+    });
+  });
+}
+
+function toggleSectionVis(id) {
+  const vis = getSectionVis();
+  vis[id] = vis[id] === false ? true : false;
+  saveSectionVis(vis);
+  applySectionVis();
+  renderSectionVisList();
+}
+
+function renderSectionVisList() {
+  const container = document.getElementById('section-vis-list');
+  if (!container) return;
+  const vis = getSectionVis();
+  container.innerHTML = SECTION_VIS_DEFS.map(page => `
+    <div style="margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--accent2);padding:4px 10px;background:var(--bg4);border-radius:6px;margin-bottom:2px">${page.label}</div>
+      ${page.items.map(item => {
+        const isVisible = vis[item.id] !== false;
+        return `<div class="vis-item">
+          <span style="font-size:12px">${item.label}</span>
+          <button class="vis-toggle ${isVisible?'on':'off'}" onclick="toggleSectionVis('${item.id}')">
+            ${isVisible?'👁️ ظاهر':'🙈 مخفي'}
+          </button>
+        </div>`;
+      }).join('')}
+    </div>
+  `).join('');
+}
+
+// ================== IMPROVED CATS LIST (show 5 + more) ==================
+let _catsExpanded = false;
+let _limitsExpanded = false;
+
+// ── NAV CUSTOMIZATION follows ──
 const ALL_NAV_PAGES = [
   { id:'dashboard', icon:'📊', label:'لوحة'      },
   { id:'dayweek',   icon:'📅', label:'يوم/أسبوع' },
@@ -3500,6 +3932,7 @@ function applyNavOrder() {
 }
 
 load();
+applySectionVis();
 applyNavOrder();
 renderTop();
 renderDaily();
