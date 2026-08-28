@@ -656,12 +656,17 @@
       <!-- DAY/WEEK MERGED PAGE -->
       <div class="page active" id="page-dayweek">
 
-        <!-- صف التنقل بين الأيام والأسابيع -->
+        <!-- صف التنقل + بحث -->
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
           <div class="day-nav" style="margin-bottom:0">
             <button class="btn btn-ghost btn-icon" onclick="changeDay(-1)">→</button>
             <div class="date-display" onclick="openModal('date-picker-modal')" id="day-title" style="font-size:14px;font-weight:700;cursor:pointer">اليوم</div>
             <button class="btn btn-ghost btn-icon" onclick="changeDay(1)">←</button>
+          </div>
+          <!-- بحث سريع -->
+          <div style="display:flex;align-items:center;gap:6px;flex:1;max-width:220px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 12px">
+            <span style="font-size:13px;color:var(--text3)">🔍</span>
+            <input type="text" id="tx-search" placeholder="بحث في العمليات..." style="background:transparent;border:none;outline:none;font-size:12px;color:var(--text);width:100%;text-align:right" oninput="renderDaily()">
           </div>
           <div style="display:flex;gap:6px;align-items:center">
             <button class="btn btn-ghost btn-sm" onclick="changeWeek(-1)">→ أسبوع</button>
@@ -693,19 +698,37 @@
           </div>
         </div>
 
-        <!-- ── 3 بطاقات صغيرة في الأسفل ── -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-          <div class="card" style="margin-bottom:0;padding:12px;text-align:center" id="dw-day-stat">
-            <div style="font-size:10px;color:var(--text3);margin-bottom:4px">📅 صرفت اليوم</div>
-            <div id="dw-today-exp" style="font-size:18px;font-weight:800;color:var(--red)">—</div>
+        <!-- ── بطاقات الملخص اليومي والأسبوعي ── -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px">
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">📅 إيرادات اليوم</div>
+            <div id="dw-today-inc" style="font-size:14px;font-weight:800;color:var(--green)">—</div>
           </div>
-          <div class="card" style="margin-bottom:0;padding:12px;text-align:center" id="dw-week-stat">
-            <div style="font-size:10px;color:var(--text3);margin-bottom:4px">🗓️ مصاريف الأسبوع</div>
-            <div id="dw-week-exp" style="font-size:18px;font-weight:800;color:var(--red)">—</div>
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">📅 مصاريف اليوم</div>
+            <div id="dw-today-exp" style="font-size:14px;font-weight:800;color:var(--red)">—</div>
           </div>
-          <div class="card" style="margin-bottom:0;padding:12px;text-align:center;cursor:pointer" onclick="openAddTx()">
-            <div style="font-size:10px;color:var(--text3);margin-bottom:4px">⚡ إضافة سريعة</div>
-            <div style="font-size:24px">➕</div>
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">📅 صافي اليوم</div>
+            <div id="dw-today-net" style="font-size:14px;font-weight:800">—</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr) auto;gap:6px">
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center" id="dw-day-stat">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">🗓️ إيرادات الأسبوع</div>
+            <div id="dw-week-inc" style="font-size:14px;font-weight:800;color:var(--green)">—</div>
+          </div>
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center" id="dw-week-stat">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">🗓️ مصاريف الأسبوع</div>
+            <div id="dw-week-exp" style="font-size:14px;font-weight:800;color:var(--red)">—</div>
+          </div>
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">🗓️ صافي الأسبوع</div>
+            <div id="dw-week-net" style="font-size:14px;font-weight:800">—</div>
+          </div>
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center;cursor:pointer;min-width:50px" onclick="openAddTx()">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">⚡</div>
+            <div style="font-size:20px">➕</div>
           </div>
         </div>
       </div>
@@ -714,6 +737,21 @@
       <div class="page" id="page-monthly">
         <div class="month-bar" id="month-bar"></div>
         <div class="summary-row" id="month-summary"></div>
+        <!-- خانة الإيرادات/المصاريف/الصافي -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px" id="monthly-finance-bar">
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">💰 الإيرادات</div>
+            <div id="m-inc" style="font-size:15px;font-weight:800;color:var(--green)">—</div>
+          </div>
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">💸 المصاريف</div>
+            <div id="m-exp" style="font-size:15px;font-weight:800;color:var(--red)">—</div>
+          </div>
+          <div class="card" style="margin-bottom:0;padding:10px;text-align:center">
+            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">🏦 الصافي</div>
+            <div id="m-net" style="font-size:15px;font-weight:800">—</div>
+          </div>
+        </div>
         <div id="monthly-salary-bar" style="margin-bottom:12px"></div>
 
         <!-- أداء الأشهر فوق التقويم -->
@@ -989,6 +1027,12 @@
           <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between">📅 أداء الأشهر <span style="font-size:11px;color:var(--text3)">▾</span></summary>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:12px" id="analysis-month-cards"></div>
         </details>
+
+        <!-- كلمات الملاحظات -->
+        <details class="card" style="margin-bottom:10px;padding:12px" open>
+          <summary style="cursor:pointer;font-size:12px;font-weight:600;color:var(--text2);list-style:none;display:flex;justify-content:space-between">☁️ كلمات الملاحظات <span style="font-size:11px;color:var(--text3)">▾</span></summary>
+          <div id="analysis-word-cloud" style="margin-top:12px;min-height:80px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center"></div>
+        </details>
       </div>
 
       <!-- DASHBOARD PAGE -->
@@ -1011,6 +1055,9 @@
           </div>
           <div id="db-period-label" style="font-size:11px;color:var(--text3);margin-top:8px"></div>
         </div>
+
+        <!-- تذكيرات الأقساط -->
+        <div id="db-installment-reminder" style="margin-bottom:12px"></div>
 
         <!-- ملخص الدورة الذكي -->
         <div id="db-cycle-result" style="margin-bottom:12px"></div>
@@ -1526,21 +1573,16 @@ let state = {
     {id:'c4',name:'الترفيه',emoji:'🎬',type:'expense',limit:0,keywords:'سينما,موسيقى,ألعاب,رياضة,نزهة,سفر,فندق,حفلة,اشتراك,نتفليكس,يوتيوب'},
     {id:'c5',name:'الصحة',emoji:'💊',type:'expense',limit:0,keywords:'دواء,صيدلية,دكتور,طبيب,مستشفى,عيادة,علاج,كشف'},
     {id:'c6',name:'الفواتير',emoji:'⚡',type:'expense',limit:0,keywords:'كهرباء,ماء,إنترنت,هاتف,إيجار,اشتراك,جوال,فاتورة'},
-    {id:'c7', name:'راتب',                    emoji:'💰', type:'income',  limit:0, keywords:'راتب,مرتب,أجر,معاش'},
-    {id:'c8', name:'دخل إضافي',               emoji:'💼', type:'income',  limit:0, keywords:'مكافأة,عمولة,مشروع,فريلانس,بيع,أرباح'},
-    {id:'c10',name:'عملية ادخار تلقائي',      emoji:'💧', type:'income',  limit:0, keywords:'ادخار,توفير,احتياطي'},
-    {id:'c11',name:'م أدري',                  emoji:'🙈', type:'expense', limit:0, keywords:'متفرقات,غير محدد,أخرى'},
-    // مصروف - سحب
-    {id:'c12',name:'سحب - الصراف الآلي',      emoji:'🏧', type:'expense', limit:0, keywords:'سحب,صراف,atm'},
-    {id:'c13',name:'شراء نقاط البيع Apple Pay',emoji:'🍎', type:'expense', limit:0, keywords:'apple pay,محلي,نقاط البيع,ابل'},
-    {id:'c14',name:'شراء انترنت Apple Pay',   emoji:'🍏', type:'expense', limit:0, keywords:'apple pay,انترنت,اون لاين,online'},
-    {id:'c15',name:'شراء نقاط البيع أثير',    emoji:'💳', type:'expense', limit:0, keywords:'أثير,نقاط البيع,مدى,visa'},
+    {id:'c7', name:'راتب',               emoji:'💰', type:'income',  limit:0, keywords:'راتب,مرتب,أجر,معاش'},
+    {id:'c8', name:'دخل إضافي',          emoji:'💼', type:'income',  limit:0, keywords:'مكافأة,عمولة,مشروع,فريلانس,بيع,أرباح'},
+    {id:'c11',name:'م أدري',             emoji:'🙈', type:'expense', limit:0, keywords:'متفرقات,غير محدد,أخرى'},
+    // مصروف - سحب/دفع
+    {id:'c12',name:'سحب - الصراف الآلي',emoji:'🏧', type:'expense', limit:0, keywords:'سحب,صراف,atm'},
+    {id:'c20',name:'تفعيل انترنت',       emoji:'📶', type:'expense', limit:0, keywords:'انترنت,اشتراك,تفعيل,باقة,شبكة,stc,mobily,zain'},
     // دخل - إيداع
-    {id:'c16',name:'إيداع - الصراف الآلي',    emoji:'🏧', type:'income',  limit:0, keywords:'إيداع,صراف,atm,deposit'},
-    {id:'c17',name:'حوالات سريع الواردة',     emoji:'🔚', type:'income',  limit:0, keywords:'حوالة,سريع,واردة,تحويل وارد'},
+    {id:'c16',name:'إيداع - الصراف الآلي',emoji:'🏧', type:'income', limit:0, keywords:'إيداع,صراف,atm,deposit'},
     // كلاهما - تحويل
-    {id:'c18',name:'عملية تحويل داخلية',      emoji:'🔛', type:'both',   limit:0, keywords:'تحويل داخلي,نقل داخلي'},
-    {id:'c19',name:'عملية تحويل بين حسابات',  emoji:'↔️', type:'both',   limit:0, keywords:'تحويل,بين حسابات,نقل'},
+    {id:'c18',name:'عملية تحويل داخلية',emoji:'🔛', type:'both',   limit:0, keywords:'تحويل داخلي,نقل داخلي'},
   ],
   goals: [],
   settings: { salary: 0, currency: '⃁', payday: null },
@@ -1659,11 +1701,22 @@ function getPayCycleInfo() {
 
   const spent  = state.transactions.filter(t=>t.type==='expense'&&t.date>=startStr&&t.date<=endStr).reduce((s,t)=>s+t.amount,0);
   const income = state.transactions.filter(t=>t.type==='income' &&t.date>=startStr&&t.date<=endStr).reduce((s,t)=>s+t.amount,0);
+
+  // احسب أقساط الشهر الحالي واخصمها من الميزانية
+  const monthlyInstallments = (state.plans||[])
+    .filter(p => p.type==='installment')
+    .reduce((sum, p) => {
+      const start = new Date(p.startDate+'T00:00:00');
+      const end   = new Date(start.getFullYear(), start.getMonth()+p.months, start.getDate());
+      const now   = localToday();
+      return (now >= start && now <= end) ? sum + Math.ceil(p.target/Math.max(1,p.months)) : sum;
+    }, 0);
+
   const totalIncome   = salary + income;
-  const remaining     = totalIncome - spent;
+  const remaining     = totalIncome - spent - monthlyInstallments;
   const avgPerDay     = daysLeft>0 ? remaining/daysLeft : 0;
   const actualDaily   = daysElapsed>0 ? spent/daysElapsed : 0;
-  const expectedDaily = totalIncome/totalDays;
+  const expectedDaily = (totalIncome - monthlyInstallments) / Math.max(1, totalDays);
 
   let status = 'green';
   if (actualDaily > expectedDaily*1.2) status = 'red';
@@ -1737,7 +1790,18 @@ function renderDaily() {
   document.getElementById('day-title').innerHTML =
     `<span style="color:var(--accent2)">${dayLabel}</span> · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
 
-  const txs = getTxForDate(dateStr);
+  const searchQ = (document.getElementById('tx-search')?.value || '').trim().toLowerCase();
+  let txs = getTxForDate(dateStr);
+  // فلتر البحث
+  if (searchQ) {
+    txs = state.transactions.filter(t => {
+      const cat = getCat(t.category);
+      return (cat.name.toLowerCase().includes(searchQ) ||
+              (t.note||'').toLowerCase().includes(searchQ) ||
+              String(t.amount).includes(searchQ) ||
+              t.date.includes(searchQ));
+    });
+  }
   const container = document.getElementById('daily-txs');
 
   if (!txs.length) {
@@ -1779,8 +1843,24 @@ function renderDaily() {
 
 // ================== DAY/WEEK HELPERS ==================
 function parseLocalDate(dateStr) {
-  const [y,m,d] = dateStr.split('-').map(Number);
+  // يقبل 2026-08-23 و 2026/08/23
+  const clean = String(dateStr).trim().replace(/\//g, '-');
+  const [y,m,d] = clean.split('-').map(Number);
+  if (!y||!m||!d) return new Date();
   return new Date(y, m-1, d);
+}
+
+// تطبيع التاريخ إلى YYYY-MM-DD من أي صيغة
+function normalizeDate(val) {
+  if (!val) return '';
+  const s = String(val).trim();
+  // YYYY/MM/DD أو YYYY-MM-DD
+  const ymd = s.match(/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})$/);
+  if (ymd) return `${ymd[1]}-${ymd[2].padStart(2,'0')}-${ymd[3].padStart(2,'0')}`;
+  // DD/MM/YYYY أو DD-MM-YYYY
+  const dmy = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (dmy) return `${dmy[3]}-${dmy[2].padStart(2,'0')}-${dmy[1].padStart(2,'0')}`;
+  return s;
 }
 
 function updateWeekOffsetForDate(date) {
@@ -1798,22 +1878,31 @@ function refreshDayWeek() {
 }
 
 function updateDayWeekStats() {
-  // صرفت اليوم
-  const todayStr  = dateKey(state.currentDate);
-  const todayExp  = getTxForDate(todayStr).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const todayEl   = document.getElementById('dw-today-exp');
-  if (todayEl) todayEl.textContent = todayExp > 0 ? fmt(todayExp) : '—';
+  const todayStr = dateKey(state.currentDate);
+  const todayTxs = getTxForDate(todayStr);
+  const todayInc = todayTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const todayExp = todayTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const todayNet = todayInc - todayExp;
+
+  const setEl = (id, val, col) => { const e=document.getElementById(id); if(e){e.textContent=val;if(col)e.style.color=col;} };
+  setEl('dw-today-inc', todayInc>0 ? fmt(todayInc) : '—', 'var(--green)');
+  setEl('dw-today-exp', todayExp>0 ? fmt(todayExp) : '—', 'var(--red)');
+  setEl('dw-today-net', todayTxs.length ? fmt(todayNet) : '—', todayNet>=0?'var(--green)':'var(--red)');
 
   // مصاريف الأسبوع الحالي
   const today   = localToday();
   const startOW = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + state.weekOffset*7);
-  let weekExp = 0;
+  let weekInc=0, weekExp=0;
   for (let i=0; i<7; i++) {
-    const d = new Date(startOW.getFullYear(), startOW.getMonth(), startOW.getDate()+i);
-    weekExp += getTxForDate(dateKey(d)).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const d   = new Date(startOW.getFullYear(), startOW.getMonth(), startOW.getDate()+i);
+    const txs = getTxForDate(dateKey(d));
+    weekInc  += txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    weekExp  += txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   }
-  const weekEl = document.getElementById('dw-week-exp');
-  if (weekEl) weekEl.textContent = weekExp > 0 ? fmt(weekExp) : '—';
+  const weekNet = weekInc - weekExp;
+  setEl('dw-week-inc', weekInc>0 ? fmt(weekInc) : '—', 'var(--green)');
+  setEl('dw-week-exp', weekExp>0 ? fmt(weekExp) : '—', 'var(--red)');
+  setEl('dw-week-net', (weekInc||weekExp) ? fmt(weekNet) : '—', weekNet>=0?'var(--green)':'var(--red)');
 }
 
 function changeDay(dir) {
@@ -1926,14 +2015,21 @@ function renderMonthly() {
     `<div class="month-pill ${i===state.currentMonth&&state.currentYear===new Date().getFullYear()?'active':''}" onclick="setMonth(${i})">${m}</div>`
   ).join('');
   
-  const txs = getMonthTxs(state.currentYear, state.currentMonth);
-  const income = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const txs    = getMonthTxs(state.currentYear, state.currentMonth);
+  const income  = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const expense = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  
+  const net     = income - expense;
+
+  // خانة الإيرادات/المصاريف/الصافي
+  const setM = (id,val,col) => { const e=document.getElementById(id); if(e){e.textContent=val;e.style.color=col||'';} };
+  setM('m-inc', income>0  ? fmt(income)  : '—', 'var(--green)');
+  setM('m-exp', expense>0 ? fmt(expense) : '—', 'var(--red)');
+  setM('m-net', txs.length ? fmt(net)    : '—', net>=0?'var(--green)':'var(--red)');
+
   document.getElementById('month-summary').innerHTML = `
     <div class="summary-box"><div class="s-label">الإيرادات</div><div class="s-value green">${fmt(income)}</div></div>
     <div class="summary-box"><div class="s-label">المصاريف</div><div class="s-value red">${fmt(expense)}</div></div>
-    <div class="summary-box"><div class="s-label">الصافي</div><div class="s-value ${income-expense>=0?'green':'red'}">${fmt(income-expense)}</div></div>
+    <div class="summary-box"><div class="s-label">الصافي</div><div class="s-value ${net>=0?'green':'red'}">${fmt(net)}</div></div>
   `;
   
   renderCalendar();
@@ -1967,6 +2063,11 @@ function renderMonthly() {
 
 function setMonth(m) {
   state.currentMonth = m;
+  renderMonthly();
+}
+
+function goToMonth(monthIdx) {
+  state.currentMonth = monthIdx;
   renderMonthly();
 }
 
@@ -2004,19 +2105,39 @@ function renderCalendar() {
     </div>`;
   }
   // أيام الشهر الحالي
+  const dailyBudget = (getSalaryForMonth(y,m).amount || state.settings.salary || 0) / 30;
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const txs = getTxForDate(dateStr);
     const isToday = dateStr === todayStr;
     const exp = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
     const inc = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-    const net = inc - exp;
-    const hasExp = exp > 0, hasInc = inc > 0;
-    html += `<div class="cal-cell-new ${isToday?'ccn-today':''} ${txs.length?'ccn-has-data':''}" onclick="jumpToDay('${dateStr}')">
+
+    // تلوين حسب الإنفاق
+    let cellStyle = '';
+    if (isToday) cellStyle = 'border-color:var(--accent);background:rgba(108,99,255,0.08)';
+    else if (exp > 0 && dailyBudget > 0) {
+      const r = exp / dailyBudget;
+      cellStyle = r > 1.5 ? 'border-color:rgba(224,92,92,0.55);background:rgba(224,92,92,0.07)'
+                : r > 0.8 ? 'border-color:rgba(240,160,64,0.45);background:rgba(240,160,64,0.06)'
+                :            'border-color:rgba(76,175,140,0.45);background:rgba(76,175,140,0.06)';
+    }
+
+    // أيقونة الفئة الأكثر إنفاقاً
+    let topEmoji = '';
+    const expTxs = txs.filter(t=>t.type==='expense');
+    if (expTxs.length) {
+      const bycat = {};
+      expTxs.forEach(t => bycat[t.category]=(bycat[t.category]||0)+t.amount);
+      const topId = Object.entries(bycat).sort((a,b)=>b[1]-a[1])[0]?.[0];
+      if (topId) topEmoji = `<div style="font-size:11px;line-height:1">${getCat(topId).emoji}</div>`;
+    }
+
+    html += `<div class="cal-cell-new ${txs.length?'ccn-has-data':''}" style="${cellStyle}" onclick="jumpToDay('${dateStr}')">
       <div class="ccn-num ${isToday?'ccn-num-today':''}">${d}</div>
-      ${hasExp ? `<div class="ccn-exp">-${exp.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>` : ''}
-      ${hasInc ? `<div class="ccn-inc">+${inc.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>` : ''}
-      ${txs.length>0 && !hasExp && !hasInc ? '<div class="ccn-dot"></div>' : ''}
+      ${topEmoji}
+      ${exp>0 ? `<div class="ccn-exp">-${exp.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>` : ''}
+      ${inc>0 ? `<div class="ccn-inc">+${inc.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>` : ''}
     </div>`;
   }
   grid.innerHTML = html;
@@ -2196,8 +2317,8 @@ function renderMonthCompare() {
 }
 
 function renderBarChart() {
-  const ctx = document.getElementById('bar-chart').getContext('2d');
-  if (barChart) barChart.destroy();
+  if (barChart) { barChart.destroy(); barChart = null; }
+  if (!document.getElementById('bar-chart')) return;
   const today = new Date();
   const labels = [], incomes = [], expenses = [];
   for (let i = 11; i >= 0; i--) {
@@ -2207,7 +2328,7 @@ function renderBarChart() {
     incomes.push(txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0));
     expenses.push(txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0));
   }
-  barChart = new Chart(ctx, {
+  barChart = safeChart('bar-chart', {
     type: 'bar',
     data: {
       labels,
@@ -2575,7 +2696,10 @@ function saveSettings() {
 
 function renderCatsList() {
   const container = document.getElementById('cats-list');
-  container.innerHTML = state.categories.map(c => `
+  if (!container) return;
+  const cats  = state.categories;
+  const shown = _catsExpanded ? cats : cats.slice(0, 5);
+  container.innerHTML = shown.map(c => `
     <div class="cat-item" style="${c.hidden ? 'opacity:0.45' : ''}">
       <div class="cat-emoji">${c.emoji}</div>
       <div class="cat-info">
@@ -2587,7 +2711,10 @@ function renderCatsList() {
         <button class="btn btn-ghost btn-icon btn-sm" onclick="deleteCategory('${c.id}')">🗑️</button>
       </div>
     </div>
-  `).join('');
+  `).join('') + (cats.length > 5 ? `
+    <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:6px;font-size:12px" onclick="_catsExpanded=!_catsExpanded;renderCatsList()">
+      ${_catsExpanded ? '▲ عرض أقل' : '▼ عرض المزيد (' + (cats.length - 5) + ')'}
+    </button>` : '');
 }
 
 function toggleCatVisibility(id) {
@@ -2601,13 +2728,15 @@ function toggleCatVisibility(id) {
 
 function renderLimitsList() {
   const container = document.getElementById('limits-list');
+  if (!container) return;
   const expCats = state.categories.filter(c => c.type !== 'income');
-  const today = new Date();
-  const txs = getMonthTxs(today.getFullYear(), today.getMonth());
-  container.innerHTML = expCats.map(c => {
-    const spent = txs.filter(t=>t.type==='expense'&&t.category===c.id).reduce((s,t)=>s+t.amount,0);
-    const limit = c.limit || 0;
-    const pct = limit ? Math.min(100, (spent/limit)*100) : 0;
+  const shown   = _limitsExpanded ? expCats : expCats.slice(0, 5);
+  const today   = new Date();
+  const txs     = getMonthTxs(today.getFullYear(), today.getMonth());
+  container.innerHTML = shown.map(c => {
+    const spent  = txs.filter(t=>t.type==='expense'&&t.category===c.id).reduce((s,t)=>s+t.amount,0);
+    const limit  = c.limit || 0;
+    const pct    = limit ? Math.min(100, (spent/limit)*100) : 0;
     const status = pct > 90 ? 'red' : pct > 70 ? 'yellow' : 'green';
     return `<div class="cat-item">
       <div class="cat-emoji">${c.emoji}</div>
@@ -2620,7 +2749,10 @@ function renderLimitsList() {
       </div>
       <input type="number" placeholder="حد" value="${limit||''}" style="width:80px" onchange="setCatLimit('${c.id}',this.value)">
     </div>`;
-  }).join('');
+  }).join('') + (expCats.length > 5 ? `
+    <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:6px;font-size:12px" onclick="_limitsExpanded=!_limitsExpanded;renderLimitsList()">
+      ${_limitsExpanded ? '▲ عرض أقل' : '▼ عرض المزيد (' + (expCats.length - 5) + ')'}
+    </button>` : '');
 }
 
 function setCatLimit(id, val) {
@@ -2697,11 +2829,12 @@ function saveTx() {
   const amount   = parseFloat(document.getElementById('tx-amount').value);
   const category = document.getElementById('tx-category').value;
   const note     = document.getElementById('tx-note').value.trim();
-  const date     = document.getElementById('tx-date').value;
+  const dateRaw  = document.getElementById('tx-date').value;
+  const date     = normalizeDate(dateRaw);
 
   if (!amount || amount <= 0) { showToast('⚠️ أدخل مبلغاً صحيحاً', 'var(--yellow)'); return; }
   if (!category)              { showToast('⚠️ اختر الفئة', 'var(--yellow)'); return; }
-  if (!date)                  { showToast('⚠️ اختر التاريخ', 'var(--yellow)'); return; }
+  if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) { showToast('⚠️ اختر تاريخاً صحيحاً', 'var(--yellow)'); return; }
 
   if (state.editingTx) {
     const tx = state.transactions.find(t => t.id === state.editingTx);
@@ -2732,22 +2865,25 @@ function exportCSV() {
   const rows = [['التاريخ','النوع','الفئة','المبلغ','الملاحظة']];
   state.transactions.forEach(t => {
     const cat = getCat(t.category);
-    rows.push([t.date, t.type==='income'?'دخل':'مصروف', cat.name, t.amount, t.note||'']);
+    // استخدم / بدل - لتوافق مع صيغة الاستيراد
+    rows.push([t.date.replace(/-/g,'/'), t.type==='income'?'دخل':'مصروف', cat.name, t.amount, t.note||'-']);
   });
-  const csv = rows.map(r => r.join(',')).join('\n');
-  downloadFile('mizaniyati.csv', 'text/csv', csv);
+  const csv = rows.map(r => r.join(' | ')).join('\n');
+  downloadFile(`mizaniyati_${dateKey(localToday())}.csv`, 'text/csv', '\uFEFF'+csv);
 }
 
 function exportXLSX() {
   const ws_data = [['التاريخ','النوع','الفئة','المبلغ','الملاحظة']];
   state.transactions.forEach(t => {
     const cat = getCat(t.category);
-    ws_data.push([t.date, t.type==='income'?'دخل':'مصروف', cat.name, t.amount, t.note||'']);
+    ws_data.push([t.date.replace(/-/g,'/'), t.type==='income'?'دخل':'مصروف', cat.name, t.amount, t.note||'-']);
   });
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(ws_data);
+  // عرض الأعمدة
+  ws['!cols'] = [{wch:14},{wch:10},{wch:30},{wch:12},{wch:20}];
   XLSX.utils.book_append_sheet(wb, ws, 'ميزانيتي');
-  XLSX.writeFile(wb, 'mizaniyati.xlsx');
+  XLSX.writeFile(wb, `mizaniyati_${dateKey(localToday())}.xlsx`);
 }
 
 function downloadFile(name, type, content) {
@@ -2804,15 +2940,15 @@ function processImportRowsAdvanced(rawRows) {
     const amount = parseFloat(String(amountVal).replace(/[,،\s]/g,'').replace(/[^\d.]/g,'')) || 0;
     if (!amount) { skipped.push({row:parts.join('|'), reason:'مبلغ صفري'}); continue; }
 
-    // تاريخ
-    let dateStr = String(dateVal).trim().replace(/\//g,'-');
-    if (/^\d{5}$/.test(dateStr)) {
-      const d = new Date(1899,11,30+parseInt(dateStr));
+    // تاريخ - يقبل YYYY/MM/DD و YYYY-MM-DD وصيغ أخرى
+    let dateStr = normalizeDate(String(dateVal).trim());
+    // Excel serial number
+    if (/^\d{5}$/.test(String(dateVal).trim())) {
+      const d = new Date(1899, 11, 30 + parseInt(dateVal));
       dateStr = dateKey(d);
-    } else {
-      const m = dateStr.match(/(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
-      if (m) dateStr = `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
-      else { skipped.push({row:parts.join('|'), reason:'تاريخ غير صحيح'}); continue; }
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      skipped.push({row:parts.join('|'), reason:`تاريخ غير صحيح: ${dateVal}`}); continue;
     }
 
     // نوع
@@ -2931,10 +3067,11 @@ function renderThemes() {
   ];
 
   const container = document.getElementById('theme-categories');
+  if (!container) return;
   const totalCount = THEMES.length;
-  // حدّث العنوان بالمجموع
-  const titleEl = document.querySelector('#page-colors .section-title span');
-  if (titleEl) titleEl.textContent = `المجموع: ${totalCount} ثيم`;
+  const countEl = document.getElementById('theme-total-count');
+  if (countEl) countEl.textContent = `المجموع: ${totalCount} ثيم`;
+  initAutoThemeUI();
 
   container.innerHTML = THEME_CATS.map(cat => {
     const catThemes = THEMES.filter(t => cat.ids.includes(t.id));
@@ -2947,7 +3084,10 @@ function renderThemes() {
         </div>
         <div class="theme-grid">
           ${catThemes.map(t => `
-            <div class="theme-swatch ${state.theme === t.id ? 'active' : ''}" onclick="applyTheme('${t.id}')">
+            <div class="theme-swatch ${state.theme === t.id ? 'active' : ''}"
+                 onclick="applyTheme('${t.id}')"
+                 onmouseenter="previewTheme('${t.id}')"
+                 onmouseleave="previewTheme(null)">
               <div class="theme-swatch-preview" style="background:linear-gradient(135deg,${t.colors[0]} 40%,${t.colors[1]} 40%,${t.colors[1]} 70%,${t.colors[2]} 70%)"></div>
               <div class="theme-swatch-name">${t.name}</div>
               ${state.theme === t.id ? '<div style="font-size:9px;color:var(--accent)">✓ نشط</div>' : ''}
@@ -2958,12 +3098,62 @@ function renderThemes() {
   }).join('');
 }
 
+function previewTheme(themeId) {
+  document.body.className = document.body.className.replace(/\btheme-\S+/g, '').trim();
+  document.body.classList.add(themeId || state.theme);
+}
+
 function applyTheme(themeId) {
   document.body.className = themeId;
   state.theme = themeId;
   save();
   renderThemes();
 }
+
+// ── ثيم تلقائي ليلي/نهاري ──
+function autoThemeByTime() {
+  if (!state.settings.autoTheme) return;
+  const h = new Date().getHours();
+  const isNight = h < 6 || h >= 20;
+  const target = isNight
+    ? (state.settings.nightTheme || 'theme-default')
+    : (state.settings.dayTheme  || 'theme-light');
+  if (!document.body.classList.contains(target)) {
+    document.body.className = target;
+  }
+}
+
+function toggleAutoTheme(enabled) {
+  state.settings.autoTheme = enabled;
+  document.getElementById('auto-theme-label').textContent = enabled ? 'مفعّل ✅' : 'معطّل';
+  const sel = document.getElementById('auto-theme-selects');
+  if (sel) sel.style.display = enabled ? 'grid' : 'none';
+  save();
+  if (enabled) autoThemeByTime();
+}
+
+function saveAutoTheme() {
+  state.settings.dayTheme   = document.getElementById('day-theme-sel')?.value;
+  state.settings.nightTheme = document.getElementById('night-theme-sel')?.value;
+  save(); autoThemeByTime();
+}
+
+function initAutoThemeUI() {
+  const tog = document.getElementById('auto-theme-toggle');
+  const lbl = document.getElementById('auto-theme-label');
+  const sel = document.getElementById('auto-theme-selects');
+  const day = document.getElementById('day-theme-sel');
+  const ngt = document.getElementById('night-theme-sel');
+  if (!tog) return;
+  const enabled = !!state.settings.autoTheme;
+  tog.checked = enabled;
+  if (lbl) lbl.textContent = enabled ? 'مفعّل ✅' : 'معطّل';
+  if (sel) sel.style.display = enabled ? 'grid' : 'none';
+  if (day && state.settings.dayTheme)   day.value = state.settings.dayTheme;
+  if (ngt && state.settings.nightTheme) ngt.value = state.settings.nightTheme;
+}
+
+setInterval(autoThemeByTime, 60000);
 
 // ================== EMOJI PICKER ==================
 function initEmojiPicker() {
@@ -2981,12 +3171,7 @@ function selectEmoji(emoji, el) {
 // ================== DATE MANUAL INPUT ==================
 function syncDateManual(val) {
   if (!val) return;
-  // قبول صيغ متعددة: YYYY-MM-DD أو DD/MM/YYYY أو DDMMYYYY
-  let normalized = val.trim();
-  // صيغة DD/MM/YYYY
-  const dmy = normalized.match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
-  if (dmy) normalized = `${dmy[3]}-${dmy[2].padStart(2,'0')}-${dmy[1].padStart(2,'0')}`;
-  // صيغة YYYY-MM-DD (صحيحة مباشرة)
+  const normalized = normalizeDate(val.trim());
   if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) {
     document.getElementById('tx-date').value = normalized;
     document.getElementById('tx-date-manual').style.borderColor = 'var(--green)';
@@ -3230,7 +3415,45 @@ function renderDashboard() {
       </div>
     </div>`;
 
-  // ── ملخص الدورة الذكي: إغلاق تلقائي ──────────────────
+  // ── تذكيرات الأقساط ──────────────────────────────────────
+  const reminderEl = document.getElementById('db-installment-reminder');
+  if (reminderEl) {
+    const today    = localToday();
+    const thisMonth = today.getMonth();
+    const thisYear  = today.getFullYear();
+    const activeInst = (state.plans||[]).filter(p => {
+      if (p.type !== 'installment') return false;
+      const start = new Date(p.startDate+'T00:00:00');
+      const end   = new Date(start.getFullYear(), start.getMonth()+p.months, start.getDate());
+      return today >= start && today <= end;
+    });
+    if (activeInst.length) {
+      const totalInst = activeInst.reduce((s,p)=>s+Math.ceil(p.target/Math.max(1,p.months)),0);
+      reminderEl.innerHTML = `
+        <div style="background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.3);border-radius:12px;padding:12px 16px">
+          <div style="font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:8px">💳 أقساط هذا الشهر</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">
+            ${activeInst.map(p => {
+              const monthly = Math.ceil(p.target/Math.max(1,p.months));
+              const start   = new Date(p.startDate+'T00:00:00');
+              const elapsed = Math.max(0, Math.floor((today-start)/86400000/30));
+              const remaining = Math.max(0, p.months - elapsed);
+              return `<div style="background:var(--bg3);border-radius:8px;padding:6px 10px;font-size:11px">
+                <span style="font-size:14px">${p.emoji}</span>
+                <span style="font-weight:600;margin-right:4px">${p.name}</span>
+                <span style="color:var(--accent2);font-weight:700">${fmt(monthly)}</span>
+                <span style="color:var(--text3)"> · ${remaining} قسط متبقي</span>
+              </div>`;
+            }).join('')}
+            <div style="margin-right:auto;font-size:13px;font-weight:700;color:var(--accent)">
+              الإجمالي: ${fmt(totalInst)}
+            </div>
+          </div>
+        </div>`;
+    } else {
+      reminderEl.innerHTML = '';
+    }
+  }
   const prevCyc = cycles[1] || null;
   const cycResultEl = document.getElementById('db-cycle-result');
   if (cycResultEl) {
@@ -3414,13 +3637,13 @@ function renderDashboard() {
   // ── تصميم جديد: خط زمني للدورات ──────────────────────────
   const reversed = [...cycles].reverse();
   const maxExpAll = Math.max(...reversed.map(c=>c.expense), 1);
-  const ctx = document.getElementById('db-bar-chart').getContext('2d');
-  if (dbBarChart) dbBarChart.destroy();
+  if (dbBarChart) { dbBarChart.destroy(); dbBarChart = null; }
+  if (!document.getElementById('db-bar-chart')) return;
 
   // ألوان الخط البياني المتدرجة
   const lineColors = reversed.map((_,i) => i === reversed.length-1 ? '#6c63ff' : `rgba(108,99,255,${0.3 + i*0.1})`);
 
-  dbBarChart = new Chart(ctx, {
+  dbBarChart = safeChart('db-bar-chart', {
     type: 'line',
     data: {
       labels: reversed.map(c => c.label),
@@ -3543,6 +3766,16 @@ function clearAnalysisFilter() {
   document.getElementById('filter-to').value = '';
   renderAnalysis();
   showToast('مُسح الفلتر — عرض السنة كاملة', '');
+}
+
+// ── safeChart: أنشئ chart بأمان مع تدمير القديم ──
+function safeChart(canvasId, config) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return null;
+  const existing = Chart.getChart(canvas);
+  if (existing) existing.destroy();
+  try { return new Chart(canvas.getContext('2d'), config); }
+  catch(e) { console.warn('Chart error', canvasId, e); return null; }
 }
 
 // ================== FINANCIAL FORECAST ==================
@@ -3675,9 +3908,9 @@ function renderAnalysis() {
   `;
 
   // رسم بياني شريطي
-  const barCtx = document.getElementById('analysis-bar-chart').getContext('2d');
-  if (analysisBarChart) analysisBarChart.destroy();
-  analysisBarChart = new Chart(barCtx, {
+  if (analysisBarChart) { analysisBarChart.destroy(); analysisBarChart = null; }
+  if (!document.getElementById('analysis-bar-chart')) return;
+  analysisBarChart = safeChart('analysis-bar-chart', {
     type: 'bar',
     data: {
       labels: MONTH_NAMES.map(n => n.slice(0,3)),
@@ -3717,26 +3950,59 @@ function renderAnalysis() {
     }).join('') : '<p style="color:var(--text3);font-size:12px;text-align:center;padding:20px">لا توجد مصاريف</p>';
   }
 
-  // التنبؤ المالي + أفضل/أسوأ
+  // التنبؤ المالي + أفضل/أسوأ + رقمك القياسي + مقارنة بالهدف
   const forecast = getForecast();
-  const bestMonth = dataMonths.length ? dataMonths.reduce((a,b)=>a.remaining>b.remaining?a:b) : null;
+  const bestMonth  = dataMonths.length ? dataMonths.reduce((a,b)=>a.remaining>b.remaining?a:b) : null;
   const worstMonth = dataMonths.length ? dataMonths.reduce((a,b)=>a.expense>b.expense?a:b) : null;
   const forecastVal = typeof forecast === 'object' ? forecast.forecast : forecast;
-  const slopeVal = typeof forecast === 'object' ? forecast.slope : 0;
+  const slopeVal    = typeof forecast === 'object' ? forecast.slope : 0;
+
+  // رقمك القياسي — أكثر يوم إنفاقاً
+  const allExpDays = {};
+  state.transactions.filter(t=>t.type==='expense').forEach(t => {
+    allExpDays[t.date] = (allExpDays[t.date]||0) + t.amount;
+  });
+  const recordDay = Object.entries(allExpDays).sort((a,b)=>b[1]-a[1])[0];
+
+  // مقارنة بالهدف الشهري
+  const planSalary = state.plan?.salary || 0;
+  const curMonthExp = getMonthTxs(state.currentYear||new Date().getFullYear(), state.currentMonth||new Date().getMonth())
+    .filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const goalPct = planSalary > 0 ? Math.min(100, Math.round((curMonthExp/planSalary)*100)) : 0;
+  const goalCol = goalPct>90?'var(--red)':goalPct>70?'var(--yellow)':'var(--green)';
+
   document.getElementById('analysis-forecast-row').innerHTML = `
     <div class="forecast-card">
       <div class="fc-label">🔮 توقع الشهر القادم</div>
       <div class="fc-value" style="color:var(--accent2)">${fmt(forecastVal)}</div>
-      <div class="fc-sub">${slopeVal > 0 ? '📈 الإنفاق في ارتفاع' : slopeVal < 0 ? '📉 الإنفاق في انخفاض' : '➡️ إنفاق مستقر'} (متوسط آخر 3 أشهر)</div>
+      <div class="fc-sub">${slopeVal>0?'📈 الإنفاق في ارتفاع':slopeVal<0?'📉 الإنفاق في انخفاض':'➡️ إنفاق مستقر'}</div>
     </div>
     <div class="forecast-card" style="border-color:rgba(76,175,140,0.3)">
-      <div class="fc-label" style="color:var(--green)">🏆 أفضل شهر (أقل إنفاق)</div>
-      ${bestMonth ? `<div class="fc-value" style="color:var(--green)">${bestMonth.name}</div><div class="fc-sub">مصروف: ${fmt(bestMonth.expense)} · متبقي: ${fmt(bestMonth.remaining)}</div>` : '<div class="fc-sub">لا بيانات كافية</div>'}
+      <div class="fc-label" style="color:var(--green)">🏆 أفضل شهر</div>
+      ${bestMonth ? `<div class="fc-value" style="color:var(--green)">${bestMonth.name}</div><div class="fc-sub">متبقي: ${fmt(bestMonth.remaining)}</div>` : '<div class="fc-sub">لا بيانات</div>'}
     </div>
     <div class="forecast-card" style="border-color:rgba(224,92,92,0.3)">
       <div class="fc-label" style="color:var(--red)">📉 أعلى إنفاق</div>
-      ${worstMonth ? `<div class="fc-value" style="color:var(--red)">${worstMonth.name}</div><div class="fc-sub">مصروف: ${fmt(worstMonth.expense)} · متبقي: ${fmt(worstMonth.remaining)}</div>` : '<div class="fc-sub">لا بيانات كافية</div>'}
+      ${worstMonth ? `<div class="fc-value" style="color:var(--red)">${worstMonth.name}</div><div class="fc-sub">مصروف: ${fmt(worstMonth.expense)}</div>` : '<div class="fc-sub">لا بيانات</div>'}
     </div>
+    <div class="forecast-card" style="border-color:rgba(255,180,0,0.4)">
+      <div class="fc-label" style="color:var(--yellow)">🏅 رقمك القياسي</div>
+      ${recordDay
+        ? `<div class="fc-value" style="color:var(--yellow)">${fmt(recordDay[1])}</div><div class="fc-sub">📅 ${recordDay[0]}</div>`
+        : '<div class="fc-sub">لا بيانات</div>'}
+    </div>
+    ${planSalary > 0 ? `<div class="forecast-card" style="grid-column:1/-1;border-color:${goalCol}">
+      <div class="fc-label">🎯 مقارنة بهدف الشهر الحالي (${fmt(planSalary)})</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:6px">
+        <div class="fc-value" style="color:${goalCol}">${goalPct}%</div>
+        <div style="flex:1">
+          <div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden">
+            <div style="width:${goalPct}%;height:100%;background:${goalCol};border-radius:4px;transition:width 0.5s"></div>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-top:3px">صرفت ${fmt(curMonthExp)} من ${fmt(planSalary)}</div>
+        </div>
+      </div>
+    </div>` : ''}
   `;
 
   // شبكة بطاقات الأشهر
@@ -3791,9 +4057,45 @@ function renderAnalysis() {
     if (!total) return '';
     return `<tr><td>${cat.emoji} ${cat.name}</td>${vals.map(v=>`<td style="text-align:center;font-size:12px;color:${v>0?'var(--red)':'var(--text3)'}">${v>0?fmt(v):'—'}</td>`).join('')}<td style="text-align:center;font-weight:700;color:var(--red)">${fmt(total)}</td></tr>`;
   }).filter(Boolean).join('') || `<tr><td colspan="20" style="text-align:center;color:var(--text3);padding:20px">لا توجد مصاريف لهذه السنة</td></tr>`;
+
+  // Word Cloud
+  renderWordCloud(filteredTxs);
 }
 
-// ================== SECTION VISIBILITY SYSTEM ==================
+function renderWordCloud(txs) {
+  const el = document.getElementById('analysis-word-cloud');
+  if (!el) return;
+  const stopWords = new Set(['في','من','على','إلى','عن','مع','هذا','هذه','ذلك','التي','الذي',
+    'هو','هي','هم','لا','ما','كان','كانت','قد','لم','إن','أن','the','and','or','in','of','a']);
+  const freq = {};
+  txs.forEach(t => {
+    if (!t.note || t.note === '-') return;
+    t.note.toLowerCase().split(/[\s،,\.!?؟\-_]+/).forEach(w => {
+      w = w.trim();
+      if (w.length < 2 || stopWords.has(w) || /^\d+$/.test(w)) return;
+      freq[w] = (freq[w]||0) + 1;
+    });
+  });
+  const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,35);
+  if (!sorted.length) {
+    el.innerHTML = '<span style="color:var(--text3);font-size:12px">لا توجد ملاحظات كافية</span>';
+    return;
+  }
+  const maxFreq = sorted[0][1];
+  const cols = ['var(--accent)','var(--accent2)','var(--green)','var(--yellow)','var(--red)'];
+  el.innerHTML = sorted.map(([word, count], i) => {
+    const size    = Math.round(11 + (count/maxFreq)*20);
+    const opacity = 0.45 + (count/maxFreq)*0.55;
+    const col     = cols[i % cols.length];
+    return `<span
+      style="font-size:${size}px;color:${col};opacity:${opacity};cursor:pointer;font-weight:${count>2?'700':'400'};padding:2px 5px;border-radius:5px;transition:all 0.2s"
+      title="${word}: ${count} مرة"
+      onmouseenter="this.style.opacity=1;this.style.background='var(--bg3)'"
+      onmouseleave="this.style.opacity=${opacity};this.style.background=''"
+      onclick="document.getElementById('tx-search')&&(document.getElementById('tx-search').value='${word}',renderDaily(),showPage('dayweek'))"
+    >${word}</span>`;
+  }).join(' ');
+}
 const SECTION_VIS_DEFS = [
   { page:'dayweek', label:'📅 يوم/أسبوع', items:[
     { id:'dw-daily-col',  label:'📅 اليوم' },
@@ -3959,9 +4261,9 @@ function renderNavSortList() {
       <div class="nsort-ctrl">
         ${item.permanent
           ? `<span class="nsort-lock">👊🏻</span>`
-          : `<button class="nsort-arr" onclick="moveNavItem('${item.id}',-1)" ${isFirst?'disabled':''}>◀</button>
-             <button class="nsort-eye" onclick="toggleNavVisibleById('${item.id}')">${item.visible?'👁️':'🙈'}</button>
-             <button class="nsort-arr" onclick="moveNavItem('${item.id}',1)"  ${isLast ?'disabled':''}>▶</button>`}
+          : `<button class="nsort-eye" onclick="toggleNavVisibleById('${item.id}')">${item.visible?'👁️':'🙈'}</button>
+             <button class="nsort-arr" onclick="moveNavItem('${item.id}',-1)" ${isFirst?'disabled':''}>▶</button>
+             <button class="nsort-arr" onclick="moveNavItem('${item.id}',1)"  ${isLast ?'disabled':''}>◀</button>`}
       </div>
       ${!item.permanent?`<span class="nsort-num">${idx+1}</span>`:''}
     </div>`;
