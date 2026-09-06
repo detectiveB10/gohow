@@ -345,8 +345,6 @@ const Chart = (() => {
     flex-shrink: 0;
     z-index: 40;
   }
-
-  /* الشريط الأول: المبلغ المتبقي */
   .top-header {
     display: flex;
     align-items: center;
@@ -355,31 +353,10 @@ const Chart = (() => {
     gap: 12px;
     border-bottom: 1px solid var(--border);
     flex-wrap: wrap;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
   }
-  .th-left { display: flex; align-items: center; gap: 14px; }
-  .th-logo { font-size: 22px; flex-shrink: 0; }
-  .th-ring { position: relative; width: 48px; height: 48px; flex-shrink: 0; }
-  .th-ring svg { transform: rotate(-90deg); }
-  .th-ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .th-ring-pct { font-size: 10px; font-weight: 700; }
-  .th-info { display: flex; flex-direction: column; gap: 1px; }
-  .th-label { font-size: 11px; color: var(--text3); }
-  .th-amount { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; }
-  .th-amount.green  { color: var(--green); }
-  .th-amount.yellow { color: var(--yellow); }
-  .th-amount.red    { color: var(--red); }
-  .th-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .th-stat { text-align: center; }
-  .th-stat-val { font-size: 14px; font-weight: 700; line-height: 1.1; }
-  .th-stat-lbl { font-size: 10px; color: var(--text3); }
-  .th-bar-wrap { display: flex; align-items: center; gap: 8px; }
-  .th-bar { height: 5px; width: 100px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
-  .th-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
-  .th-bar-fill.green  { background: var(--green); }
-  .th-bar-fill.yellow { background: var(--yellow); }
-  .th-bar-fill.red    { background: var(--red); }
-
-  /* الشريط الثاني: القوائم */
   .nav-tabs {
     display: flex;
     align-items: center;
@@ -387,8 +364,12 @@ const Chart = (() => {
     padding: 6px 16px;
     overflow-x: auto;
     scrollbar-width: none;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
   }
   .nav-tabs::-webkit-scrollbar { display: none; }
+  .th-bar-wrap { display: none; } /* legacy — kept for compat */
   .nav-btn {
     display: flex;
     flex-direction: row;
@@ -416,7 +397,7 @@ const Chart = (() => {
   .sidebar { display: none; } /* مخفي — لم يعد مستخدماً */
   .sidebar-logo { display: none; }
   .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-  .content { padding: 16px 20px; flex: 1; }
+  .content { padding: 16px 20px; flex: 1; max-width: 1100px; margin: 0 auto; width: 100%; }
   .page { display: none; }
   .page.active { display: block; }
   /* top-card قديم — استُبدل */
@@ -466,49 +447,12 @@ const Chart = (() => {
   .day-nav .date-display { font-size: 15px; font-weight: 600; cursor: pointer; }
   .day-nav .arrows { display: flex; gap: 4px; }
 
-  /* WEEK VIEW */
-  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-  .week-day-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 8px; }
-  .week-day-card.today { border-color: var(--accent); }
-  .week-day-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .week-day-name { font-size: 11px; color: var(--text3); }
-  .week-day-num { font-size: 15px; font-weight: 600; }
-  .week-tx-mini { font-size: 11px; color: var(--text3); padding: 2px 0; border-bottom: 1px solid var(--border); }
-  .week-total { font-size: 12px; font-weight: 600; margin-top: 4px; }
-
   /* MONTH VIEW */
   .month-bar { display: flex; gap: 4px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px; }
   .month-pill { padding: 6px 12px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; cursor: pointer; white-space: nowrap; background: var(--card); color: var(--text2); transition: all 0.2s; }
   .month-pill.active { background: var(--accent); border-color: var(--accent); color: white; }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .cal-cell { min-height: 50px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px; cursor: pointer; }
-  .cal-cell:hover { border-color: var(--accent); }
-  .cal-cell.today { border-color: var(--accent); background: rgba(108,99,255,0.1); }
-  .cal-cell.other-month { opacity: 0.4; }
-  .cal-day-num { font-size: 12px; font-weight: 500; margin-bottom: 4px; }
-  .cal-dots { display: flex; gap: 2px; flex-wrap: wrap; }
-  .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
-  .cal-dot.income { background: var(--green); }
-  .cal-dot.expense { background: var(--red); }
   .cal-header-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
   .cal-header-cell { text-align: center; font-size: 11px; color: var(--text3); padding: 4px 0; }
-
-  /* DONUT */
-  .donut-wrap { display: flex; align-items: center; gap: 20px; }
-  .donut-chart { width: 140px; height: 140px; flex-shrink: 0; }
-  .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-  .legend-item { display: flex; align-items: center; gap: 8px; }
-  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .legend-name { font-size: 13px; flex: 1; }
-  .legend-pct { font-size: 12px; color: var(--text3); }
-
-  /* GOALS */
-  .goal-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
-  .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .goal-name { font-size: 14px; font-weight: 600; }
-  .goal-amounts { font-size: 12px; color: var(--text3); }
-  .progress-bar { height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; margin-top: 6px; }
-  .progress-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s; }
 
   /* CATEGORIES */
   .cat-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
@@ -540,30 +484,12 @@ const Chart = (() => {
   .emoji-opt { font-size: 20px; padding: 6px; border-radius: 6px; cursor: pointer; text-align: center; border: 1px solid transparent; }
   .emoji-opt:hover, .emoji-opt.selected { border-color: var(--accent); background: var(--bg3); }
 
-  /* COMPARE */
-  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .compare-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-
   /* GUIDE */
   .guide-section { margin-bottom: 20px; }
   .guide-section h3 { font-size: 14px; font-weight: 600; color: var(--accent2); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
   .guide-section p { font-size: 13px; color: var(--text2); line-height: 1.7; }
   .guide-section ul { padding-right: 16px; }
   .guide-section li { font-size: 13px; color: var(--text2); line-height: 1.8; }
-
-  /* BAR CHART */
-  .bar-chart-wrap { height: 200px; }
-
-  /* BADGES */
-  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-  .badge-green { background: rgba(76,175,140,0.2); color: var(--green); }
-  .badge-red { background: rgba(224,92,92,0.2); color: var(--red); }
-  .badge-yellow { background: rgba(240,160,64,0.2); color: var(--yellow); }
-
-  /* PLAN TABLE */
-  .plan-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .plan-table th { text-align: right; padding: 8px; color: var(--text3); font-weight: 500; border-bottom: 1px solid var(--border); }
-  .plan-table td { padding: 8px; border-bottom: 1px solid var(--border); }
 
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -587,22 +513,19 @@ const Chart = (() => {
   .s-value.green { color: var(--green); }
   .s-value.red { color: var(--red); }
   .s-value.yellow { color: var(--yellow); }
+  /* PLAN TABLE */
+  .plan-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .plan-table th { text-align: right; padding: 10px 8px; color: var(--text2); font-weight: 600; border-bottom: 2px solid var(--border); white-space: nowrap; }
+  .plan-table td { padding: 8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   .plan-table thead tr { background: var(--bg3); }
-  .plan-table thead th { padding: 10px 8px; font-size: 12px; color: var(--text2); font-weight: 600; border-bottom: 2px solid var(--border); white-space: nowrap; }
   .plan-table tbody tr:hover { background: var(--bg3); }
   .plan-table tfoot tr { background: var(--bg3); font-weight: 700; }
-  .plan-table td { white-space: nowrap; }
   .month-label { font-weight: 600; display: flex; align-items: center; gap: 6px; }
   .analysis-chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
   .chip-green { background: rgba(76,175,140,0.2); color: var(--green); }
   .chip-red { background: rgba(224,92,92,0.2); color: var(--red); }
   .chip-yellow { background: rgba(240,160,64,0.2); color: var(--yellow); }
   .chip-gray { background: var(--bg4); color: var(--text3); }
-  /* Big analysis cards */
-  .analysis-big-card { border-radius: var(--radius); padding: 20px; display:flex; flex-direction:column; gap:6px; }
-  .abc-label { font-size: 12px; opacity: 0.75; }
-  .abc-value { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
-  .abc-sub { font-size: 12px; opacity: 0.65; }
   /* Month mini cards */
   .month-mini-card { border-radius: var(--radius-sm); padding: 12px; border-right: 4px solid transparent; background: var(--bg3); }
   .mmc-name { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
@@ -642,6 +565,7 @@ const Chart = (() => {
   .week-card-new { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); display: flex; flex-direction: column; cursor: pointer; transition: border-color 0.2s, transform 0.15s; overflow: hidden; }
   .week-card-new:hover { border-color: var(--accent); transform: translateY(-2px); }
   .week-card-today { border-color: var(--accent) !important; background: rgba(108,99,255,0.06); }
+  .week-card-selected { border-color: var(--green) !important; background: rgba(76,175,140,0.06); }
   .wc-head { padding: 8px 8px 6px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; gap: 2px; }
   .wc-day  { font-size: 10px; color: var(--text3); font-weight: 500; }
   .wc-date { font-size: 18px; font-weight: 700; line-height: 1; }
@@ -715,11 +639,6 @@ const Chart = (() => {
   .weekday-track { flex: 1; height: 22px; background: var(--bg4); border-radius: 4px; overflow: hidden; }
   .weekday-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-right: 8px; font-size: 11px; font-weight: 600; color: white; transition: width 0.5s; justify-content: flex-end; min-width: 2px; }
   .weekday-val { width: 80px; text-align: left; font-size: 12px; font-weight: 600; flex-shrink: 0; }
-  /* Forecast */
-  .forecast-card { background: linear-gradient(135deg, var(--bg3), var(--bg4)); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
-  .forecast-card .fc-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
-  .forecast-card .fc-value { font-size: 22px; font-weight: 700; }
-  .forecast-card .fc-sub { font-size: 11px; color: var(--text3); margin-top: 4px; }
   /* Section visibility */
   .section-hidden { display: none !important; }
   .vis-item { display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border-bottom:1px solid var(--border); font-size:13px; }
@@ -757,26 +676,15 @@ const Chart = (() => {
   .nav-guide-btn { background:transparent; border:none; cursor:pointer; opacity:0.7; transition:opacity 0.2s; color:var(--text2); display:flex; align-items:center; gap:4px; font-family:var(--font); font-size:12px; font-weight:500; padding:4px 10px; white-space:nowrap; }
   .nav-guide-btn:hover { opacity:1; }
   /* Analysis collapsible */
-  details.card { padding: 12px; }
-  details > summary { outline: none; }
-  details > summary::-webkit-details-marker { display: none; }
   /* ══ MEDIA QUERIES ══ */
   @media (max-width: 768px) {
     .top-header { padding:7px 10px; gap:6px; flex-wrap:nowrap; }
-    .th-logo { display:none; }
-    .th-ring { width:34px; height:34px; flex-shrink:0; }
-    .th-ring svg { width:34px; height:34px; }
-    .th-amount { font-size:15px; }
-    .th-label { font-size:9px; }
-    .th-stat:nth-child(n+3) { display:none; }
-    .th-bar-wrap { display:none; }
-    .th-stat-val { font-size:11px; }
     .nav-tabs { padding:3px 6px; gap:1px; }
     .nav-btn { padding:4px 7px; gap:3px; border-radius:14px; }
     .nav-btn .nav-icon { font-size:13px; }
     .nav-btn .nav-label { font-size:9px; }
     .nav-guide-btn { padding:3px 6px; font-size:10px; }
-    .content { padding:8px 8px; }
+    .content { padding:8px 8px; max-width:100%; }
     .card { padding:10px; }
     .card-title { font-size:12px; margin-bottom:8px; }
     .section-title { font-size:13px; }
@@ -813,7 +721,7 @@ const Chart = (() => {
     #page-dashboard div[style*="grid-template-columns:1fr 1fr"] { display:flex !important; flex-direction:column !important; }
     #page-dashboard div[style*="grid-template-columns:3fr 2fr"] { display:flex !important; flex-direction:column !important; }
     #db-cycle-card div[style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns:repeat(2,1fr) !important; }
-    #db-full-summary div[style*="grid-template-columns:repeat(4,1fr)"] { grid-template-columns:repeat(2,1fr) !important; }
+
     #page-dashboard div[style*="height:200px"] { height:130px !important; }
     /* settings */
     .settings-grid { grid-template-columns:1fr !important; }
@@ -828,7 +736,7 @@ const Chart = (() => {
     .compare-table th,.compare-table td { padding:4px 4px; }
     .plan-table { font-size:10px; }
     /* planning */
-    .goal-card { padding:10px; }
+
     .nsort-card { min-height:70px; padding:8px 4px 6px; }
     .nsort-icon { font-size:20px; }
     .nsort-label { font-size:10px; }
@@ -840,7 +748,6 @@ const Chart = (() => {
     .nav-btn .nav-icon { font-size:15px; }
     .nav-guide-btn span { display:none; }
     #nav-sort-list { grid-template-columns:repeat(3,1fr) !important; }
-    .th-right { display:none; }
     #analysis-big-cards { grid-template-columns:1fr !important; }
     .content { padding:6px; }
   }
@@ -913,6 +820,7 @@ const Chart = (() => {
         <div class="card" id="dw-daily-col" style="margin-bottom:12px;display:flex;flex-direction:column;gap:8px">
           <div style="display:flex;justify-content:space-between;align-items:center">
             <span style="font-size:12px;font-weight:700;color:var(--text2)">📅 اليوم</span>
+            <button class="btn btn-primary btn-sm" onclick="openAddTx()">+ إضافة</button>
           </div>
           <div id="daily-txs" style="flex:1;overflow-y:auto;max-height:320px"></div>
           <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--border)">
@@ -936,7 +844,7 @@ const Chart = (() => {
             <div id="dw-today-net" style="font-size:14px;font-weight:800">—</div>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr) auto;gap:6px">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
           <div class="card" style="margin-bottom:0;padding:10px;text-align:center" id="dw-day-stat">
             <div style="font-size:9px;color:var(--text3);margin-bottom:3px">🗓️ إيرادات الأسبوع</div>
             <div id="dw-week-inc" style="font-size:14px;font-weight:800;color:var(--green)">—</div>
@@ -948,10 +856,6 @@ const Chart = (() => {
           <div class="card" style="margin-bottom:0;padding:10px;text-align:center">
             <div style="font-size:9px;color:var(--text3);margin-bottom:3px">🗓️ صافي الأسبوع</div>
             <div id="dw-week-net" style="font-size:14px;font-weight:800">—</div>
-          </div>
-          <div class="card" style="margin-bottom:0;padding:10px;text-align:center;cursor:pointer;min-width:50px" onclick="openAddTx()">
-            <div style="font-size:9px;color:var(--text3);margin-bottom:3px">⚡</div>
-            <div style="font-size:20px">➕</div>
           </div>
         </div>
       </div>
@@ -975,7 +879,6 @@ const Chart = (() => {
             <div id="m-net" style="font-size:15px;font-weight:800">—</div>
           </div>
         </div>
-        <div id="monthly-salary-bar" style="margin-bottom:12px"></div>
         <div class="summary-row" id="month-summary" style="display:none"></div>
 
         <!-- أداء الأشهر — فوق التقويم -->
@@ -1165,43 +1068,44 @@ const Chart = (() => {
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px" id="analysis-month-cards"></div>
         </div>
 
-        <!-- الرسم البياني + الجدول -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div class="card" style="margin-bottom:0;padding:12px">
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">📊 الإيرادات مقابل المصاريف</div>
-            <div style="height:200px" id="analysis-bar-chart"></div>
-          </div>
-          <div class="card" style="margin-bottom:0;padding:12px">
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">📋 الجدول التفصيلي</div>
-            <div style="overflow-x:auto;max-height:210px;overflow-y:auto">
-              <table class="plan-table" style="min-width:440px;font-size:11px">
-                <thead><tr><th>الشهر</th><th style="text-align:center">الدخل</th><th style="text-align:center">المصروف</th><th style="text-align:center">المتبقي</th><th style="text-align:center">%</th><th style="text-align:center">◉</th></tr></thead>
-                <tbody id="analysis-tbody"></tbody>
-                <tfoot id="analysis-tfoot"></tfoot>
-              </table>
-            </div>
-          </div>
+        <!-- الرسم البياني كامل العرض -->
+        <div class="card" style="margin-bottom:12px;padding:12px">
+          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">📊 الإيرادات مقابل المصاريف</div>
+          <div style="height:200px" id="analysis-bar-chart"></div>
         </div>
 
-        <!-- توزيع الفئات + إنفاق الفئات شهرياً -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div class="card" style="margin-bottom:0;padding:12px">
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">🎯 توزيع المصاريف</div>
-            <div id="analysis-cats-bars"></div>
-          </div>
-          <div class="card" style="margin-bottom:0;padding:12px">
-            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">🏷️ إنفاق كل فئة شهرياً</div>
-            <div style="overflow-x:auto;max-height:210px;overflow-y:auto">
-              <table class="plan-table" style="min-width:400px;font-size:11px">
-                <thead id="analysis-cats-head"></thead>
-                <tbody id="analysis-cats-body"></tbody>
-              </table>
-            </div>
-          </div>
+        <!-- توزيع الفئات كامل العرض -->
+        <div class="card" style="margin-bottom:12px;padding:12px">
+          <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">🎯 توزيع المصاريف</div>
+          <div id="analysis-cats-bars"></div>
         </div>
 
         <!-- توقع + أفضل/أسوأ -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px" id="analysis-forecast-row"></div>
+
+        <!-- مقارنة الدورات السابقة -->
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-title">🔄 مقارنة الدورات السابقة</div>
+          <div id="db-cycles-compare"></div>
+        </div>
+
+        <!-- رسم الإنفاق عبر الدورات -->
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-title">📉 الإنفاق عبر الدورات</div>
+          <div style="height:220px" id="db-bar-chart"></div>
+        </div>
+
+        <!-- توزيع المصاريف بالفئات — الدورة الحالية -->
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-title">🎯 توزيع المصاريف — الدورة الحالية</div>
+          <div id="db-cats-breakdown"></div>
+        </div>
+
+        <!-- الإنفاق حسب أيام الأسبوع -->
+        <div class="card" style="margin-bottom:12px">
+          <div class="card-title">📆 الإنفاق حسب أيام الأسبوع</div>
+          <div id="db-weekdays"></div>
+        </div>
 
         <!-- كلمات الملاحظات -->
         <div class="card" style="margin-bottom:10px;padding:12px">
@@ -1214,64 +1118,58 @@ const Chart = (() => {
       <div class="page" id="page-dashboard">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
           <span style="font-size:15px;font-weight:700">📊 لوحة التحكم</span>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-ghost btn-sm" id="db-auto-btn" onclick="setDashboardMode('auto')" style="border-color:var(--accent);color:var(--accent)">دورة الراتب ✓</button>
-            <button class="btn btn-ghost btn-sm" id="db-custom-btn" onclick="setDashboardMode('custom')">📅 تحديد الفترة</button>
-          </div>
+          <span style="font-size:11px;color:var(--text3)" id="db-last-update"></span>
         </div>
 
-        <!-- فترة مخصصة -->
-        <div id="db-custom-row" style="display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;margin-bottom:12px">
-          <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
-            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;color:var(--text3)">من</label><input type="date" id="db-from" style="font-size:12px;width:140px"></div>
-            <div style="display:flex;flex-direction:column;gap:4px"><label style="font-size:11px;color:var(--text3)">إلى</label><input type="date" id="db-to" style="font-size:12px;width:140px"></div>
-            <button class="btn btn-primary btn-sm" onclick="applyDashboardPeriod()">تطبيق</button>
-            <button class="btn btn-ghost btn-sm" onclick="fillPaydaySuggestion()">💡 اقتراح</button>
-          </div>
-          <div id="db-period-label" style="font-size:11px;color:var(--text3);margin-top:8px"></div>
-        </div>
-
-        <!-- 1. الدورة الحالية -->
+        <!-- 1. دورة الراتب الحالية -->
         <div id="db-cycle-card" style="margin-bottom:12px"></div>
 
-        <!-- 2. ملخص الدورة السابقة -->
+        <!-- 2. نتيجة الدورة السابقة -->
         <div id="db-cycle-result" style="margin-bottom:12px"></div>
 
-        <!-- 3. الدورة الكاملة -->
-        <div id="db-full-summary" style="margin-bottom:12px"></div>
-
-        <!-- 4. المخزون التراكمي -->
+        <!-- 3. المخزون التراكمي -->
         <div id="db-stock-card" style="margin-bottom:12px"></div>
 
-        <!-- 5. رسم الدورات تحت المخزون -->
-        <div class="card" style="margin-bottom:12px">
-          <div class="card-title">📉 الإنفاق عبر الدورات</div>
-          <div style="height:220px" id="db-bar-chart"></div>
+        <!-- 3b. الجدول التفصيلي + إنفاق الفئات شهرياً -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px" id="db-tables-row">
+          <div class="card" style="margin-bottom:0;padding:12px">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">📋 الجدول التفصيلي</div>
+            <div style="overflow-x:auto;max-height:220px;overflow-y:auto">
+              <table class="plan-table" style="min-width:440px;font-size:11px">
+                <thead><tr><th>الشهر</th><th style="text-align:center">الدخل</th><th style="text-align:center">المصروف</th><th style="text-align:center">المتبقي</th><th style="text-align:center">%</th><th style="text-align:center">◉</th></tr></thead>
+                <tbody id="analysis-tbody"></tbody>
+                <tfoot id="analysis-tfoot"></tfoot>
+              </table>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:0;padding:12px">
+            <div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px">🏷️ إنفاق كل فئة شهرياً</div>
+            <div style="overflow-x:auto;max-height:220px;overflow-y:auto">
+              <table class="plan-table" style="min-width:400px;font-size:11px">
+                <thead id="analysis-cats-head"></thead>
+                <tbody id="analysis-cats-body"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-        <!-- 6. فئات كامل العرض -->
-        <div class="card" style="margin-bottom:12px">
-          <div class="card-title">🎯 توزيع المصاريف</div>
-          <div id="db-cats-breakdown"></div>
+        <!-- 4. ملخص سريع — اليوم / الأسبوع / الشهر -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px" id="db-quick-row">
+          <!-- يُبنى بواسطة renderDashboard -->
         </div>
 
-        <!-- 7. مقارنة الدورات كامل العرض -->
-        <div class="card" style="margin-bottom:12px">
-          <div class="card-title">🔄 مقارنة الدورات السابقة</div>
-          <div id="db-cycles-compare"></div>
+        <!-- 5. آخر 5 عمليات -->
+        <div class="card" id="db-recent-card" style="margin-bottom:12px">
+          <div class="card-title">⚡ آخر العمليات</div>
+          <div id="db-recent-txs"></div>
         </div>
 
-        <!-- 8. أيام الأسبوع كامل العرض -->
-        <div class="card" style="margin-bottom:12px">
-          <div class="card-title">📆 الإنفاق حسب أيام الأسبوع</div>
-          <div id="db-weekdays"></div>
-        </div>
       </div>
 
       <!-- COLORS PAGE -->
       <div class="page" id="page-colors">
         <div class="section-title" style="margin-bottom:4px">🎨 أنماط الألوان
-          <span style="font-size:13px;color:var(--text3);font-weight:500">المجموع: ${66} ثيم</span>
+          <span id="theme-total-count" style="font-size:13px;color:var(--text3);font-weight:500"></span>
         </div>
         <div id="theme-categories"></div>
       </div>
@@ -1533,7 +1431,6 @@ let state = {
     {id:'c5',name:'الصحة',emoji:'💊',type:'expense',limit:0,keywords:'دواء,صيدلية,دكتور,طبيب,مستشفى,عيادة,علاج,كشف'},
     {id:'c6',name:'الفواتير',emoji:'⚡',type:'expense',limit:0,keywords:'كهرباء,ماء,إنترنت,هاتف,إيجار,اشتراك,جوال,فاتورة'},
     {id:'c7', name:'راتب',               emoji:'💰', type:'income',  limit:0, keywords:'راتب,مرتب,أجر,معاش'},
-    {id:'c8', name:'دخل إضافي',          emoji:'💼', type:'income',  limit:0, keywords:'مكافأة,عمولة,مشروع,فريلانس,بيع,أرباح'},
     {id:'c11',name:'م أدري',             emoji:'🙈', type:'expense', limit:0, keywords:'متفرقات,غير محدد,أخرى'},
     {id:'c12',name:'سحب - الصراف الآلي',emoji:'🏧', type:'expense', limit:0, keywords:'سحب,صراف,atm'},
     {id:'c20',name:'تفعيل انترنت',       emoji:'📶', type:'expense', limit:0, keywords:'انترنت,اشتراك,تفعيل,باقة,شبكة,stc,mobily,zain'},
@@ -1587,8 +1484,8 @@ function load() {
   applyTheme(state.theme);
 }
 
-function save() {
-  _analysisCache = null; // أبطل الكاش عند أي تغيير في البيانات
+function save(invalidateAnalysis = true) {
+  if (invalidateAnalysis) { _analysisCache = null; _stockCache = null; }
   localStorage.setItem('mizaniyati', JSON.stringify({
     transactions: state.transactions,
     categories:   state.categories,
@@ -1695,69 +1592,72 @@ function getPrevCycleInfo(info) {
 
 function renderTop() {
   const info = getPayCycleInfo();
-  const pct  = info.pct;
-  const r = 20, cx = 24, cy = 24;
-  const circ = 2 * Math.PI * r;
-  const dash  = (pct/100) * circ;
-  const cols  = { green:'#4caf8c', yellow:'#f0a040', red:'#e05c5c' };
-  const col   = cols[info.status];
+  const col  = { green:'#4caf8c', yellow:'#f0a040', red:'#e05c5c' }[info.status];
+  const spentPct  = Math.min(100, Math.round((info.spent / Math.max(1, info.totalIncome)) * 100));
+  const daysPct   = Math.min(100, Math.round(info.pct));
 
   // مقارنة بالدورة السابقة
-  const prev = getPrevCycleInfo(info);
-  const diff = info.spent - prev.prevSpent;
+  const prev    = getPrevCycleInfo(info);
+  const diff    = info.spent - prev.prevSpent;
   const hasPrev = prev.prevSpent > 0;
   const diffCol = diff > 0 ? '#e05c5c' : '#4caf8c';
-  const diffSign = diff > 0 ? '▲' : '▼';
-  const diffLabel = hasPrev
-    ? `<span style="font-size:10px;color:${diffCol};font-weight:700;white-space:nowrap">${diffSign} ${fmt(Math.abs(diff))} ${diff>0?'أكثر':'أقل'} من السابقة</span>`
+  const diffTxt = hasPrev
+    ? `<span style="font-size:10px;color:${diffCol};font-weight:700">${diff>0?'▲':'▼'} ${fmt(Math.abs(diff))} ${diff>0?'أكثر':'أقل'} من السابقة</span>`
     : '';
 
-  // المخزون التراكمي
+  // المخزون
   const { currentStock } = getStockHistory();
-  const stockCol = currentStock >= 0 ? 'var(--green)' : 'var(--red)';
+  const stockCol = currentStock >= 0 ? '#4caf8c' : '#e05c5c';
 
   document.getElementById('top-card').innerHTML = `
-    <div class="th-left">
-      <div class="th-logo">💰</div>
-      <div class="th-ring">
-        <svg width="48" height="48" viewBox="0 0 48 48">
-          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg4)" stroke-width="4"/>
-          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${col}" stroke-width="4"
-            stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
-        </svg>
-        <div class="th-ring-center">
-          <span class="th-ring-pct" style="color:${col}">${Math.round(pct)}%</span>
+    <div style="width:100%;display:flex;flex-direction:column;gap:10px">
+
+      <!-- الصف الأول: رقم كبير + إحصاءات -->
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+
+        <!-- المتبقي -->
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:42px;height:42px;border-radius:50%;border:3px solid ${col};display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(0,0,0,0.15)">
+            <span style="font-size:11px;font-weight:800;color:${col}">${spentPct}%</span>
+          </div>
+          <div>
+            <div style="font-size:10px;color:var(--text3)">المتبقي · ${info.daysLeft} يوم</div>
+            <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;color:${col};line-height:1.1">${fmt(info.remaining)}</div>
+            ${diffTxt}
+          </div>
+        </div>
+
+        <!-- 3 إحصاءات -->
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+          <div style="text-align:center">
+            <div style="font-size:13px;font-weight:700;color:#4caf8c">${fmt(info.totalIncome)}</div>
+            <div style="font-size:10px;color:var(--text3)">💰 الإجمالي</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:13px;font-weight:700;color:#e05c5c">${fmt(info.spent)}</div>
+            <div style="font-size:10px;color:var(--text3)">💸 المصروف</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:13px;font-weight:700;color:${stockCol}">${fmt(currentStock)}</div>
+            <div style="font-size:10px;color:var(--text3)">🏦 المخزون</div>
+          </div>
         </div>
       </div>
-      <div class="th-info">
-        <span class="th-label">المتبقي · ${info.daysLeft} يوم</span>
-        <span class="th-amount ${info.status}">${fmt(info.remaining)}</span>
-        ${diffLabel}
+
+      <!-- الشريط -->
+      <div style="position:relative;height:8px;background:var(--bg4);border-radius:4px;overflow:visible">
+        <!-- شريط الإنفاق -->
+        <div style="position:absolute;top:0;right:0;height:100%;width:${spentPct}%;background:${col};border-radius:4px;transition:width 0.5s"></div>
+        <!-- خط الأيام -->
+        <div style="position:absolute;top:-3px;bottom:-3px;right:${daysPct}%;width:2px;background:var(--text2);border-radius:1px;opacity:0.5"></div>
       </div>
-    </div>
-    <div class="th-right">
-      <div class="th-stat">
-        <div class="th-stat-val" style="color:var(--green)">${fmt(info.totalIncome)}</div>
-        <div class="th-stat-lbl">الإجمالي</div>
+
+      <!-- تفسير الشريط -->
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:-4px">
+        <span style="color:${col}">صُرف ${spentPct}% من الميزانية</span>
+        <span>مضى ${info.daysElapsed} من ${info.totalDays} يوم</span>
       </div>
-      <div class="th-stat">
-        <div class="th-stat-val" style="color:var(--red)">${fmt(info.spent)}</div>
-        <div class="th-stat-lbl">المصروف</div>
-      </div>
-      <div class="th-stat">
-        <div class="th-stat-val" style="color:${stockCol}">${fmt(currentStock)}</div>
-        <div class="th-stat-lbl">🏦 المخزون</div>
-      </div>
-      <div class="th-stat">
-        <div class="th-stat-val">${fmt(info.avgPerDay)}</div>
-        <div class="th-stat-lbl">يومياً</div>
-      </div>
-      <div class="th-bar-wrap">
-        <div class="th-bar">
-          <div class="th-bar-fill ${info.status}" style="width:${Math.min(100,(info.spent/Math.max(1,info.totalIncome))*100)}%"></div>
-        </div>
-        <span style="font-size:10px;color:var(--text3)">${Math.round((info.spent/Math.max(1,info.totalIncome))*100)}%</span>
-      </div>
+
     </div>
   `;
 }
@@ -1772,8 +1672,14 @@ function renderDaily() {
   const isYest   = dateStr === dateKey(new Date(localToday().getFullYear(), localToday().getMonth(), localToday().getDate()-1));
 
   const dayLabel = isToday ? 'اليوم' : isYest ? 'أمس' : DAY_NAMES[d.getDay()];
+  
+  // زر رجوع لشهري إذا جاء من التقويم
+  const backBtn = state._returnToMonthly
+    ? `<button class="btn btn-ghost btn-sm" style="font-size:11px" onclick="state._returnToMonthly=false;showPage('monthly')">← شهري</button>`
+    : '';
+
   document.getElementById('day-title').innerHTML =
-    `<span style="color:var(--accent2)">${dayLabel}</span> · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+    `${backBtn}<span style="color:var(--accent2)">${dayLabel}</span> · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
 
   const searchQ = (document.getElementById('tx-search')?.value || '').trim().toLowerCase();
   let txs = getTxForDate(dateStr);
@@ -1921,6 +1827,7 @@ function renderWeekly() {
   }
 
   const todayStr = dateKey(today);
+  const selectedStr = dateKey(state.currentDate);
   const weekLabel = `${days[0].d.getDate()} ${MONTH_NAMES[days[0].d.getMonth()]} — ${days[6].d.getDate()} ${MONTH_NAMES[days[6].d.getMonth()]}`;
 
   document.getElementById('week-summary').innerHTML = `
@@ -1931,13 +1838,14 @@ function renderWeekly() {
   `;
 
   document.getElementById('week-grid').innerHTML = days.map(({d, dateStr, txs, inc, exp}) => {
-    const isToday = dateStr === todayStr;
+    const isToday    = dateStr === todayStr;
+    const isSelected = dateStr === selectedStr;
     const net = inc - exp;
     const hasData = txs.length > 0;
     const netColor = net > 0 ? 'var(--green)' : net < 0 ? 'var(--red)' : 'var(--text3)';
     const topTxs = txs.slice(0,3);
     return `
-    <div class="week-card-new ${isToday?'week-card-today':''}" onclick="selectDayFromWeek('${dateStr}')">
+    <div class="week-card-new ${isToday?'week-card-today':''} ${isSelected&&!isToday?'week-card-selected':''}" onclick="selectDayFromWeek('${dateStr}')">
       <div class="wc-head">
         <div class="wc-day">${DAY_NAMES[d.getDay()]}</div>
         <div class="wc-date ${isToday?'wc-date-today':''}">${d.getDate()}</div>
@@ -1993,7 +1901,6 @@ function quickAddDay(dateStr, e) {
 }
 
 // ================== MONTHLY PAGE ==================
-let donutChart = null, barChart = null;
 function renderMonthly() {
   // Month bar
   const monthBar = document.getElementById('month-bar');
@@ -2019,7 +1926,6 @@ function renderMonthly() {
   `;
   
   renderCalendar();
-  renderMonthlySalaryBar();
   // أداء الأشهر
   const mmCards = document.getElementById('monthly-month-cards');
   if (mmCards) {
@@ -2053,23 +1959,6 @@ function setMonth(m) {
 function goToMonth(monthIdx) {
   state.currentMonth = monthIdx;
   renderMonthly();
-}
-
-function renderMonthlySalaryBar() {
-  const el = document.getElementById('monthly-salary-bar');
-  if (!el) return;
-  return; // لا حاجة لشريط الراتب بعد الآن
-  el.innerHTML = `
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
-      <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:18px">💵</span>
-        <div>
-          <div style="font-size:11px;color:var(--text3)">راتب ${MONTH_NAMES[state.currentMonth]} ${state.currentYear}</div>
-          <div style="font-size:16px;font-weight:700;color:var(--green)">${fmt(sal.amount)}</div>
-        </div>
-      </div>
-      <div style="font-size:12px;color:var(--text3)">📅 نزل يوم ${sal.day}</div>
-    </div>`;
 }
 
 function renderCalendar() {
@@ -2130,12 +2019,12 @@ function jumpToDay(dateStr) {
   const [y,m,dd] = dateStr.split('-').map(Number);
   const target = new Date(y, m-1, dd);
   state.currentDate = target;
-  // احسب weekOffset الصحيح
   const today = new Date(); today.setHours(0,0,0,0);
   const todayWeekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
   const targetWeekStart = new Date(target.getFullYear(), target.getMonth(), target.getDate() - target.getDay());
   const diffDays = Math.round((targetWeekStart - todayWeekStart) / 86400000);
   state.weekOffset = Math.round(diffDays / 7);
+  state._returnToMonthly = true;
   showPage('dayweek');
 }
 
@@ -2983,50 +2872,13 @@ function showPage(name) {
   if (name === 'dashboard') renderDashboard();
 }
 
-// ================== DASHBOARD PERIOD MODE ==================
-let dashboardMode = 'auto'; // 'auto' | 'custom'
-let dashboardCustom = { from: null, to: null };
-
-function setDashboardMode(mode) {
-  dashboardMode = mode;
-  document.getElementById('db-custom-row').style.display = mode === 'custom' ? 'block' : 'none';
-  document.getElementById('db-auto-btn').style.cssText  = mode === 'auto'   ? 'border-color:var(--accent);color:var(--accent)' : '';
-  document.getElementById('db-custom-btn').style.cssText = mode === 'custom' ? 'border-color:var(--accent);color:var(--accent)' : '';
-  if (mode === 'auto') renderDashboard();
-}
-
-function fillPaydaySuggestion() {
-  const payday = state.settings.payday || 27;
-  const today  = new Date();
-  let s, e;
-  if (today.getDate() >= payday) {
-    s = new Date(today.getFullYear(), today.getMonth(), payday);
-    e = new Date(today.getFullYear(), today.getMonth()+1, payday-1);
-  } else {
-    s = new Date(today.getFullYear(), today.getMonth()-1, payday);
-    e = new Date(today.getFullYear(), today.getMonth(), payday-1);
-  }
-  document.getElementById('db-from').value = dateKey(s);
-  document.getElementById('db-to').value   = dateKey(e);
-  document.getElementById('db-period-label').textContent = `💡 دورة الراتب: ${dateKey(s)} → ${dateKey(e)}`;
-}
-
-function applyDashboardPeriod() {
-  const from = document.getElementById('db-from').value;
-  const to   = document.getElementById('db-to').value;
-  if (!from || !to) { showToast('⚠️ اختر تاريخ البداية والنهاية', 'var(--yellow)'); return; }
-  if (from > to)    { showToast('⚠️ تاريخ البداية يجب أن يسبق النهاية', 'var(--red)'); return; }
-  dashboardCustom = { from, to };
-  document.getElementById('db-period-label').textContent = `✅ الفترة المحددة: ${from} → ${to}`;
-  renderDashboard();
-  showToast(`📅 الفترة: ${from} → ${to}`, 'var(--accent)');
-}
-
 // ================== DASHBOARD ==================
-let dbBarChart = null;
 
 // ================== المخزون التراكمي ==================
+let _stockCache = null;
 function getStockHistory() {
+  // كاش بسيط — يُبطل عند save()
+  if (_stockCache) return _stockCache;
   const cycles = getCycles(24).reverse();
   const initialBalance = state.settings.initialBalance || 0;
   let stock = initialBalance;
@@ -3034,16 +2886,10 @@ function getStockHistory() {
   for (const c of cycles) {
     const surplus = c.income - c.expense;
     stock += surplus;
-    history.push({
-      label:     c.label,
-      income:    c.income,
-      expense:   c.expense,
-      surplus,
-      stock,
-      isCurrent: c.isCurrent,
-    });
+    history.push({ label:c.label, income:c.income, expense:c.expense, surplus, stock, isCurrent:c.isCurrent });
   }
-  return { history, currentStock: stock, initialBalance };
+  _stockCache = { history, currentStock: stock, initialBalance };
+  return _stockCache;
 }
 
 function getCycles(count) {
@@ -3077,53 +2923,21 @@ function getCycles(count) {
 }
 
 function renderDashboard() {
-  const PALETTE = ['#6c63ff','#4caf8c','#f0a040','#e05c5c','#26c6da','#ab47bc','#ff7043','#78909c','#e91e63','#00897b'];
-
-  // ── تحديد الفترة (auto أو custom) ─────────────────────
-  let cur, cycles;
-  if (dashboardMode === 'custom' && dashboardCustom.from && dashboardCustom.to) {
-    const s = new Date(dashboardCustom.from + 'T00:00:00');
-    const e = new Date(dashboardCustom.to   + 'T00:00:00');
-    const txs    = state.transactions.filter(t => t.date >= dashboardCustom.from && t.date <= dashboardCustom.to);
-    const income = txs.filter(t=>t.type==='income').reduce((a,t)=>a+t.amount,0);
-    const expense= txs.filter(t=>t.type==='expense').reduce((a,t)=>a+t.amount,0);
-    const catBreakdown = {};
-    txs.filter(t=>t.type==='expense').forEach(t=>{ catBreakdown[t.category]=(catBreakdown[t.category]||0)+t.amount; });
-    const totalDays = Math.max(1, Math.round((e-s)/86400000)+1);
-    const today2    = new Date(); today2.setHours(0,0,0,0);
-    const elapsed   = Math.min(totalDays, Math.max(1, Math.round((today2-s)/86400000)+1));
-    cur    = { start:s, end:e, sStr:dashboardCustom.from, eStr:dashboardCustom.to, txs, income, expense, remaining:income-expense, catBreakdown, totalDays, elapsed, isCurrent:true, label:`${dashboardCustom.from} → ${dashboardCustom.to}` };
-    cycles = [cur];
-  } else {
-    cycles = getCycles(6);
-    cur    = cycles[0];
-  }
-
-  // ── الدورة الكاملة: كل البيانات من أول عملية حتى اليوم ──
-  const today = localToday();
+  const cycles = getCycles(6);
+  const cur    = cycles[0];
+  const today  = localToday();
   const todayStr = dateKey(today);
-  const allTxs = state.transactions;
-  const allDates = allTxs.map(t => t.date).sort();
-  const firstDate = allDates[0] || todayStr;
-  const allIncomeTx = allTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
-  // احسب كم دورة راتب مضت من أول تاريخ حتى اليوم
-  const payday = state.settings.payday || 27;
-  const firstD = new Date(firstDate+'T00:00:00');
-  const monthsDiff = (today.getFullYear()-firstD.getFullYear())*12 + (today.getMonth()-firstD.getMonth());
-  const cyclesPassed = Math.max(1, monthsDiff + 1);
-  const totalFullIncome = allIncomeTx;
-  const totalFullExpense = allTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
-  const totalFullRemaining = totalFullIncome - totalFullExpense;
-  const fullSpendPct = totalFullIncome>0 ? Math.min(100,(totalFullExpense/totalFullIncome)*100) : 0;
-  const fullCol = fullSpendPct>90?'var(--red)':fullSpendPct>70?'var(--yellow)':'var(--green)';
 
-  // ── بطاقة المخزون التراكمي ──────────────────────────────
+  // وقت آخر تحديث
+  const lbl = document.getElementById('db-last-update');
+  if (lbl) lbl.textContent = `آخر تحديث: ${today.toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}`;
+
+  // ── المخزون التراكمي ──
   const stockEl = document.getElementById('db-stock-card');
   if (stockEl) {
     const { history, currentStock, initialBalance } = getStockHistory();
     const stockCol = currentStock >= 0 ? 'var(--green)' : 'var(--red)';
-    const lastFew  = history.slice(-6); // آخر 6 دورات للعرض
-
+    const lastFew  = history.slice(-6);
     stockEl.innerHTML = `
       <div style="background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;overflow:hidden">
         <div style="padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
@@ -3142,24 +2956,20 @@ function renderDashboard() {
             })() : '—'}
           </div>
         </div>
-
-        <!-- جدول آخر الدورات -->
         <div style="padding:12px 16px;overflow-x:auto">
           <table style="width:100%;border-collapse:collapse;font-size:12px">
-            <thead>
-              <tr style="color:var(--text3);font-size:10px">
-                <th style="text-align:right;padding:4px 8px;font-weight:500">الدورة</th>
-                <th style="text-align:center;padding:4px 8px;font-weight:500">الدخل</th>
-                <th style="text-align:center;padding:4px 8px;font-weight:500">المصاريف</th>
-                <th style="text-align:center;padding:4px 8px;font-weight:500">الفائض/العجز</th>
-                <th style="text-align:center;padding:4px 8px;font-weight:500">المخزون</th>
-              </tr>
-            </thead>
+            <thead><tr style="color:var(--text3);font-size:10px">
+              <th style="text-align:right;padding:4px 8px;font-weight:500">الدورة</th>
+              <th style="text-align:center;padding:4px 8px;font-weight:500">الدخل</th>
+              <th style="text-align:center;padding:4px 8px;font-weight:500">المصاريف</th>
+              <th style="text-align:center;padding:4px 8px;font-weight:500">الفائض/العجز</th>
+              <th style="text-align:center;padding:4px 8px;font-weight:500">المخزون</th>
+            </tr></thead>
             <tbody>
               ${lastFew.map(r => {
-                const sCol   = r.surplus >= 0 ? 'var(--green)' : 'var(--red)';
-                const stCol  = r.stock   >= 0 ? 'var(--green)' : 'var(--red)';
-                const rowBg  = r.isCurrent ? 'background:rgba(108,99,255,0.08)' : '';
+                const sCol  = r.surplus >= 0 ? 'var(--green)' : 'var(--red)';
+                const stCol = r.stock   >= 0 ? 'var(--green)' : 'var(--red)';
+                const rowBg = r.isCurrent ? 'background:rgba(108,99,255,0.08)' : '';
                 return `<tr style="${rowBg};border-top:1px solid var(--border)">
                   <td style="padding:7px 8px;font-weight:${r.isCurrent?700:400}">${r.label}${r.isCurrent?' <span style="font-size:9px;color:var(--accent)">●</span>':''}</td>
                   <td style="text-align:center;padding:7px 8px;color:var(--green)">${r.income > 0 ? fmt(r.income) : '—'}</td>
@@ -3174,47 +2984,115 @@ function renderDashboard() {
       </div>`;
   }
 
-  document.getElementById('db-full-summary').innerHTML = `
-    <div style="background:linear-gradient(145deg,var(--bg2),var(--bg3));border:1px solid var(--border);border-radius:18px;overflow:hidden">
-      <div style="padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <div style="font-size:11px;color:var(--text3);margin-bottom:3px">🗓️ الدورة الكاملة · منذ ${firstDate} حتى اليوم</div>
-          <div style="font-size:12px;color:var(--text3)">${cyclesPassed} دورة راتب · ${allTxs.length} عملية</div>
-        </div>
-        <span style="padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;background:${fullSpendPct>90?'rgba(224,92,92,0.2)':fullSpendPct>70?'rgba(240,160,64,0.2)':'rgba(76,175,140,0.2)'};color:${fullCol}">${Math.round(fullSpendPct)}% مصروف</span>
+  // ── ملخص سريع: اليوم / الأسبوع / الشهر ──
+  const todayTxs = getTxForDate(todayStr);
+  const todayInc = todayTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const todayExp = todayTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const todayNet = todayInc - todayExp;
+
+  const startOW  = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+  let wkInc=0, wkExp=0;
+  for (let i=0; i<7; i++) {
+    const d2 = new Date(startOW.getFullYear(), startOW.getMonth(), startOW.getDate()+i);
+    const tx2 = getTxForDate(dateKey(d2));
+    wkInc += tx2.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    wkExp += tx2.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  }
+  const wkNet = wkInc - wkExp;
+
+  const mTxs = getMonthTxs(today.getFullYear(), today.getMonth());
+  const mInc  = mTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const mExp  = mTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const mNet  = mInc - mExp;
+
+  const qCard = (icon, label, inc, exp, net, onclick) => `
+    <div class="card" style="margin-bottom:0;padding:14px;cursor:pointer" onclick="${onclick}">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px;font-weight:600">${icon} ${label}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px">
+        <div><div style="font-size:9px;color:var(--text3)">دخل</div><div style="font-size:13px;font-weight:700;color:var(--green)">${inc>0?fmt(inc):'—'}</div></div>
+        <div><div style="font-size:9px;color:var(--text3)">مصروف</div><div style="font-size:13px;font-weight:700;color:var(--red)">${exp>0?fmt(exp):'—'}</div></div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)">
-        <div style="background:var(--bg2);padding:14px 10px;text-align:center">
-          <div style="font-size:15px;font-weight:800;color:var(--green)">${fmt(totalFullIncome)}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:3px">💰 إجمالي الدخل</div>
-          <div style="font-size:9px;color:var(--text3);margin-top:1px">إجمالي الدخل المسجّل</div>
-        </div>
-        <div style="background:var(--bg2);padding:14px 10px;text-align:center">
-          <div style="font-size:15px;font-weight:800;color:var(--red)">${fmt(totalFullExpense)}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:3px">💸 إجمالي المصاريف</div>
-          <div style="font-size:9px;color:var(--text3);margin-top:1px">متوسط ${fmt(Math.round(totalFullExpense/Math.max(1,cyclesPassed)))}/دورة</div>
-        </div>
-        <div style="background:var(--bg2);padding:14px 10px;text-align:center">
-          <div style="font-size:15px;font-weight:800;color:${totalFullRemaining>=0?'var(--green)':'var(--red)'}">${fmt(totalFullRemaining)}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:3px">🏦 الصافي الكامل</div>
-          <div style="font-size:9px;color:var(--text3);margin-top:1px">المتبقي التراكمي</div>
-        </div>
-        <div style="background:var(--bg2);padding:14px 10px;text-align:center">
-          <div style="font-size:15px;font-weight:800;color:var(--accent2)">${fmt(Math.round(totalFullIncome/Math.max(1,cyclesPassed)))}</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:3px">📊 متوسط الدخل/دورة</div>
-          <div style="font-size:9px;color:var(--text3);margin-top:1px">× ${cyclesPassed} دورة</div>
-        </div>
-      </div>
-      <!-- شريط الإنفاق الكلي -->
-      <div style="padding:12px 20px 14px">
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-bottom:5px">
-          <span>الإنفاق الكلي من الدخل الكامل</span><span style="color:${fullCol};font-weight:600">${Math.round(fullSpendPct)}%</span>
-        </div>
-        <div style="height:8px;background:var(--bg4);border-radius:4px;overflow:hidden">
-          <div style="width:${fullSpendPct}%;height:100%;background:${fullCol};border-radius:4px;transition:width 0.6s"></div>
-        </div>
+      <div style="border-top:1px solid var(--border);padding-top:7px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:10px;color:var(--text3)">الصافي</span>
+        <span style="font-size:14px;font-weight:800;color:${net>=0?'var(--green)':'var(--red)'}">${(inc||exp)?fmt(net):'—'}</span>
       </div>
     </div>`;
+
+  const qr = document.getElementById('db-quick-row');
+  if (qr) qr.innerHTML =
+    qCard('📅','اليوم',   todayInc, todayExp, todayNet, "showPage('dayweek')") +
+    qCard('🗓️','الأسبوع', wkInc,    wkExp,    wkNet,    "showPage('dayweek')") +
+    qCard('📆','الشهر',   mInc,     mExp,     mNet,     "showPage('monthly')");
+
+  // ── آخر 5 عمليات ──
+  const recentEl = document.getElementById('db-recent-txs');
+  if (recentEl) {
+    const last5 = [...state.transactions].sort((a,b)=>b.date.localeCompare(a.date)||0).slice(0,5);
+    recentEl.innerHTML = last5.length ? last5.map(t => {
+      const cat = getCat(t.category);
+      return `<div class="tx-item-new ${t.type}" style="cursor:pointer" onclick="state.currentDate=parseLocalDate('${t.date}');updateWeekOffsetForDate(state.currentDate);showPage('dayweek')">
+        <div class="tx-icon-new">${cat.emoji}</div>
+        <div class="tx-body">
+          <div class="tx-name-new">${cat.name}</div>
+          <div class="tx-note-new">${t.note||t.date}</div>
+        </div>
+        <div class="tx-amt-new ${t.type}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
+      </div>`;
+    }).join('') : '<div class="empty-state" style="padding:20px"><p>لا توجد عمليات بعد</p></div>';
+  }
+
+  // ── الجدول التفصيلي + إنفاق الفئات شهرياً (نفس بيانات التحليل) ──
+  const dbYear   = new Date().getFullYear();
+  const dbMonths = MONTH_NAMES.map((name, m) => {
+    const mTxs      = getMonthTxs(dbYear, m);
+    const totalIncome = mTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const expense     = mTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const remaining   = totalIncome - expense;
+    const spendPct    = totalIncome > 0 ? (expense/totalIncome)*100 : 0;
+    const catBreakdown= {};
+    mTxs.filter(t=>t.type==='expense').forEach(t=>{ catBreakdown[t.category]=(catBreakdown[t.category]||0)+t.amount; });
+    return { name, m, totalIncome, expense, remaining, spendPct, catBreakdown, hasData: mTxs.length>0 };
+  });
+  const dbTotalIncome  = dbMonths.reduce((s,m)=>s+m.totalIncome,0);
+  const dbTotalExpense = dbMonths.reduce((s,m)=>s+m.expense,0);
+  const dbTotalRemain  = dbTotalIncome - dbTotalExpense;
+  const dbSpendRatio   = dbTotalIncome>0 ? Math.round((dbTotalExpense/dbTotalIncome)*100) : 0;
+
+  const tbodyEl = document.getElementById('analysis-tbody');
+  if (tbodyEl) tbodyEl.innerHTML = dbMonths.map(mo => {
+    const pctCls    = mo.spendPct>90?'red':mo.spendPct>70?'yellow':'green';
+    const statusChip= !mo.hasData?'—':mo.spendPct>90?'<span class="analysis-chip chip-red">🔴</span>':mo.spendPct>70?'<span class="analysis-chip chip-yellow">🟡</span>':'<span class="analysis-chip chip-green">🟢</span>';
+    return `<tr style="${!mo.hasData?'opacity:0.4':''}">
+      <td><b>${mo.name}</b></td>
+      <td style="text-align:center;color:var(--green)">${fmt(mo.totalIncome)}</td>
+      <td style="text-align:center;color:var(--red)">${mo.hasData?fmt(mo.expense):'—'}</td>
+      <td style="text-align:center;color:${mo.remaining>=0?'var(--green)':'var(--red)'}">${mo.hasData?fmt(mo.remaining):'—'}</td>
+      <td style="text-align:center">${mo.hasData?`<span style="color:var(--${pctCls})">${Math.round(mo.spendPct)}%</span>`:'—'}</td>
+      <td style="text-align:center">${statusChip}</td>
+    </tr>`;
+  }).join('');
+
+  const tfootEl = document.getElementById('analysis-tfoot');
+  if (tfootEl) tfootEl.innerHTML = `<tr>
+    <td><b>الإجمالي</b></td>
+    <td style="text-align:center;color:var(--green)"><b>${fmt(dbTotalIncome)}</b></td>
+    <td style="text-align:center;color:var(--red)"><b>${fmt(dbTotalExpense)}</b></td>
+    <td style="text-align:center;color:${dbTotalRemain>=0?'var(--green)':'var(--red)'}"><b>${fmt(dbTotalRemain)}</b></td>
+    <td style="text-align:center"><b>${dbSpendRatio}%</b></td>
+    <td></td>
+  </tr>`;
+
+  const activeMonths = dbMonths.filter(m=>m.hasData);
+  const expCatsList  = state.categories.filter(c=>c.type!=='income');
+  const catsHeadEl   = document.getElementById('analysis-cats-head');
+  const catsBodyEl   = document.getElementById('analysis-cats-body');
+  if (catsHeadEl) catsHeadEl.innerHTML = `<tr><th>الفئة</th>${activeMonths.map(m=>`<th style="text-align:center;font-size:11px">${m.name.slice(0,3)}</th>`).join('')}<th style="text-align:center">المجموع</th></tr>`;
+  if (catsBodyEl) catsBodyEl.innerHTML = expCatsList.map(cat => {
+    const vals  = activeMonths.map(m=>m.catBreakdown[cat.id]||0);
+    const total = vals.reduce((s,v)=>s+v,0);
+    if (!total) return '';
+    return `<tr><td>${cat.emoji} ${cat.name}</td>${vals.map(v=>`<td style="text-align:center;font-size:12px;color:${v>0?'var(--red)':'var(--text3)'}">${v>0?fmt(v):'—'}</td>`).join('')}<td style="text-align:center;font-weight:700;color:var(--red)">${fmt(total)}</td></tr>`;
+  }).filter(Boolean).join('') || `<tr><td colspan="20" style="text-align:center;color:var(--text3);padding:20px">لا توجد مصاريف</td></tr>`;
 
   const prevCyc = cycles[1] || null;
   const cycResultEl = document.getElementById('db-cycle-result');
@@ -3317,94 +3195,6 @@ function renderDashboard() {
 
     </div>`;
 
-
-  // ── توزيع الفئات الدورة الحالية ──────────────────────────
-  const catEntries = Object.entries(cur.catBreakdown).sort((a,b)=>b[1]-a[1]);
-  const catTotal   = catEntries.reduce((s,[,v])=>s+v,0);
-  document.getElementById('db-cats-breakdown').innerHTML = catEntries.length ? catEntries.map(([id,val],i)=>{
-    const cat  = getCat(id);
-    const pct  = catTotal>0?Math.round((val/catTotal)*100):0;
-    const col  = PALETTE[i%PALETTE.length];
-    const limit= (state.categories.find(c=>c.id===id)||{}).limit||0;
-    const limitBar = limit ? `<div style="margin-top:3px;font-size:10px;color:${val>=limit?'var(--red)':'var(--text3)'}">حد الإنفاق: ${fmt(limit)} ${val>=limit?'⚠️ تجاوزت الحد!':''}</div>` : '';
-    return `<div class="cat-bar-item">
-      <div class="cat-bar-header">
-        <div class="cat-bar-name"><span style="width:9px;height:9px;border-radius:50%;background:${col};display:inline-block;flex-shrink:0"></span>${cat.emoji} ${cat.name}</div>
-        <div class="cat-bar-values"><span class="cat-bar-amount" style="color:${col}">${fmt(val)}</span><span class="cat-bar-pct">${pct}%</span></div>
-      </div>
-      <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%;background:${col}"></div></div>
-      ${limitBar}
-    </div>`;
-  }).join('') : '<p style="color:var(--text3);font-size:13px;text-align:center;padding:20px">لا توجد مصاريف في هذه الدورة</p>';
-
-  // ── مقارنة الدورات السابقة ───────────────────────────────
-  const maxExp = Math.max(...cycles.map(c=>c.expense), 1);
-  document.getElementById('db-cycles-compare').innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-bottom:14px">
-      ${cycles.map((c,i)=>{
-        const pct   = c.income>0?Math.min(100,(c.expense/c.income)*100):0;
-        const col   = pct>90?'var(--red)':pct>70?'var(--yellow)':'var(--green)';
-        const badge = i===0?'<span class="analysis-chip chip-green" style="font-size:10px">الحالية</span>':'';
-        return `<div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;border-right:3px solid ${col}">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <span style="font-size:12px;font-weight:600">${c.label} ${badge}</span>
-            <span style="font-size:11px;color:${col};font-weight:700">${Math.round(pct)}%</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px">
-            <span style="color:var(--red)">مصروف: ${fmt(c.expense)}</span>
-            <span style="color:${c.remaining>=0?'var(--green)':'var(--red)'}">متبقي: ${fmt(c.remaining)}</span>
-          </div>
-          <div style="height:5px;background:var(--bg4);border-radius:3px;overflow:hidden">
-            <div style="width:${pct}%;height:100%;background:${col};border-radius:3px"></div>
-          </div>
-        </div>`;
-      }).join('')}
-    </div>
-    <div>
-      ${cycles.map((c,i)=>{
-        const barW = Math.round((c.expense/maxExp)*100);
-        const col  = i===0?'var(--accent)':PALETTE[(i+1)%PALETTE.length];
-        const diff = i<cycles.length-1 ? c.expense - cycles[i+1].expense : null;
-        const diffTxt = diff!==null ? `<span style="font-size:11px;color:${diff>0?'var(--red)':'var(--green)'}"> ${diff>0?'↑':'↓'} ${fmt(Math.abs(diff))}</span>` : '';
-        return `<div class="cycle-compare-row">
-          <div class="cycle-compare-label">${c.label}</div>
-          <div class="cycle-compare-track"><div class="cycle-compare-fill" style="width:${barW}%;background:${col}"></div></div>
-          <div class="cycle-compare-val" style="color:${col}">${fmt(c.expense)}${diffTxt}</div>
-        </div>`;
-      }).join('')}
-    </div>`;
-
-  // ── تصميم جديد: خط زمني للدورات ──────────────────────────
-  const reversed = [...cycles].reverse();
-  if (!document.getElementById('db-bar-chart')) return;
-
-  drawSVGChart('db-bar-chart', {}, {
-    labels: reversed.map(c => c.label),
-    height: 220, type: 'line', showLegend: true,
-    datasets: [
-      { label: 'المصاريف', data: reversed.map(c => c.expense),            color: '#e05c5c', width: 2.5, fill: true },
-      { label: 'الدخل',    data: reversed.map(c => c.income),             color: '#4caf8c', width: 2,   fill: false, dash: '5,4' },
-      { label: 'المتبقي',  data: reversed.map(c => Math.max(0,c.remaining)), color: '#6c63ff', width: 2, fill: false },
-    ]
-  });
-
-  // ── إنفاق حسب أيام الأسبوع ───────────────────────────────
-  const dayTotals = [0,0,0,0,0,0,0];
-  cur.txs.filter(t=>t.type==='expense').forEach(t=>{
-    const d = new Date(t.date); dayTotals[d.getDay()]+=t.amount;
-  });
-  const maxDay = Math.max(...dayTotals,1);
-  const dayColors = ['#6c63ff','#4caf8c','#f0a040','#e05c5c','#26c6da','#ab47bc','#ff7043'];
-  document.getElementById('db-weekdays').innerHTML = DAY_NAMES.map((name,i)=>{
-    const w = Math.round((dayTotals[i]/maxDay)*100);
-    return `<div class="weekday-row">
-      <div class="weekday-name">${name.slice(0,8)}</div>
-      <div class="weekday-track">
-        <div class="weekday-fill" style="width:${w}%;background:${dayColors[i]}">${dayTotals[i]>0?fmt(dayTotals[i]):''}</div>
-      </div>
-      <div class="weekday-val" style="color:${dayColors[i]}">${dayTotals[i]>0?fmt(dayTotals[i]):'—'}</div>
-    </div>`;
-  }).join('');
 }
 
 function confirmDeleteTxOnly() {
@@ -3467,15 +3257,6 @@ function clearAnalysisFilter() {
   showToast('مُسح الفلتر — عرض السنة كاملة', '');
 }
 
-// ── safeChart: أنشئ chart بأمان مع تدمير القديم ──
-function safeChart(canvasId, config) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return null;
-  const existing = Chart.getChart(canvas);
-  if (existing) existing.destroy();
-  try { return new Chart(canvas.getContext('2d'), config); }
-  catch(e) { console.warn('Chart error', canvasId, e); return null; }
-}
 
 // ================== FINANCIAL FORECAST ==================
 function getForecast() {
@@ -3499,7 +3280,6 @@ function getForecast() {
 }
 
 // ================== ANALYSIS (REDESIGNED) ==================
-let analysisBarChart = null, analysisDonut = null;
 
 function initAnalysisYear() {
   const sel = document.getElementById('analysis-year');
@@ -3722,48 +3502,105 @@ function renderAnalysis() {
     </div>`;
   }).join('');
 
-  // جدول تفصيلي (6 أعمدة)
-  document.getElementById('analysis-tbody').innerHTML = months.map(mo => {
-    const pctCls = mo.spendPct > 90 ? 'red' : mo.spendPct > 70 ? 'yellow' : 'green';
-    const statusChip = !mo.hasData ? '—'
-      : mo.spendPct > 90 ? '<span class="analysis-chip chip-red">🔴</span>'
-      : mo.spendPct > 70 ? '<span class="analysis-chip chip-yellow">🟡</span>'
-      : '<span class="analysis-chip chip-green">🟢</span>';
-    return `<tr style="${!mo.hasData?'opacity:0.4':''}">
-      <td><b>${mo.name}</b></td>
-      <td style="text-align:center;color:var(--green)">${fmt(mo.totalIncome)}</td>
-      <td style="text-align:center;color:var(--red)">${mo.hasData?fmt(mo.expense):'—'}</td>
-      <td style="text-align:center;color:${mo.remaining>=0?'var(--green)':'var(--red)'}">${mo.hasData?fmt(mo.remaining):'—'}</td>
-      <td style="text-align:center">${mo.hasData?(mo.remaining>=0?`<span style="color:var(--green);font-size:10px">+${fmt(mo.remaining)}</span>`:`<span style="color:var(--red);font-size:10px">${fmt(mo.remaining)}</span>`):'—'}</td>
-      <td style="text-align:center">${mo.hasData?`<span style="color:var(--${pctCls})">${Math.round(mo.spendPct)}%</span>`:'—'}</td>
-      <td style="text-align:center">${statusChip}</td>
-    </tr>`;
-  }).join('');
-
-  document.getElementById('analysis-tfoot').innerHTML = `
-    <tr>
-      <td><b>الإجمالي</b></td>
-      <td style="text-align:center;color:var(--green)"><b>${fmt(totalIncome)}</b></td>
-      <td style="text-align:center;color:var(--red)"><b>${fmt(totalExpense)}</b></td>
-      <td style="text-align:center;color:${totalRemaining>=0?'var(--green)':'var(--red)'}"><b>${fmt(totalRemaining)}</b></td>
-      <td style="text-align:center">${totalRemaining>=0?`<span style="color:var(--green);font-size:10px">+${fmt(totalRemaining)}</span>`:`<span style="color:var(--red);font-size:10px">${fmt(totalRemaining)}</span>`}</td>
-      <td style="text-align:center"><b>${spendRatio}%</b></td>
-      <td></td>
-    </tr>`;
-
-  // جدول الفئات شهرياً
-  const activeMonths = months.filter(m => m.hasData);
-  const expCatsList = state.categories.filter(c => c.type !== 'income');
-  document.getElementById('analysis-cats-head').innerHTML = `<tr><th>الفئة</th>${activeMonths.map(m=>`<th style="text-align:center;font-size:11px">${m.name.slice(0,3)}</th>`).join('')}<th style="text-align:center">المجموع</th></tr>`;
-  document.getElementById('analysis-cats-body').innerHTML = expCatsList.map(cat => {
-    const vals = activeMonths.map(m => m.catBreakdown[cat.id] || 0);
-    const total = vals.reduce((s,v)=>s+v,0);
-    if (!total) return '';
-    return `<tr><td>${cat.emoji} ${cat.name}</td>${vals.map(v=>`<td style="text-align:center;font-size:12px;color:${v>0?'var(--red)':'var(--text3)'}">${v>0?fmt(v):'—'}</td>`).join('')}<td style="text-align:center;font-weight:700;color:var(--red)">${fmt(total)}</td></tr>`;
-  }).filter(Boolean).join('') || `<tr><td colspan="20" style="text-align:center;color:var(--text3);padding:20px">لا توجد مصاريف لهذه السنة</td></tr>`;
-
   // Word Cloud
   renderWordCloud(filteredTxs);
+
+  // ── مقارنة الدورات السابقة ──────────────────────────────
+  const cycles  = getCycles(6);
+  const cur     = cycles[0];
+
+  const maxExp = Math.max(...cycles.map(c=>c.expense), 1);
+  const cycCompEl = document.getElementById('db-cycles-compare');
+  if (cycCompEl) cycCompEl.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-bottom:14px">
+      ${cycles.map((c,i)=>{
+        const pct = c.income>0?Math.min(100,(c.expense/c.income)*100):0;
+        const col = pct>90?'var(--red)':pct>70?'var(--yellow)':'var(--green)';
+        const badge = i===0?'<span class="analysis-chip chip-green" style="font-size:10px">الحالية</span>':'';
+        return `<div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;border-right:3px solid ${col}">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span style="font-size:12px;font-weight:600">${c.label} ${badge}</span>
+            <span style="font-size:11px;color:${col};font-weight:700">${Math.round(pct)}%</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px">
+            <span style="color:var(--red)">مصروف: ${fmt(c.expense)}</span>
+            <span style="color:${c.remaining>=0?'var(--green)':'var(--red)'}">متبقي: ${fmt(c.remaining)}</span>
+          </div>
+          <div style="height:5px;background:var(--bg4);border-radius:3px;overflow:hidden">
+            <div style="width:${pct}%;height:100%;background:${col};border-radius:3px"></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div>
+      ${cycles.map((c,i)=>{
+        const barW   = Math.round((c.expense/maxExp)*100);
+        const col    = i===0?'var(--accent)':PALETTE[(i+1)%PALETTE.length];
+        const diff   = i<cycles.length-1 ? c.expense - cycles[i+1].expense : null;
+        const diffTxt= diff!==null?`<span style="font-size:11px;color:${diff>0?'var(--red)':'var(--green)'}"> ${diff>0?'↑':'↓'} ${fmt(Math.abs(diff))}</span>`:'';
+        return `<div class="cycle-compare-row">
+          <div class="cycle-compare-label">${c.label}</div>
+          <div class="cycle-compare-track"><div class="cycle-compare-fill" style="width:${barW}%;background:${col}"></div></div>
+          <div class="cycle-compare-val" style="color:${col}">${fmt(c.expense)}${diffTxt}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // ── رسم الإنفاق عبر الدورات ─────────────────────────────
+  const dbBarEl = document.getElementById('db-bar-chart');
+  if (dbBarEl) {
+    const reversed = [...cycles].reverse();
+    drawSVGChart('db-bar-chart', {}, {
+      labels: reversed.map(c => c.label),
+      height: 220, type: 'line', showLegend: true,
+      datasets: [
+        { label:'المصاريف', data:reversed.map(c=>c.expense),             color:'#e05c5c', width:2.5, fill:true },
+        { label:'الدخل',    data:reversed.map(c=>c.income),              color:'#4caf8c', width:2,   fill:false, dash:'5,4' },
+        { label:'المتبقي',  data:reversed.map(c=>Math.max(0,c.remaining)), color:'#6c63ff', width:2, fill:false },
+      ]
+    });
+  }
+
+  // ── توزيع المصاريف بالفئات — الدورة الحالية ─────────────
+  const catEntriesEl = document.getElementById('db-cats-breakdown');
+  if (catEntriesEl) {
+    const catEntries = Object.entries(cur.catBreakdown).sort((a,b)=>b[1]-a[1]);
+    const catTotal   = catEntries.reduce((s,[,v])=>s+v,0);
+    catEntriesEl.innerHTML = catEntries.length ? catEntries.map(([id,val],i)=>{
+      const cat   = getCat(id);
+      const pct   = catTotal>0?Math.round((val/catTotal)*100):0;
+      const col   = PALETTE[i%PALETTE.length];
+      const limit = (state.categories.find(c=>c.id===id)||{}).limit||0;
+      const limitBar = limit?`<div style="margin-top:3px;font-size:10px;color:${val>=limit?'var(--red)':'var(--text3)'}">حد الإنفاق: ${fmt(limit)} ${val>=limit?'⚠️ تجاوزت الحد!':''}</div>`:'';
+      return `<div class="cat-bar-item">
+        <div class="cat-bar-header">
+          <div class="cat-bar-name"><span style="width:9px;height:9px;border-radius:50%;background:${col};display:inline-block;flex-shrink:0"></span>${cat.emoji} ${cat.name}</div>
+          <div class="cat-bar-values"><span class="cat-bar-amount" style="color:${col}">${fmt(val)}</span><span class="cat-bar-pct">${pct}%</span></div>
+        </div>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+        ${limitBar}
+      </div>`;
+    }).join('') : '<p style="color:var(--text3);font-size:13px;text-align:center;padding:20px">لا توجد مصاريف في الدورة الحالية</p>';
+  }
+
+  // ── إنفاق حسب أيام الأسبوع ──────────────────────────────
+  const wdEl = document.getElementById('db-weekdays');
+  if (wdEl) {
+    const dayTotals  = [0,0,0,0,0,0,0];
+    cur.txs.filter(t=>t.type==='expense').forEach(t=>{
+      const d2 = new Date(t.date); dayTotals[d2.getDay()] += t.amount;
+    });
+    const maxDay   = Math.max(...dayTotals, 1);
+    const dayColors= ['#6c63ff','#4caf8c','#f0a040','#e05c5c','#26c6da','#ab47bc','#ff7043'];
+    wdEl.innerHTML = DAY_NAMES.map((name,i)=>{
+      const w = Math.round((dayTotals[i]/maxDay)*100);
+      return `<div class="weekday-row">
+        <div class="weekday-name">${name.slice(0,8)}</div>
+        <div class="weekday-track"><div class="weekday-fill" style="width:${w}%;background:${dayColors[i]}">${dayTotals[i]>0?fmt(dayTotals[i]):''}</div></div>
+        <div class="weekday-val" style="color:${dayColors[i]}">${dayTotals[i]>0?fmt(dayTotals[i]):'—'}</div>
+      </div>`;
+    }).join('');
+  }
 }
 
 function renderWordCloud(txs) {
@@ -3815,20 +3652,22 @@ const SECTION_VIS_DEFS = [
     { id:'monthly-cal-wrap',         label:'📅 التقويم' },
     { id:'monthly-bar-wrap',         label:'📉 آخر 12 شهر' },
     { id:'monthly-cats-wrap',        label:'🎯 توزيع الفئات' },
-    { id:'monthly-plan-wrap',        label:'📊 قارن بالخطة' },
   ]},
   { page:'dashboard', label:'📊 لوحة التحكم', items:[
-    { id:'db-stock-card',     label:'🏦 المخزون التراكمي' },
-    { id:'db-cycle-result',   label:'💡 ملخص الدورة' },
-    { id:'db-full-summary',   label:'🗓️ الدورة الكاملة' },
-    { id:'db-cycle-card',     label:'📅 الدورة الحالية' },
-    { id:'db-cycles-compare', label:'🔄 مقارنة الدورات' },
-    { id:'db-weekdays',       label:'📆 أيام الأسبوع' },
+    { id:'db-stock-card',   label:'🏦 المخزون التراكمي' },
+    { id:'db-cycle-result', label:'💡 نتيجة الدورة السابقة' },
+    { id:'db-cycle-card',   label:'📅 الدورة الحالية' },
+    { id:'db-quick-row',    label:'⚡ ملخص اليوم/الأسبوع/الشهر' },
+    { id:'db-recent-card',  label:'🕐 آخر العمليات' },
   ]},
   { page:'analysis', label:'📈 تحليل', items:[
-    { id:'analysis-big-cards',     label:'📊 ملخص الإيرادات' },
-    { id:'analysis-small-cards',   label:'🔢 إحصاءات' },
-    { id:'analysis-forecast-row',  label:'🔮 التوقع المالي' },
+    { id:'analysis-big-cards',    label:'📊 ملخص الإيرادات' },
+    { id:'analysis-small-cards',  label:'🔢 إحصاءات' },
+    { id:'analysis-forecast-row', label:'🔮 التوقع المالي' },
+    { id:'db-cycles-compare',     label:'🔄 مقارنة الدورات' },
+    { id:'db-bar-chart',          label:'📉 رسم الدورات' },
+    { id:'db-cats-breakdown',     label:'🎯 توزيع الفئات' },
+    { id:'db-weekdays',           label:'📆 أيام الأسبوع' },
   ]},
 ];
 
