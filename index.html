@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
-<link rel="shortcut icon" href="favicon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ميزانيتي — دفتر الحساب</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@600;700;800&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --savings-out:#c9962e; --savings-in:#8b5cf6; }
   html,body { height:100%; }
   body {
     font-family:'Tajawal', sans-serif;
@@ -169,6 +170,10 @@
   .cal-num { font-size:11px; font-weight:700; }
   .cal-exp { font-size:8.5px; color:var(--expense); font-weight:700; }
   .cal-inc { font-size:8.5px; color:var(--income); font-weight:700; }
+  .cal-out { font-size:8.5px; color:var(--savings-out); font-weight:700; }
+  .cal-in  { font-size:8.5px; color:var(--savings-in); font-weight:700; }
+  .wc-out { font-size:8.5px; color:var(--savings-out); font-weight:700; }
+  .wc-in  { font-size:8.5px; color:var(--savings-in); font-weight:700; }
 
   /* ===== SHEET (modal) ===== */
   .sheet-overlay { position:fixed; inset:0; background:rgba(20,16,8,0.55); z-index:100; display:flex; align-items:flex-end; justify-content:center; }
@@ -207,6 +212,13 @@
 
   .chart-box { height:190px; }
   .settings-section { margin-bottom:18px; }
+  .settings-menu-item { display:flex; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:10px; cursor:pointer; }
+  .settings-menu-item:active { transform:scale(0.98); }
+  .smi-icon { font-size:21px; width:34px; text-align:center; flex-shrink:0; }
+  .smi-text { flex:1; min-width:0; }
+  .smi-title { font-family:'El Messiri'; font-weight:700; font-size:14px; }
+  .smi-sub { font-size:11px; color:var(--ink-soft); margin-top:2px; }
+  .smi-arrow { font-size:18px; color:var(--ink-soft); flex-shrink:0; }
   .settings-label { font-size:12px; font-weight:800; color:var(--accent); margin-bottom:8px; display:flex; align-items:center; gap:6px; }
 
   /* ===== RESERVE ROWS ===== */
@@ -241,7 +253,8 @@
   .chip-purple { background:rgba(139,92,246,0.18); color:#8b5cf6; }
   .chip-gray   { background:var(--line); color:var(--ink-soft); }
   .mini-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
-  .mini-month { border-radius:12px; padding:9px 6px; border:1.5px solid var(--line); background:var(--card); text-align:center; }
+  .mini-month { border-radius:12px; padding:9px 6px; border:1.5px solid var(--line); background:var(--card); text-align:center; cursor:pointer; }
+  .mini-month:active { transform:scale(0.96); }
   .mini-month .mm-name { font-size:10px; color:var(--ink-soft); }
   .mini-month .mm-net { font-family:'El Messiri'; font-weight:800; font-size:13px; margin-top:3px; }
   .rec-strip { display:flex; gap:8px; }
@@ -382,6 +395,10 @@
         <div class="strip-box"><div class="strip-lbl">صرف اليوم</div><div class="strip-val" id="dv-exp" style="color:var(--expense)">—</div></div>
         <div class="strip-box"><div class="strip-lbl">الصافي</div><div class="strip-val" id="dv-net">—</div></div>
       </div>
+      <div class="strip">
+        <div class="strip-box"><div class="strip-lbl">🏦 سحوبات</div><div class="strip-val" id="dv-withdrawals" style="color:var(--savings-out)">—</div></div>
+        <div class="strip-box"><div class="strip-lbl">🏦 إيداعات</div><div class="strip-val" id="dv-deposits" style="color:var(--savings-in)">—</div></div>
+      </div>
       <div class="card">
         <button class="btn btn-accent btn-block" style="margin-bottom:12px" onclick="openTxModal()">🧾 تسجيل عملية جديدة</button>
         <div id="day-weekday-avg" style="font-size:11px;color:var(--ink-soft);margin-bottom:10px"></div>
@@ -411,6 +428,10 @@
         <div class="strip-box"><div class="strip-lbl">الصرف</div><div class="strip-val" id="wk-exp" style="color:var(--expense)">—</div></div>
         <div class="strip-box"><div class="strip-lbl">الصافي</div><div class="strip-val" id="wk-net">—</div></div>
       </div>
+      <div class="strip">
+        <div class="strip-box"><div class="strip-lbl">🏦 سحوبات</div><div class="strip-val" id="wk-withdrawals" style="color:var(--savings-out)">—</div></div>
+        <div class="strip-box"><div class="strip-lbl">🏦 إيداعات</div><div class="strip-val" id="wk-deposits" style="color:var(--savings-in)">—</div></div>
+      </div>
       <div id="week-pair-wrap" style="margin-bottom:6px"></div>
       <div class="card">
         <div class="card-title">📊 مقارنة صرف الأسابيع</div>
@@ -438,6 +459,10 @@
         <div class="strip-box"><div class="strip-lbl">دخل الشهر</div><div class="strip-val" id="mo-inc" style="color:var(--income)">—</div></div>
         <div class="strip-box"><div class="strip-lbl">صرف الشهر</div><div class="strip-val" id="mo-exp" style="color:var(--expense)">—</div></div>
         <div class="strip-box"><div class="strip-lbl">الصافي</div><div class="strip-val" id="mo-net">—</div></div>
+      </div>
+      <div class="strip">
+        <div class="strip-box"><div class="strip-lbl">🏦 سحوبات</div><div class="strip-val" id="mo-withdrawals" style="color:var(--savings-out)">—</div></div>
+        <div class="strip-box"><div class="strip-lbl">🏦 إيداعات</div><div class="strip-val" id="mo-deposits" style="color:var(--savings-in)">—</div></div>
       </div>
       <div id="mo-yoy" style="display:none;text-align:center;font-size:12px;font-weight:700;margin-bottom:12px"></div>
       <div class="card">
@@ -597,17 +622,41 @@
         <div style="width:34px"></div>
       </div>
 
-      <div class="nav-row" style="padding:2px 0 12px">
-        <button class="tab-btn" onclick="document.getElementById('set-sec-salary').scrollIntoView({behavior:'smooth'})">💵 الراتب</button>
-        <button class="tab-btn" onclick="document.getElementById('set-sec-cats').scrollIntoView({behavior:'smooth'})">🏷️ الفئات</button>
-        <button class="tab-btn" onclick="document.getElementById('set-sec-savings').scrollIntoView({behavior:'smooth'})">🏦 الادخار</button>
-        <button class="tab-btn" onclick="document.getElementById('set-sec-colors').scrollIntoView({behavior:'smooth'})">🎨 الألوان</button>
-        <button class="tab-btn" onclick="document.getElementById('set-sec-data').scrollIntoView({behavior:'smooth'})">🗄️ البيانات</button>
-        <button class="tab-btn" onclick="document.getElementById('set-sec-delete').scrollIntoView({behavior:'smooth'})">🗑️ حذف</button>
+      <div class="settings-menu-item" onclick="showPage('settings-salary')">
+        <div class="smi-icon">💵</div>
+        <div class="smi-text"><div class="smi-title">الراتب والدورة</div><div class="smi-sub">المبلغ، العملة، يوم النزول، الأهداف</div></div>
+        <div class="smi-arrow">‹</div>
       </div>
+      <div class="settings-menu-item" onclick="showPage('settings-cats')">
+        <div class="smi-icon">🏷️</div>
+        <div class="smi-text"><div class="smi-title">الفئات</div><div class="smi-sub">حساب الادخار، الفئات الأساسية والمضافة</div></div>
+        <div class="smi-arrow">‹</div>
+      </div>
+      <div class="settings-menu-item" onclick="showPage('settings-colors')">
+        <div class="smi-icon">🎨</div>
+        <div class="smi-text"><div class="smi-title">الألوان</div><div class="smi-sub">٢١ ثيم موزّعة على ٧ مجموعات</div></div>
+        <div class="smi-arrow">‹</div>
+      </div>
+      <div class="settings-menu-item" onclick="showPage('settings-data')">
+        <div class="smi-icon">🗄️</div>
+        <div class="smi-text"><div class="smi-title">البيانات</div><div class="smi-sub">نسخ احتياطي، تصدير، استعادة</div></div>
+        <div class="smi-arrow">‹</div>
+      </div>
+      <div class="settings-menu-item" style="border-color:var(--expense)" onclick="showPage('settings-delete')">
+        <div class="smi-icon">🗑️</div>
+        <div class="smi-text"><div class="smi-title" style="color:var(--expense)">حذف كل البيانات</div><div class="smi-sub">إجراء لا يمكن التراجع عنه</div></div>
+        <div class="smi-arrow" style="color:var(--expense)">‹</div>
+      </div>
+    </section>
 
+    <!-- ===================== SETTINGS: الراتب ===================== -->
+    <section class="page" id="page-settings-salary">
+      <div class="day-nav">
+        <button class="arrow" onclick="showPage('settings')">→</button>
+        <div class="day-title">💵 الراتب والدورة</div>
+        <div style="width:34px"></div>
+      </div>
       <div class="settings-section" id="set-sec-salary">
-        <div class="settings-label">💵 الراتب والدورة</div>
         <div class="fgroup"><label>الراتب الشهري</label><input type="number" id="st-salary" placeholder="0"></div>
         <div class="fgroup"><label>يوم نزول الراتب الافتراضي</label><input type="number" id="st-payday" min="1" max="31" placeholder="مثال: 27"></div>
         <div class="fgroup">
@@ -641,9 +690,21 @@
         <div id="payday-month-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"></div>
         <button class="btn btn-accent btn-block" onclick="savePaydayMonths()">حفظ أيام الرواتب الشهرية</button>
       </div>
+    </section>
 
-      <div class="settings-section" id="set-sec-cats">
-        <div class="settings-label">🏷️ الفئات</div>
+    <!-- ===================== SETTINGS: الفئات (وحساب الادخار فوقها) ===================== -->
+    <section class="page" id="page-settings-cats">
+      <div class="day-nav">
+        <button class="arrow" onclick="showPage('settings')">→</button>
+        <div class="day-title">🏷️ الفئات</div>
+        <div style="width:34px"></div>
+      </div>
+      <div class="settings-section" id="set-sec-savings">
+        <div class="settings-label">🏦 حساب الادخار</div>
+        <p style="font-size:11px;color:var(--ink-soft);margin-bottom:8px">الفئات المخصصة لحركة حساب الادخار (منفصلة عن دخل/مصروف الدورة الرئيسية).</p>
+        <div id="st-cats-savings"></div>
+      </div>
+      <div class="settings-section" id="set-sec-cats" style="margin-top:4px">
         <div id="cat-counter" style="font-size:11px;color:var(--ink-soft);margin-bottom:8px"></div>
         <p style="font-size:11px;color:var(--ink-soft);margin-bottom:8px">رتّب الفئات بالأسهم ▲▼، وحدّد حد إنفاق شهري لأي فئة صرف (اتركه 0 لتجاهله).</p>
         <div id="st-cats"></div>
@@ -661,20 +722,28 @@
         <button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="runDedupeCategories()">🧹 دمج الفئات المكررة</button>
         <button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="restoreDefaultCategories()">↺ استعادة الفئات الافتراضية</button>
       </div>
+    </section>
 
-      <div class="settings-section" id="set-sec-savings">
-        <div class="settings-label">🏦 حساب الادخار</div>
-        <p style="font-size:11px;color:var(--ink-soft);margin-bottom:8px">الفئات المخصصة لحركة حساب الادخار (منفصلة عن دخل/مصروف الدورة الرئيسية).</p>
-        <div id="st-cats-savings"></div>
+    <!-- ===================== SETTINGS: الألوان ===================== -->
+    <section class="page" id="page-settings-colors">
+      <div class="day-nav">
+        <button class="arrow" onclick="showPage('settings')">→</button>
+        <div class="day-title">🎨 الألوان</div>
+        <div style="width:34px"></div>
       </div>
-
       <div class="settings-section" id="set-sec-colors">
-        <div class="settings-label">🎨 الألوان</div>
         <div id="theme-list"></div>
       </div>
+    </section>
 
+    <!-- ===================== SETTINGS: البيانات ===================== -->
+    <section class="page" id="page-settings-data">
+      <div class="day-nav">
+        <button class="arrow" onclick="showPage('settings')">→</button>
+        <div class="day-title">🗄️ البيانات</div>
+        <div style="width:34px"></div>
+      </div>
       <div class="settings-section" id="set-sec-data">
-        <div class="settings-label">🗄️ البيانات</div>
         <div id="backup-reminder"></div>
         <button class="btn btn-ghost btn-block" style="margin-bottom:10px" onclick="exportBackup()">⇩ تصدير نسخة احتياطية (JSON)</button>
         <button class="btn btn-ghost btn-block" style="margin-bottom:10px" onclick="exportTransactionsCSV()">⬇ تصدير كل العمليات (CSV / Excel)</button>
@@ -695,9 +764,16 @@
           <button class="btn btn-danger btn-block" onclick="restoreFromPaste('replace')">♻️ استبدال (من النص)</button>
         </div>
       </div>
+    </section>
 
+    <!-- ===================== SETTINGS: حذف كل البيانات ===================== -->
+    <section class="page" id="page-settings-delete">
+      <div class="day-nav">
+        <button class="arrow" onclick="showPage('settings')">→</button>
+        <div class="day-title">🗑️ حذف كل البيانات</div>
+        <div style="width:34px"></div>
+      </div>
       <div class="settings-section" id="set-sec-delete" style="background:color-mix(in srgb, var(--expense) 8%, var(--card));border:1px solid var(--expense);border-radius:16px;padding:16px">
-        <div class="settings-label" style="color:var(--expense)">🗑️ حذف كل البيانات</div>
         <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">يمسح كل عملياتك وفئاتك وإعداداتك نهائياً من هذا الجهاز. لا يمكن التراجع عن هذا الإجراء — تأكد من أخذ نسخة احتياطية أولاً.</p>
         <button class="btn btn-danger btn-block" onclick="askResetAll()">🗑️ حذف كل البيانات</button>
       </div>
@@ -757,8 +833,6 @@
     <div id="mp-month-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div>
   </div>
 </div>
-
-<!-- (page-settings moved inside <main>) -->
 <div class="sheet-overlay hidden" id="sheet-backup-view">
   <div class="sheet">
     <div class="sheet-title"><span>⇩ نسخة احتياطية (JSON)</span><button onclick="closeSheet('sheet-backup-view')">✕</button></div>
@@ -842,6 +916,14 @@
       <button class="btn btn-danger btn-block" id="cf-ok">نعم</button>
       <button class="btn btn-ghost btn-block" onclick="closeSheet('sheet-confirm')">إلغاء</button>
     </div>
+  </div>
+</div>
+
+<!-- ===================== SHEET: MONTH DETAIL (من شبكة أداء الأشهر) ===================== -->
+<div class="sheet-overlay hidden" id="sheet-month-detail">
+  <div class="sheet">
+    <div class="sheet-title"><span id="md-title">📅 الشهر</span><button onclick="closeSheet('sheet-month-detail')">✕</button></div>
+    <div id="month-detail-body"></div>
   </div>
 </div>
 
@@ -1135,6 +1217,14 @@ function getSavingsBalance(){
     else if (isSavingsWithdraw(t)) withdraw += t.amount;
   });
   return { balance: deposit-withdraw, deposit, withdraw };
+}
+// ---------- حساب سحوبات/إيداعات حساب الادخار ضمن مجموعة عمليات معيّنة (تُستخدم بصفحات اليوم والأسبوع والشهر) ----------
+function getSavingsActivity(txs){
+  const ids = getSavingsLinkedCatIds();
+  const relevant = txs.filter(t=>ids.includes(t.category));
+  const deposits = relevant.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
+  const withdrawals = relevant.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
+  return { deposits, withdrawals };
 }
 // ---------- عرض مشترك لثلاثية المخزون / حساب الادخار / المجموع (تُستخدم بصفحات اليوم والأسبوع والشهر) ----------
 function renderBalanceTriad(prefix){
@@ -1626,6 +1716,10 @@ function renderDay(){
 
   renderBalanceTriad('dv');
 
+  const dayActivity = getSavingsActivity(txs);
+  document.getElementById('dv-withdrawals').textContent = fmt(dayActivity.withdrawals);
+  document.getElementById('dv-deposits').textContent = fmt(dayActivity.deposits);
+
   const avgInfo = getWeekdayAverage(d);
   const avgEl = document.getElementById('day-weekday-avg');
   avgEl.textContent = avgInfo ? `📊 عادةً تصرف حوالي ${fmt(avgInfo.avg)} يوم ${DAY_NAMES[d.getDay()]} (بناءً على ${avgInfo.count} ${avgInfo.count===1?'مرة':'مرات'} سابقة)` : '';
@@ -1743,6 +1837,10 @@ function renderWeek(){
 
   renderBalanceTriad('wk');
 
+  const weekActivity = getSavingsActivity(weeks.flatMap(w=>w.days.flatMap(d=>d.txs)));
+  document.getElementById('wk-withdrawals').textContent = fmt(weekActivity.withdrawals);
+  document.getElementById('wk-deposits').textContent = fmt(weekActivity.deposits);
+
   // ── رسم مقارنة الأسابيع ──
   if (wkBarChart){ wkBarChart.destroy(); wkBarChart=null; }
   const wkChartCanvas = document.getElementById('wk-bar-chart');
@@ -1797,6 +1895,7 @@ function renderWeek(){
             <div class="wc-day">${DAY_NAMES[d.getDay()].slice(0,3)}</div>
             <div class="wc-date disp">${d.getDate()}</div>
             <div class="wc-net" style="color:${budgetTxs.length?(net>=0?'var(--income)':'var(--expense)'):'var(--ink-soft)'}">${budgetTxs.length?fmt(net):'—'}</div>
+            ${(()=>{ const a=getSavingsActivity(txs); return (a.withdrawals>0?`<div class="wc-out">🏦-${a.withdrawals.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:'') + (a.deposits>0?`<div class="wc-in">🏦+${a.deposits.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''); })()}
             <div class="wc-actions">
               <button onclick="quickAddDay('${ds}')" title="إضافة عملية">➕</button>
               <button onclick="jumpToDate('${ds}')" title="انتقال إلى قائمة اليوم">📄</button>
@@ -1883,6 +1982,10 @@ function renderMonth(){
 
   renderBalanceTriad('mo');
 
+  const monthActivity = getSavingsActivity(getMonthTxs(y,m));
+  document.getElementById('mo-withdrawals').textContent = fmt(monthActivity.withdrawals);
+  document.getElementById('mo-deposits').textContent = fmt(monthActivity.deposits);
+
   // ── مقارنة بنفس الشهر السنة اللي فاتت ──
   const cmpEl = document.getElementById('mo-yoy');
   if (cmpEl){
@@ -1921,6 +2024,7 @@ function renderMonth(){
     const dtxs = excludeSavings(getTxForDate(ds));
     const de = dtxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
     const di = dtxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+    const dayActivity = getSavingsActivity(getTxForDate(ds));
     let intensityStyle = '';
     if (de>0 && avgDayExpense>0){
       const ratio = de/avgDayExpense;
@@ -1933,12 +2037,14 @@ function renderMonth(){
       <div class="cal-num">${d}${isPayday?' 💰':''}</div>
       ${de>0?`<div class="cal-exp">-${de.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''}
       ${di>0?`<div class="cal-inc">+${di.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''}
+      ${dayActivity.withdrawals>0?`<div class="cal-out">🏦-${dayActivity.withdrawals.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''}
+      ${dayActivity.deposits>0?`<div class="cal-in">🏦+${dayActivity.deposits.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''}
     </div>`;
   }
   document.getElementById('cal-grid').innerHTML = html;
 
   const catTotals={};
-  txs.filter(t=>t.type==='expense').forEach(t=> catTotals[t.category]=(catTotals[t.category]||0)+t.amount);
+  getMonthTxs(y,m).filter(t=>t.type==='expense').forEach(t=> catTotals[t.category]=(catTotals[t.category]||0)+t.amount);
   const sorted = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]);
   document.getElementById('month-cats').innerHTML =
     (sorted.length ? (() => {
@@ -2334,12 +2440,13 @@ function renderAnalysis(){
       <div class="rec-sub">${recordDay?recordDay[0]:'لا بيانات'}</div>
     </div>`;
 
-  // ── شبكة الأشهر الاثني عشر ──
-  document.getElementById('an-month-grid').innerHTML = months.map(mo=>{
-    const borderCol = !mo.hasData ? 'var(--line)' : mo.remaining>=0 ? 'var(--income)' : 'var(--expense)';
-    return `<div class="mini-month" style="border-color:${borderCol};opacity:${mo.hasData?1:0.45}">
-      <div class="mm-name">${mo.name}</div>
-      <div class="mm-net" style="color:${mo.hasData?(mo.remaining>=0?'var(--income)':'var(--expense)'):'var(--ink-soft)'}">${mo.hasData?fmt(mo.remaining):'—'}</div>
+  // ── شبكة الأشهر الاثني عشر (مطبّق عليها نظام الترحيل الشهري، متطابقة مع الجدول التفصيلي) ──
+  const miniStatusColor = { green:'var(--income)', yellow:'var(--accent2)', red:'var(--expense)', purple:'#8b5cf6', gray:'var(--line)' };
+  document.getElementById('an-month-grid').innerHTML = carryRows.map(r=>{
+    const borderCol = miniStatusColor[r.carryStatus] || 'var(--line)';
+    return `<div class="mini-month" style="border-color:${borderCol};opacity:${r.hasData?1:0.45}" onclick="openMonthDetailSheet(${year},${r.m})">
+      <div class="mm-name">${r.name}</div>
+      <div class="mm-net" style="color:${r.hasData?borderCol:'var(--ink-soft)'}">${r.hasData?fmt(r.carryOut):'—'}</div>
     </div>`;
   }).join('');
 
@@ -2454,6 +2561,37 @@ function setTxType(type){
   document.getElementById('tx-btn-inc').className = type==='income' ? 'on-inc':'';
   populateCatSelect(type);
 }
+// ---------- نافذة ملخص سريع لشهر معيّن (تُفتح من شبكة "📅 أداء الأشهر" بالتحليل، متطابقة مع نظام الترحيل الشهري) ----------
+function openMonthDetailSheet(year, m){
+  document.getElementById('md-title').textContent = `📅 ${MONTH_NAMES[m]} ${year}`;
+  const row = (_lastAnalysisYear===year) ? _lastCarryRows.find(r=>r.m===m) : null;
+
+  if (!row || !row.hasData){
+    document.getElementById('month-detail-body').innerHTML = `<div class="empty"><div class="em-icon">📭</div><p>لا توجد بيانات لهذا الشهر</p></div>`;
+    openSheet('sheet-month-detail');
+    return;
+  }
+
+  const chipLabel = { ...CARRY_CHIP_LABELS, gray:'—' };
+  const activity = getSavingsActivity(getMonthTxs(year, m));
+  const savingsBlockHtml = (activity.withdrawals>0 || activity.deposits>0) ? `
+    ${savingsDividerHtml()}
+    ${activity.withdrawals>0?`<div class="ledger-row"><span>🟡 سحوبات</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--savings-out)">${fmt(activity.withdrawals)}</span></div>`:''}
+    ${activity.deposits>0?`<div class="ledger-row"><span>🟣 إيداعات</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--savings-in)">${fmt(activity.deposits)}</span></div>`:''}
+  ` : '';
+
+  document.getElementById('month-detail-body').innerHTML = `
+    <div class="ledger-row"><span>💰 دخل الشهر</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--income)">${fmt(row.totalIncome)}</span></div>
+    <div class="ledger-row"><span>🔗 مرحّل من الشهر اللي قبله</span><span class="ledger-fill"></span><span class="ledger-val" style="color:${row.carryIn>=0?'var(--income)':'var(--expense)'}">${fmt(row.carryIn)}</span></div>
+    <div class="ledger-row"><span style="font-weight:800">= المتاح</span><span class="ledger-fill"></span><span class="ledger-val" style="font-weight:800">${fmt(row.available)}</span></div>
+    <div class="ledger-row"><span>💸 الصرف</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--expense)">${fmt(row.expense)}</span></div>
+    <div class="ledger-row" style="border-top:1.5px solid var(--line);padding-top:10px;margin-top:4px"><span style="font-weight:800">= يرحّل للشهر اللي بعده</span><span class="ledger-fill"></span><span class="ledger-val" style="color:${row.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(row.carryOut)}</span></div>
+    <div class="ledger-row"><span>الحالة</span><span class="ledger-fill"></span><span class="chip chip-${row.carryStatus}">${chipLabel[row.carryStatus]}</span></div>
+    ${savingsBlockHtml}
+  `;
+  openSheet('sheet-month-detail');
+}
+
 function openTxModal(dateStr){
   state.editingTx = null;
   document.getElementById('tx-title').textContent='عملية جديدة';
@@ -2830,7 +2968,7 @@ function showPage(name){
   if (name==='week') renderWeek();
   if (name==='month') renderMonth();
   if (name==='analysis') renderAnalysis();
-  if (name==='settings') fillSettingsForm();
+  if (name==='settings' || name.startsWith('settings-')) fillSettingsForm();
 }
 function openSheet(id){
   document.getElementById(id).classList.remove('hidden');
