@@ -596,22 +596,6 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-title" style="justify-content:space-between">
-          <span>🔄 مقارنة سنتين <small>حساب الادخار</small></span>
-          <div style="display:flex;gap:6px">
-            <select id="sv-cmp-year1" onchange="renderSavingsYearCompare()" style="width:auto;padding:5px 8px;font-size:11px"></select>
-            <select id="sv-cmp-year2" onchange="renderSavingsYearCompare()" style="width:auto;padding:5px 8px;font-size:11px"></select>
-          </div>
-        </div>
-        <div style="overflow-x:auto">
-          <table class="a-table" style="min-width:420px">
-            <thead id="sv-cmp-head"></thead>
-            <tbody id="sv-cmp-body"></tbody>
-            <tfoot id="sv-cmp-foot"></tfoot>
-          </table>
-        </div>
-      </div>
     </section>
 
     <!-- ===================== SETTINGS (صفحة كاملة) ===================== -->
@@ -967,7 +951,6 @@ const THEMES = [
 
 const MONTH_NAMES = ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const DAY_NAMES = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-const PALETTE = ['#c9812f','#4c8c5a','#2f8fc4','#a13a56','#6a4fc4','#3f9fc0','#c1502f','#6c9a3a','#8a4ba0'];
 
 const DEFAULT_CATEGORIES = [
   {id:'e1',name:'طعام',emoji:'🍞',type:'expense'},
@@ -1153,8 +1136,13 @@ function renderThemeList(){
 
 // ---------- يوم نزول الراتب لكل شهر ----------
 // يتعرف تلقائياً على يوم النزول من آخر عملية "دخل - راتب" مسجّلة في ذلك الشهر (أي سنة)
+function isSalaryCategory(catId){
+  if (catId === 'i1') return true;
+  const c = getCat(catId);
+  return c.type === 'income' && normalizeArabic(c.name).includes(normalizeArabic('راتب'));
+}
 function detectAutoPayday(m){
-  const salaryTxs = state.transactions.filter(t => t.type==='income' && t.category==='i1' && (parseInt(t.date.slice(5,7))-1)===m);
+  const salaryTxs = state.transactions.filter(t => t.type==='income' && isSalaryCategory(t.category) && (parseInt(t.date.slice(5,7))-1)===m);
   if (!salaryTxs.length) return null;
   const latest = salaryTxs.sort((a,b)=> a.date<b.date?1:-1)[0];
   return parseInt(latest.date.slice(8,10));
@@ -1225,6 +1213,13 @@ function getSavingsActivity(txs){
   const deposits = relevant.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
   const withdrawals = relevant.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
   return { deposits, withdrawals };
+}
+// ---------- تحويلات الجسر بين المخزون وحساب الادخار لشهر معيّن (فئتا b1/b2 تحديداً) ----------
+function getBridgeTransferAmounts(year, m){
+  const txs = getMonthTxs(year, m);
+  const toReserve = txs.filter(t=>t.category==='b2').reduce((s,t)=>s+t.amount,0); // من الادخار إلى المخزون (دخل)
+  const toSavings = txs.filter(t=>t.category==='b1').reduce((s,t)=>s+t.amount,0); // من المخزون إلى الادخار (صرف)
+  return { toReserve, toSavings, net: toReserve - toSavings };
 }
 // ---------- عرض مشترك لثلاثية المخزون / حساب الادخار / المجموع (تُستخدم بصفحات اليوم والأسبوع والشهر) ----------
 function renderBalanceTriad(prefix){
@@ -2248,36 +2243,17 @@ function renderYearCompare(){
     <td>الإجمالي</td><td>${fmt(t1)}</td><td>${fmt(t2)}</td>
     <td style="color:${totalDiff>0?'var(--expense)':totalDiff<0?'var(--income)':'var(--ink-soft)'}">${totalDiff>0?'+':''}${fmt(totalDiff)}</td>
   </tr>`;
-}
 
-// ---------- مقارنة سنتين لحساب الادخار ----------
-function initSavingsCompareSelects(){
-  const years = new Set([new Date().getFullYear(), new Date().getFullYear()-1]);
-  state.transactions.forEach(t=> years.add(parseInt(t.date.split('-')[0])));
-  const sorted = [...years].sort((a,b)=>b-a);
-  const sel1 = document.getElementById('sv-cmp-year1'), sel2 = document.getElementById('sv-cmp-year2');
-  if (!sel1 || !sel2) return;
-  const v1 = sel1.value, v2 = sel2.value;
-  const opts = sorted.map(y=>`<option value="${y}">${y}</option>`).join('');
-  sel1.innerHTML = opts; sel2.innerHTML = opts;
-  sel1.value = v1 || sorted[0];
-  sel2.value = v2 || (sorted[1]||sorted[0]);
-}
-function renderSavingsYearCompare(){
-  initSavingsCompareSelects();
-  const sel1 = document.getElementById('sv-cmp-year1'); if (!sel1) return;
-  const y1 = parseInt(sel1.value);
-  const y2 = parseInt(document.getElementById('sv-cmp-year2').value);
-  document.getElementById('sv-cmp-head').innerHTML = `<tr><th>الشهر</th><th style="color:var(--accent)">${y1} صافي</th><th style="color:var(--accent2)">${y2} صافي</th><th>الفرق</th></tr>`;
+  // ── نفس المقارنة، بس لحساب الادخار (بفاصل بنفس الجدول) ──
   const svIds = getSavingsLinkedCatIds();
-  let t1=0, t2=0;
-  const rows = MONTH_NAMES.map((name,m)=>{
+  let ts1=0, ts2=0;
+  const svRows = MONTH_NAMES.map((name,m)=>{
     const prefix1 = `${y1}-${String(m+1).padStart(2,'0')}`, prefix2 = `${y2}-${String(m+1).padStart(2,'0')}`;
     const txs1 = state.transactions.filter(t=>svIds.includes(t.category) && t.date.startsWith(prefix1));
     const txs2 = state.transactions.filter(t=>svIds.includes(t.category) && t.date.startsWith(prefix2));
     const net1 = txs1.filter(t=>isSavingsDeposit(t)).reduce((s,t)=>s+t.amount,0) - txs1.filter(t=>isSavingsWithdraw(t)).reduce((s,t)=>s+t.amount,0);
     const net2 = txs2.filter(t=>isSavingsDeposit(t)).reduce((s,t)=>s+t.amount,0) - txs2.filter(t=>isSavingsWithdraw(t)).reduce((s,t)=>s+t.amount,0);
-    t1+=net1; t2+=net2;
+    ts1+=net1; ts2+=net2;
     const diff = net1-net2;
     return `<tr>
       <td><b>${name}</b></td>
@@ -2286,11 +2262,11 @@ function renderSavingsYearCompare(){
       <td style="color:${diff>0?'var(--income)':diff<0?'var(--expense)':'var(--ink-soft)'}">${(net1||net2)?(diff>0?'+':'')+fmt(diff):'—'}</td>
     </tr>`;
   }).join('');
-  document.getElementById('sv-cmp-body').innerHTML = rows;
-  const totalDiff = t1-t2;
-  document.getElementById('sv-cmp-foot').innerHTML = `<tr>
-    <td>الإجمالي</td><td>${fmt(t1)}</td><td>${fmt(t2)}</td>
-    <td style="color:${totalDiff>0?'var(--income)':totalDiff<0?'var(--expense)':'var(--ink-soft)'}">${totalDiff>0?'+':''}${fmt(totalDiff)}</td>
+  const svTotalDiff = ts1-ts2;
+  document.getElementById('an-cmp-body').innerHTML += `<tr><td colspan="4" style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;padding:10px 0;border-bottom:1px dashed var(--line)">ـــــــــــــــ 🏦 حساب الادخار ـــــــــــــــ</td></tr>` + svRows;
+  document.getElementById('an-cmp-foot').innerHTML += `<tr>
+    <td>الإجمالي (ادخار)</td><td style="color:var(--savings-in)">${fmt(ts1)}</td><td style="color:var(--savings-in)">${fmt(ts2)}</td>
+    <td style="color:${svTotalDiff>0?'var(--income)':svTotalDiff<0?'var(--expense)':'var(--ink-soft)'}">${svTotalDiff>0?'+':''}${fmt(svTotalDiff)}</td>
   </tr>`;
 }
 
@@ -2330,7 +2306,6 @@ function renderAnalysis(){
   renderAnnualGoal(totalExp, year);
   renderReserveTimeline();
   renderYearCompare();
-  renderSavingsYearCompare();
 
   // ── نظام الترحيل الشهري: كل شهر يبدأ برصيد الشهر اللي قبله ──
   // الرصيد الافتتاحي = صافي كل الأشهر قبل يناير من السنة المختارة (من كل تاريخ التعاملات الفعلي)
@@ -2360,6 +2335,38 @@ function renderAnalysis(){
   _lastCarryRows = carryRows;
   _lastAnalysisYear = year;
 
+  // ── نفس نظام الترحيل الشهري، بس لحساب الادخار (مستقل تماماً عن المخزون) ──
+  const svIdsForCarry = getSavingsLinkedCatIds();
+  let openingSv = 0;
+  const beforeYearSv = state.transactions.filter(t => svIdsForCarry.includes(t.category) && t.date < `${year}-01-01`);
+  if (beforeYearSv.length){
+    const firstDateSv = beforeYearSv.map(t=>t.date).sort()[0];
+    let ys = parseInt(firstDateSv.slice(0,4)), ms = parseInt(firstDateSv.slice(5,7))-1;
+    while (ys < year){
+      const prefixSv = `${ys}-${String(ms+1).padStart(2,'0')}`;
+      const monthTxsSv = state.transactions.filter(t=>svIdsForCarry.includes(t.category) && t.date.startsWith(prefixSv));
+      const depSv = monthTxsSv.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
+      const wdSv = monthTxsSv.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
+      openingSv += (depSv-wdSv);
+      ms++; if (ms>11){ ms=0; ys++; }
+    }
+  }
+  let carrySv = openingSv;
+  const svCarryRows = MONTH_NAMES.map((name,m)=>{
+    const prefixSv = `${year}-${String(m+1).padStart(2,'0')}`;
+    const monthTxsSv = state.transactions.filter(t=>svIdsForCarry.includes(t.category) && t.date.startsWith(prefixSv));
+    const dep = monthTxsSv.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
+    const wd = monthTxsSv.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
+    const hasData = monthTxsSv.length>0;
+    const carryIn = carrySv;
+    const available = dep + carryIn;
+    const carryOut = available - wd;
+    const carryPct = available>0 ? (wd/available)*100 : (wd>0 ? 999 : 0);
+    const carryStatus = !hasData ? 'gray' : carryPct>=100 ? 'purple' : carryPct>85 ? 'red' : carryPct>50 ? 'yellow' : 'green';
+    carrySv = carryOut;
+    return { name, m, dep, wd, hasData, carryIn, available, carryOut, carryPct, carryStatus };
+  });
+
   if (anChart){ anChart.destroy(); anChart=null; }
   const canvas = document.getElementById('an-chart');
   if (canvas){
@@ -2380,7 +2387,7 @@ function renderAnalysis(){
   }
 
   const yearCat={};
-  months.forEach(mo=> mo.txs.filter(t=>t.type==='expense').forEach(t=> yearCat[t.category]=(yearCat[t.category]||0)+t.amount));
+  MONTH_NAMES.forEach((_,m)=> getMonthTxs(year,m).filter(t=>t.type==='expense').forEach(t=> yearCat[t.category]=(yearCat[t.category]||0)+t.amount));
   const sorted = Object.entries(yearCat).sort((a,b)=>b[1]-a[1]);
   const svIdsAn = getSavingsLinkedCatIds();
   const regularSortedAn = sorted.filter(([id])=>!svIdsAn.includes(id));
@@ -2421,7 +2428,7 @@ function renderAnalysis(){
   const bestMonth  = dataMonths.length ? dataMonths.reduce((a,b)=> a.remaining>b.remaining?a:b) : null;
   const worstMonth = dataMonths.length ? dataMonths.reduce((a,b)=> a.expense>b.expense?a:b) : null;
   const dayTotals = {};
-  months.flatMap(mo=>mo.txs).filter(t=>t.type==='expense').forEach(t=> dayTotals[t.date]=(dayTotals[t.date]||0)+t.amount);
+  state.transactions.filter(t=>t.date.startsWith(String(year)) && t.type==='expense').forEach(t=> dayTotals[t.date]=(dayTotals[t.date]||0)+t.amount);
   const recordDay = Object.entries(dayTotals).sort((a,b)=>b[1]-a[1])[0];
   document.getElementById('an-records').innerHTML = `
     <div class="rec-box">
@@ -2454,12 +2461,26 @@ function renderAnalysis(){
   const chipLabel = { ...CARRY_CHIP_LABELS, gray:'—' };
   document.getElementById('an-table-body').innerHTML = carryRows.map(r=>{
     const pctDisplay = r.carryPct>=100 ? Math.round(Math.min(999,r.carryPct)) : (Math.floor(r.carryPct*10)/10);
+    const bridge = getBridgeTransferAmounts(year, r.m);
+    const incomeMain = r.totalIncome - bridge.toReserve;
     return `<tr style="${!r.hasData?'opacity:0.4':''}">
       <td><b>${r.name}</b></td>
-      <td style="color:var(--income)">${fmt(r.totalIncome)}</td>
+      <td style="color:var(--income)">${fmt(incomeMain)}${bridge.toReserve>0?`<br><span style="color:var(--savings-in);font-size:9.5px">🟣 +${fmt(bridge.toReserve)}</span>`:''}</td>
       <td style="color:var(--expense)">${r.hasData?fmt(r.expense):'—'}</td>
       <td style="color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
       <td>${r.hasData?pctDisplay+'٪':'—'}</td>
+      <td><span class="chip chip-${r.carryStatus}">${chipLabel[r.carryStatus]}</span></td>
+    </tr>`;
+  }).join('')
+  + `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;padding:10px 0;border-bottom:1px dashed var(--line)">ـــــــــــــــ 🏦 حساب الادخار ـــــــــــــــ</td></tr>`
+  + svCarryRows.map(r=>{
+    const pctDisplaySv = r.carryPct>=100 ? Math.round(Math.min(999,r.carryPct)) : (Math.floor(r.carryPct*10)/10);
+    return `<tr style="${!r.hasData?'opacity:0.4':''}">
+      <td><b>${r.name}</b></td>
+      <td style="color:var(--savings-in)">${r.dep>0?fmt(r.dep):'—'}</td>
+      <td style="color:var(--savings-out)">${r.wd>0?fmt(r.wd):'—'}</td>
+      <td style="color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
+      <td>${r.hasData?pctDisplaySv+'٪':'—'}</td>
       <td><span class="chip chip-${r.carryStatus}">${chipLabel[r.carryStatus]}</span></td>
     </tr>`;
   }).join('');
@@ -2474,19 +2495,32 @@ function renderAnalysis(){
       <td></td>
     </tr>`;
 
-  // ── جدول الترحيل الشهري (نفس بيانات carryRows بعرض مختصر) ──
+  // ── جدول الترحيل الشهري (12 شهر مخزون، ثم فاصل، ثم 12 شهر حساب ادخار) ──
   document.getElementById('an-carry-body').innerHTML = carryRows.map(r => `
     <tr style="${!r.hasData?'opacity:0.4':''}">
       <td><b>${r.name}</b></td>
       <td style="font-weight:700">${fmt(r.available)}</td>
       <td style="color:var(--expense)">${r.hasData?fmt(r.expense):'—'}</td>
       <td style="font-weight:800;color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
+    </tr>`).join('')
+  + `<tr><td colspan="4" style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;padding:10px 0;border-bottom:1px dashed var(--line)">ـــــــــــــــ 🏦 حساب الادخار ـــــــــــــــ</td></tr>`
+  + svCarryRows.map(r => `
+    <tr style="${!r.hasData?'opacity:0.4':''}">
+      <td><b>${r.name}</b></td>
+      <td style="font-weight:700;color:var(--savings-in)">${fmt(r.available)}</td>
+      <td style="color:var(--savings-out)">${r.wd>0?fmt(r.wd):'—'}</td>
+      <td style="font-weight:800;color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
     </tr>`).join('');
   const finalCarry = carryRows.length ? carryRows[carryRows.length-1].carryOut : opening;
+  const finalCarrySv = svCarryRows.length ? svCarryRows[svCarryRows.length-1].carryOut : openingSv;
   document.getElementById('an-carry-foot').innerHTML = `
     <tr>
       <td colspan="2" style="white-space:normal;text-align:right;font-size:10.5px">الرصيد الافتتاحي لأول شهر: <b style="color:${opening>=0?'var(--income)':'var(--expense)'}">${fmt(opening)}</b></td>
       <td colspan="2" style="white-space:normal;text-align:right;font-size:10.5px">الرصيد الختامي لنهاية ${year}: <b style="color:${finalCarry>=0?'var(--income)':'var(--expense)'}">${fmt(finalCarry)}</b></td>
+    </tr>
+    <tr>
+      <td colspan="2" style="white-space:normal;text-align:right;font-size:10.5px;color:var(--savings-in)">🏦 الرصيد الافتتاحي: <b>${fmt(openingSv)}</b></td>
+      <td colspan="2" style="white-space:normal;text-align:right;font-size:10.5px;color:var(--savings-in)">🏦 الرصيد الختامي: <b>${fmt(finalCarrySv)}</b></td>
     </tr>`;
 
   // ── عمليات التحويل الداخلي (فئات type='both' أو أي فئة تحمل نفس المعنى) ──
