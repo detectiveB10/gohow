@@ -329,6 +329,7 @@
         <div class="ledger-row" style="border-top:1.5px solid var(--line);padding-top:10px;margin-top:4px">
           <span style="font-weight:800">الإجمالي</span><span class="ledger-fill"></span><span class="ledger-val" id="tot-combined">—</span>
         </div>
+        <button class="btn btn-ghost btn-block" style="margin-top:12px" onclick="openTransferModal()">🔀 تحويل بين المخزون والادخار</button>
       </div>
 
       <div class="card">
@@ -480,6 +481,7 @@
     <!-- ===================== ANALYSIS ===================== -->
     <section class="page" id="page-analysis">
       <div id="an-jump-alert"></div>
+      <div id="an-savings-jump-alert"></div>
       <div class="day-nav">
         <select id="an-year" onchange="renderAnalysis()" style="width:auto;padding:8px 12px"></select>
         <div class="day-title">📈 التحليل السنوي</div>
@@ -786,6 +788,24 @@
   </div>
 </div>
 
+<!-- ===================== SHEET: TRANSFER (بين المخزون والادخار) ===================== -->
+<div class="sheet-overlay hidden" id="sheet-transfer">
+  <div class="sheet">
+    <div class="sheet-title"><span>🔀 تحويل رصيد</span><button onclick="closeSheet('sheet-transfer')">✕</button></div>
+    <div class="toggle2">
+      <button id="trf-btn-to-savings" class="on-exp" onclick="setTransferDirection('toSavings')">➡️ من المخزون للادخار</button>
+      <button id="trf-btn-to-reserve" onclick="setTransferDirection('toReserve')">⬅️ من الادخار للمخزون</button>
+    </div>
+    <div class="fgroup"><label>المبلغ</label><input type="number" id="trf-amount" placeholder="0.00"></div>
+    <div class="fgroup"><label>ملاحظة (اختياري)</label><input type="text" id="trf-note" placeholder="مثال: تجميع للادخار"></div>
+    <div class="fgroup"><label>التاريخ</label><input type="date" id="trf-date"></div>
+    <div class="row-gap">
+      <button class="btn btn-accent btn-block" onclick="saveTransfer()">تنفيذ التحويل</button>
+      <button class="btn btn-ghost btn-block" onclick="closeSheet('sheet-transfer')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== SHEET: SEARCH ===================== -->
 <div class="sheet-overlay hidden" id="sheet-search">
   <div class="sheet">
@@ -1081,7 +1101,7 @@ function save() {
 function fmt(n) {
   n = n || 0;
   const abs = Math.abs(n);
-  return (n<0?'-':'') + abs.toLocaleString('ar-SA',{maximumFractionDigits:0}) + ' ' + state.settings.currency;
+  return (n<0?'-':'') + abs.toLocaleString('ar-SA',{minimumFractionDigits:0, maximumFractionDigits:2}) + ' ' + state.settings.currency;
 }
 function dateKey(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
 function localToday(){ const n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate()); }
@@ -1196,7 +1216,11 @@ function isSavingsDeposit(t){ return t.category==='s1' || t.category==='b1'; }
 function isSavingsWithdraw(t){ return t.category==='s2' || t.category==='b2'; }
 function getSavingsLinkedCatIds(){ return ['s1','s2','b1','b2']; }
 function savingsDividerHtml(){
-  return `<div style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;margin:10px 0">ــــــــــــــــــــــ 🏦 حساب الادخار ــــــــــــــــــــــ</div>`;
+  return `<div style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;margin:10px 0 2px">ــــــــــــــــــــــ 🏦 حساب الادخار ــــــــــــــــــــــ</div><div style="text-align:center;color:var(--ink-soft);font-size:9.5px;margin-bottom:8px">منفصل عن ميزانيتك الأساسية</div>`;
+}
+// ---------- كل عمليات دورة الراتب الحالية بدون أي استثناء (تُستخدم لعرض مصادر الدخل وتوزيع المصاريف بلوحة التحكم) ----------
+function getFullCycleTxs(info){
+  return state.transactions.filter(t=>t.date>=info.sStr && t.date<=info.eStr);
 }
 function getSavingsBalance(){
   let deposit=0, withdraw=0;
@@ -1496,8 +1520,9 @@ function renderTrendChart(){
 function renderIncomeSources(info){
   const el = document.getElementById('db-income-sources'); if(!el) return;
   const salary = state.settings.salary || 0;
+  const fullCycleTxs = getFullCycleTxs(info);
   const catTotals = {};
-  info.txs.filter(t=>t.type==='income').forEach(t=> catTotals[t.category]=(catTotals[t.category]||0)+t.amount);
+  fullCycleTxs.filter(t=>t.type==='income').forEach(t=> catTotals[t.category]=(catTotals[t.category]||0)+t.amount);
   const svIds = getSavingsLinkedCatIds();
   const sortedEntries = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]);
   const regular = sortedEntries.filter(([id])=>!svIds.includes(id));
@@ -1506,14 +1531,21 @@ function renderIncomeSources(info){
     const c = getCat(id);
     return `<div class="ledger-row"><span>${c.emoji} ${c.name}</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--income)">${fmt(val)}</span></div>`;
   };
+  const regularTotal = salary + regular.reduce((s,[,v])=>s+v,0);
+  const savingsTotal = savings.reduce((s,[,v])=>s+v,0);
   const rows = [];
   if (salary>0){
     rows.push(`<div class="ledger-row"><span>💼 الراتب <small style="color:var(--ink-soft)">(الأساس)</small></span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--income)">${fmt(salary)}</span></div>`);
   }
   regular.forEach(entry => rows.push(rowHtml(entry)));
+  if (salary>0 || regular.length){
+    rows.push(`<div class="ledger-row" style="border-top:1px dashed var(--line);padding-top:8px;margin-top:2px"><span style="font-weight:700">= مجموع الدخل العادي</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--income);font-weight:700">${fmt(regularTotal)}</span></div>`);
+  }
   if (savings.length){
     rows.push(savingsDividerHtml());
     savings.forEach(entry => rows.push(rowHtml(entry)));
+    rows.push(`<div class="ledger-row" style="border-top:1px dashed var(--line);padding-top:8px;margin-top:2px"><span style="font-weight:700">= مجموع دخل الادخار</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--savings-in);font-weight:700">${fmt(savingsTotal)}</span></div>`);
+    rows.push(`<div class="ledger-row" style="border-top:1.5px solid var(--line);padding-top:10px;margin-top:4px"><span style="font-weight:800">= المجموع الكلي</span><span class="ledger-fill"></span><span class="ledger-val" style="font-weight:800">${fmt(regularTotal+savingsTotal)}</span></div>`);
   }
   el.innerHTML = rows.length ? rows.join('') : `<div class="empty"><div class="em-icon">💰</div><p>لا يوجد دخل مسجّل بعد في هذه الدورة</p></div>`;
 }
@@ -1628,8 +1660,9 @@ function renderDashboard(){
   renderSavingsGoalCard();
 
   // توزيع الفئات
+  const fullCycleTxsExp = getFullCycleTxs(info);
   const catTotals = {};
-  info.txs.filter(t=>t.type==='expense').forEach(t=> catTotals[t.category]=(catTotals[t.category]||0)+t.amount);
+  fullCycleTxsExp.filter(t=>t.type==='expense').forEach(t=> catTotals[t.category]=(catTotals[t.category]||0)+t.amount);
   const sorted = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]);
   const total = sorted.reduce((s,[,v])=>s+v,0);
   const catsEl = document.getElementById('db-cats');
@@ -1640,8 +1673,14 @@ function renderDashboard(){
     const c = getCat(id);
     return `<div class="ledger-row"><span>${c.emoji} ${c.name}</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--expense)">${fmt(val)}</span></div>`;
   };
+  const regularExpTotal = regularSorted.reduce((s,[,v])=>s+v,0);
+  const savingsExpTotal = savingsSorted.reduce((s,[,v])=>s+v,0);
   catsEl.innerHTML = sorted.length
-    ? regularSorted.map(catRowHtml).join('') + (savingsSorted.length ? savingsDividerHtml() + savingsSorted.map(catRowHtml).join('') : '')
+    ? regularSorted.map(catRowHtml).join('')
+      + (regularSorted.length ? `<div class="ledger-row" style="border-top:1px dashed var(--line);padding-top:8px;margin-top:2px"><span style="font-weight:700">= مجموع الصرف العادي</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--expense);font-weight:700">${fmt(regularExpTotal)}</span></div>` : '')
+      + (savingsSorted.length ? savingsDividerHtml() + savingsSorted.map(catRowHtml).join('')
+        + `<div class="ledger-row" style="border-top:1px dashed var(--line);padding-top:8px;margin-top:2px"><span style="font-weight:700">= مجموع صرف الادخار</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--savings-out);font-weight:700">${fmt(savingsExpTotal)}</span></div>`
+        + `<div class="ledger-row" style="border-top:1.5px solid var(--line);padding-top:10px;margin-top:4px"><span style="font-weight:800">= المجموع الكلي</span><span class="ledger-fill"></span><span class="ledger-val" style="font-weight:800">${fmt(regularExpTotal+savingsExpTotal)}</span></div>` : '')
     : `<div class="empty"><div class="em-icon">🗂️</div><p>لا توجد مصاريف بعد في هذه الدورة</p></div>`;
 
   // رسم دائري لتوزيع الفئات
@@ -1890,7 +1929,7 @@ function renderWeek(){
             <div class="wc-day">${DAY_NAMES[d.getDay()].slice(0,3)}</div>
             <div class="wc-date disp">${d.getDate()}</div>
             <div class="wc-net" style="color:${budgetTxs.length?(net>=0?'var(--income)':'var(--expense)'):'var(--ink-soft)'}">${budgetTxs.length?fmt(net):'—'}</div>
-            ${(()=>{ const a=getSavingsActivity(txs); return (a.withdrawals>0?`<div class="wc-out">🏦-${a.withdrawals.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:'') + (a.deposits>0?`<div class="wc-in">🏦+${a.deposits.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''); })()}
+            ${(()=>{ const a=getSavingsActivity(txs); return (a.withdrawals>0?`<div class="wc-out">🏦-${a.withdrawals.toLocaleString('ar-SA',{maximumFractionDigits:2})}</div>`:'') + (a.deposits>0?`<div class="wc-in">🏦+${a.deposits.toLocaleString('ar-SA',{maximumFractionDigits:2})}</div>`:''); })()}
             <div class="wc-actions">
               <button onclick="quickAddDay('${ds}')" title="إضافة عملية">➕</button>
               <button onclick="jumpToDate('${ds}')" title="انتقال إلى قائمة اليوم">📄</button>
@@ -2030,10 +2069,10 @@ function renderMonth(){
     const isPayday = d===paydayThisMonth;
     html += `<div class="cal-cell ${ds===todayStr?'today':''}" style="${intensityStyle}" onclick="jumpToDate('${ds}')">
       <div class="cal-num">${d}${isPayday?' 💰':''}</div>
-      ${de>0?`<div class="cal-exp">-${de.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''}
-      ${di>0?`<div class="cal-inc">+${di.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''}
-      ${dayActivity.withdrawals>0?`<div class="cal-out">🏦-${dayActivity.withdrawals.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''}
-      ${dayActivity.deposits>0?`<div class="cal-in">🏦+${dayActivity.deposits.toLocaleString('ar-SA',{maximumFractionDigits:0})}</div>`:''}
+      ${de>0?`<div class="cal-exp">-${de.toLocaleString('ar-SA',{maximumFractionDigits:2})}</div>`:''}
+      ${di>0?`<div class="cal-inc">+${di.toLocaleString('ar-SA',{maximumFractionDigits:2})}</div>`:''}
+      ${dayActivity.withdrawals>0?`<div class="cal-out">🏦-${dayActivity.withdrawals.toLocaleString('ar-SA',{maximumFractionDigits:2})}</div>`:''}
+      ${dayActivity.deposits>0?`<div class="cal-in">🏦+${dayActivity.deposits.toLocaleString('ar-SA',{maximumFractionDigits:2})}</div>`:''}
     </div>`;
   }
   document.getElementById('cal-grid').innerHTML = html;
@@ -2153,6 +2192,39 @@ function renderCategoryJumpAlert(){
     ${jumps.slice(0,4).map(j=>{
       const c = getCat(j.id);
       const txt = j.pct!==null ? `+${j.pct}٪ (${fmt(j.prev)} ← ${fmt(j.cur)})` : `فئة جديدة بمبلغ ${fmt(j.cur)}`;
+      return `<div style="font-size:12px;padding:3px 0">${c.emoji} <b>${c.name}</b>: ${txt}</div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ---------- قفزات حساب الادخار (مستقلة تماماً عن قفزات الميزانية العادية) ----------
+function getSavingsJumps(){
+  const today = localToday();
+  let curY=today.getFullYear(), curM=today.getMonth();
+  let prevY=curY, prevM=curM-1; if (prevM<0){prevM=11;prevY--;}
+  const svIds = getSavingsLinkedCatIds();
+  const curTxs = state.transactions.filter(t=>svIds.includes(t.category) && t.date.startsWith(`${curY}-${String(curM+1).padStart(2,'0')}`));
+  const prevTxs = state.transactions.filter(t=>svIds.includes(t.category) && t.date.startsWith(`${prevY}-${String(prevM+1).padStart(2,'0')}`));
+  const curTotals={}, prevTotals={};
+  curTxs.forEach(t=> curTotals[t.category]=(curTotals[t.category]||0)+t.amount);
+  prevTxs.forEach(t=> prevTotals[t.category]=(prevTotals[t.category]||0)+t.amount);
+  const jumps=[];
+  Object.keys(curTotals).forEach(id=>{
+    const cur=curTotals[id], prev=prevTotals[id]||0;
+    if (prev>=50 && cur > prev*1.5) jumps.push({ id, cur, prev, pct:Math.round(((cur-prev)/prev)*100) });
+    else if (prev===0 && cur>=200) jumps.push({ id, cur, prev:0, pct:null });
+  });
+  return jumps.sort((a,b)=>b.cur-a.cur);
+}
+function renderSavingsJumpAlert(){
+  const el = document.getElementById('an-savings-jump-alert'); if(!el) return;
+  const jumps = getSavingsJumps();
+  if (!jumps.length){ el.innerHTML=''; return; }
+  el.innerHTML = `<div class="card" style="border-color:var(--savings-in);background:color-mix(in srgb, var(--savings-in) 10%, var(--card));margin-bottom:14px">
+    <div style="font-size:12px;font-weight:800;color:var(--savings-in);margin-bottom:8px">🏦 قفزة ملحوظة بحساب الادخار عن الشهر اللي قبله</div>
+    ${jumps.slice(0,4).map(j=>{
+      const c = getCat(j.id);
+      const txt = j.pct!==null ? `+${j.pct}٪ (${fmt(j.prev)} ← ${fmt(j.cur)})` : `نشاط جديد بمبلغ ${fmt(j.cur)}`;
       return `<div style="font-size:12px;padding:3px 0">${c.emoji} <b>${c.name}</b>: ${txt}</div>`;
     }).join('')}
   </div>`;
@@ -2303,6 +2375,7 @@ function renderAnalysis(){
   netEl.style.color = (totalInc-totalExp)>=0?'var(--income)':'var(--expense)';
 
   renderCategoryJumpAlert();
+  renderSavingsJumpAlert();
   renderAnnualGoal(totalExp, year);
   renderReserveTimeline();
   renderYearCompare();
@@ -2624,6 +2697,36 @@ function openMonthDetailSheet(year, m){
     ${savingsBlockHtml}
   `;
   openSheet('sheet-month-detail');
+}
+
+// ---------- تحويل رصيد بين المخزون وحساب الادخار (بدون تعريض المستخدم لمفهوم صرف/دخل) ----------
+let _transferDirection = 'toSavings';
+function setTransferDirection(dir){
+  _transferDirection = dir;
+  document.getElementById('trf-btn-to-savings').className = dir==='toSavings' ? 'on-exp' : '';
+  document.getElementById('trf-btn-to-reserve').className = dir==='toReserve' ? 'on-inc' : '';
+}
+function openTransferModal(){
+  document.getElementById('trf-amount').value = '';
+  document.getElementById('trf-note').value = '';
+  document.getElementById('trf-date').value = dateKey(localToday());
+  setTransferDirection('toSavings');
+  openSheet('sheet-transfer');
+}
+function saveTransfer(){
+  const amount = parseFloat(document.getElementById('trf-amount').value);
+  const note = document.getElementById('trf-note').value.trim();
+  const date = document.getElementById('trf-date').value;
+  if (!amount || amount<=0) { showToast('⚠️ أدخل مبلغاً صحيحاً'); return; }
+  if (!date) { showToast('⚠️ اختر تاريخاً'); return; }
+  // التحويل من المخزون للادخار = فئة b1 (صرف)، والعكس = فئة b2 (دخل) — يُحدَّد تلقائياً بدون تدخّل المستخدم
+  const category = _transferDirection==='toSavings' ? 'b1' : 'b2';
+  const type = _transferDirection==='toSavings' ? 'expense' : 'income';
+  state.transactions.push({ id:uid(), amount, category, note, date, type });
+  save(); closeSheet('sheet-transfer');
+  refreshAll();
+  const dirLabel = _transferDirection==='toSavings' ? 'المخزون ← الادخار' : 'الادخار ← المخزون';
+  showToast(`✅ تم تنفيذ التحويل (${dirLabel}): ${fmt(amount)}`);
 }
 
 function openTxModal(dateStr){
