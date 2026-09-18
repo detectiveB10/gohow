@@ -73,19 +73,26 @@
   .card-summary-arrow { font-size:11px; color:var(--ink-soft); transition:transform 0.2s; }
   details[open] .card-summary-arrow { transform:rotate(180deg); }
 
-  /* ===== STAMP (signature element) ===== */
-  .stamp-wrap { display:flex; justify-content:center; padding:10px 0 6px; }
-  .stamp {
-    width:154px; height:154px; border-radius:50%; border:3px double var(--stamp-c);
+  /* ===== DUAL STAMP (مخزون + ادخار + مجموع) ===== */
+  .dual-stamp-wrap { display:flex; align-items:center; justify-content:center; padding:10px 0 6px; }
+  .mini-stamp {
+    width:118px; height:118px; border-radius:50%; border:2.5px double var(--stamp-c);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    transform:rotate(-4deg); position:relative; background:color-mix(in srgb, var(--stamp-c) 7%, transparent);
+    text-align:center; background:color-mix(in srgb, var(--stamp-c) 7%, transparent);
   }
-  .stamp::before {
-    content:''; position:absolute; inset:9px; border-radius:50%; border:1px dashed var(--stamp-c); opacity:0.55;
+  .mini-stamp-lbl { font-size:10px; color:var(--ink-soft); margin-bottom:3px; }
+  .mini-stamp-amt { font-family:'El Messiri'; font-weight:800; font-size:15px; color:var(--stamp-c); line-height:1.15; padding:0 6px; }
+  .total-stamp {
+    width:66px; height:66px; border-radius:50%; background:var(--accent);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; margin:0 -14px; position:relative; z-index:1;
   }
-  .stamp-amt { font-family:'El Messiri'; font-weight:800; font-size:21px; color:var(--stamp-c); line-height:1.1; text-align:center; padding:0 8px; }
-  .stamp-lbl { font-size:10px; color:var(--ink-soft); margin-top:3px; }
-  .stamp-days { font-size:10px; font-weight:700; color:var(--stamp-c); margin-top:5px; }
+  .total-stamp-lbl { font-size:8px; color:#fff; opacity:0.85; }
+  .total-stamp-amt { font-family:'El Messiri'; font-weight:800; font-size:12px; color:#fff; margin-top:1px; }
+  .cd-box { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:8px 12px; text-align:center; min-width:46px; }
+  .cd-box .cd-num { font-family:'El Messiri'; font-weight:800; font-size:17px; color:var(--ink); font-variant-numeric:tabular-nums; }
+  .cd-box .cd-lbl { font-size:9.5px; color:var(--ink-soft); margin-top:2px; }
+  .cd-sep { align-self:center; font-size:15px; color:var(--ink-soft); padding-bottom:14px; }
 
   /* ===== LEDGER ROW (leader dots) ===== */
   .ledger-row { display:flex; align-items:baseline; gap:8px; padding:7px 0; border-bottom:1px dashed var(--line); font-size:13px; }
@@ -296,7 +303,12 @@
 
       <div class="card" style="text-align:center">
         <div class="card-title" style="justify-content:center"><span>📖 دورة الراتب الحالية</span></div>
-        <div class="stamp-wrap"><div class="stamp" id="db-stamp"></div></div>
+        <div class="dual-stamp-wrap">
+          <div class="mini-stamp" id="db-stamp-reserve"></div>
+          <div class="total-stamp" id="db-stamp-total"></div>
+          <div class="mini-stamp" id="db-stamp-savings"></div>
+        </div>
+        <div id="db-countdown" style="display:flex;justify-content:center;gap:6px;margin-top:12px"></div>
         <div id="db-stamp-sub" style="font-size:11px;color:var(--ink-soft);margin-top:8px"></div>
         <div id="db-compare" style="font-size:11px;font-weight:700;margin-top:6px"></div>
       </div>
@@ -585,15 +597,43 @@
         <div class="day-title">📈 التحليل السنوي</div>
         <div style="width:34px"></div>
       </div>
-      <div class="strip">
-        <div class="strip-box"><div class="strip-lbl">إجمالي الدخل</div><div class="strip-val" id="ay-inc" style="color:var(--income)">—</div></div>
-        <div class="strip-box"><div class="strip-lbl">إجمالي الصرف</div><div class="strip-val" id="ay-exp" style="color:var(--expense)">—</div></div>
-        <div class="strip-box"><div class="strip-lbl">الصافي</div><div class="strip-val" id="ay-net">—</div></div>
+      <div class="card">
+        <div class="strip" style="margin-bottom:12px">
+          <div class="strip-box"><div class="strip-lbl">إجمالي الدخل</div><div class="strip-val" id="ay-inc" style="color:var(--income)">—</div></div>
+          <div class="strip-box"><div class="strip-lbl">إجمالي الصرف</div><div class="strip-val" id="ay-exp" style="color:var(--expense)">—</div></div>
+          <div class="strip-box"><div class="strip-lbl">الصافي</div><div class="strip-val" id="ay-net">—</div></div>
+        </div>
+        <div class="strip" style="margin-bottom:12px;padding-top:12px;border-top:1px dashed var(--line)">
+          <div class="strip-box"><div class="strip-lbl">🏦 إيداعات الادخار</div><div class="strip-val" id="ay-sv-in" style="color:var(--savings-in)">—</div></div>
+          <div class="strip-box"><div class="strip-lbl">🏦 سحوبات الادخار</div><div class="strip-val" id="ay-sv-out" style="color:var(--savings-out)">—</div></div>
+          <div class="strip-box"><div class="strip-lbl">صافي الادخار</div><div class="strip-val" id="ay-sv-net">—</div></div>
+        </div>
+        <div class="strip" style="padding-top:12px;border-top:1.5px solid var(--line)">
+          <div class="strip-box"><div class="strip-lbl">= مجموع الدخل</div><div class="strip-val" id="ay-tot-inc" style="color:var(--income)">—</div></div>
+          <div class="strip-box"><div class="strip-lbl">= مجموع الصرف</div><div class="strip-val" id="ay-tot-exp" style="color:var(--expense)">—</div></div>
+          <div class="strip-box"><div class="strip-lbl">= المجموع الصافي</div><div class="strip-val" id="ay-tot-net" style="font-weight:800">—</div></div>
+        </div>
       </div>
 
       <div class="card" id="an-annual-goal-card" style="display:none">
         <div class="card-title">🎯 هدف السنة <small>سقف الصرف</small></div>
         <div id="an-annual-goal-body"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🔮 توقّع الشهر القادم</div>
+        <div class="strip">
+          <div class="strip-box">
+            <div class="strip-lbl">💸 صرف متوقع</div>
+            <div class="strip-val" id="an-forecast-exp" style="color:var(--expense)">—</div>
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:4px" id="an-forecast-exp-trend"></div>
+          </div>
+          <div class="strip-box">
+            <div class="strip-lbl">🏦 صافي ادخار متوقع</div>
+            <div class="strip-val" id="an-forecast-sv">—</div>
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:4px" id="an-forecast-sv-trend"></div>
+          </div>
+        </div>
       </div>
 
       <div class="card">
@@ -618,10 +658,6 @@
       <div class="card">
         <div class="card-title">🗂️ توزيع المصاريف على السنة</div>
         <div id="an-cats"></div>
-      </div>
-      <div class="card">
-        <div class="card-title">🔮 توقّع الشهر القادم</div>
-        <div id="an-forecast" style="font-size:13px"></div>
       </div>
 
       <div class="card">
@@ -758,6 +794,7 @@
       <div class="settings-section" id="set-sec-salary">
         <div class="fgroup"><label>الراتب الشهري</label><input type="number" id="st-salary" placeholder="0"></div>
         <div class="fgroup"><label>يوم نزول الراتب الافتراضي</label><input type="number" id="st-payday" min="1" max="31" placeholder="مثال: 27"></div>
+        <div class="fgroup"><label>⏰ المتوقع نزول الراتب (الساعة)</label><input type="time" id="st-payday-time"></div>
         <div class="fgroup">
           <label>العملة</label>
           <select id="st-currency">
@@ -1115,7 +1152,7 @@ function ensureCoreCategories(){
 let state = {
   transactions: [],
   categories: DEFAULT_CATEGORIES.slice(),
-  settings: { salary:0, payday:27, paydayByMonth:{}, currency:'⃁', theme:'paper', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, weeksShown:'all' },
+  settings: { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'paper', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, weeksShown:'all' },
   currentDate: new Date(),
   weekViewYear: new Date().getFullYear(),
   weekViewMonth: new Date().getMonth(),
@@ -1783,18 +1820,50 @@ function renderSavingsGoalCard(){
 
 let dbCatPie = null;
 // ---------- عرض: لوحة التحكم ----------
+// ---------- عد تنازلي حي (يوم:ساعة:دقيقة) لموعد نزول الراتب المتوقع ----------
+let stampCountdownTimer = null;
+let stampCountdownTarget = null;
+function renderStampCountdown(info){
+  const [hh, mm] = (state.settings.paydayTime||'09:00').split(':').map(v=>parseInt(v)||0);
+  stampCountdownTarget = new Date(info.end.getFullYear(), info.end.getMonth(), info.end.getDate()+1, hh, mm, 0);
+  updateStampCountdownTick();
+  if (stampCountdownTimer) clearInterval(stampCountdownTimer);
+  stampCountdownTimer = setInterval(updateStampCountdownTick, 1000);
+}
+function updateStampCountdownTick(){
+  const el = document.getElementById('db-countdown');
+  if (!el || !stampCountdownTarget) return;
+  const cdBox = (num, lbl) => `<div class="cd-box"><div class="cd-num">${String(Math.max(0,num)).padStart(2,'0')}</div><div class="cd-lbl">${lbl}</div></div>`;
+  const diffMs = stampCountdownTarget - new Date();
+  if (diffMs <= 0){
+    el.innerHTML = cdBox(0,'يوم') + `<div class="cd-sep">:</div>` + cdBox(0,'ساعة') + `<div class="cd-sep">:</div>` + cdBox(0,'دقيقة');
+    return;
+  }
+  const totalMinutes = Math.floor(diffMs/60000);
+  const days = Math.floor(totalMinutes/1440);
+  const hours = Math.floor((totalMinutes%1440)/60);
+  const minutes = totalMinutes%60;
+  el.innerHTML = cdBox(days,'يوم') + `<div class="cd-sep">:</div>` + cdBox(hours,'ساعة') + `<div class="cd-sep">:</div>` + cdBox(minutes,'دقيقة');
+}
 function renderDashboard(){
   const info = getPayCycleInfo();
-  const stampColor = getComputedStyle(document.documentElement).getPropertyValue('--'+info.status).trim() || 'var(--accent)';
-  document.getElementById('db-stamp').style.setProperty('--stamp-c', stampColor);
-  document.getElementById('db-stamp').innerHTML = `
-    <div class="stamp-amt disp">${fmt(info.remaining)}</div>
-    <div class="stamp-lbl">المتبقي من الدورة</div>
-    <div class="stamp-days">⏳ ${info.daysLeft} يوم متبقي</div>`;
+  const resRowsHero = getCycleReserve();
+  const reserveValHero = resRowsHero.length ? resRowsHero[resRowsHero.length-1].reserve : 0;
+  const dbSavingsBal = getSavingsBalance().balance;
+  const combinedHero = reserveValHero + dbSavingsBal;
+  const reserveColorHero = reserveValHero>=0 ? 'var(--income)' : 'var(--expense)';
+  const savingsColorHero = dbSavingsBal>=0 ? 'var(--income)' : 'var(--expense)';
+  const elReserveHero = document.getElementById('db-stamp-reserve');
+  elReserveHero.style.setProperty('--stamp-c', reserveColorHero);
+  elReserveHero.innerHTML = `<div class="mini-stamp-lbl">🏦 المخزون</div><div class="mini-stamp-amt disp">${fmt(reserveValHero)}</div>`;
+  const elSavingsHero = document.getElementById('db-stamp-savings');
+  elSavingsHero.style.setProperty('--stamp-c', savingsColorHero);
+  elSavingsHero.innerHTML = `<div class="mini-stamp-lbl">🏦 الادخار</div><div class="mini-stamp-amt disp">${fmt(dbSavingsBal)}</div>`;
+  document.getElementById('db-stamp-total').innerHTML = `<div class="total-stamp-lbl">المجموع</div><div class="total-stamp-amt disp">${fmt(combinedHero)}</div>`;
+  renderStampCountdown(info);
   document.getElementById('db-stamp-sub').textContent = `${info.sStr} ← ${info.eStr} · صُرف ${Math.round(info.pctSpent)}%`;
   document.getElementById('db-inc').textContent = fmt(info.totalIncome);
   document.getElementById('db-exp').textContent = fmt(info.expense);
-  const dbSavingsBal = getSavingsBalance().balance;
   const dbTotalRemaining = info.remaining + dbSavingsBal;
   document.getElementById('db-savings-balance').textContent = fmt(dbSavingsBal);
   document.getElementById('db-inc-savings-total').textContent = fmt(info.totalIncome + dbSavingsBal);
@@ -2200,13 +2269,15 @@ function renderCycleDailyTable(bodyId, footId, titleId, offset){
     cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate()+1);
   }
   let totExp=0, totInc=0, totNet=0, totSv=0, totGrand=0;
+  const todayStrCycle = dateKey(localToday());
   bodyEl.innerHTML = allDays.map(day=>{
     const sv = getSavingsActivity(day.txs);
     const svNet = sv.deposits - sv.withdrawals;
     const grand = day.net + svNet;
     totExp+=day.exp; totInc+=day.inc; totNet+=day.net; totSv+=svNet; totGrand+=grand;
-    return `<tr>
-      <td><b>${DAY_NAMES[day.d.getDay()].slice(0,3)}</b></td>
+    const isToday = day.ds===todayStrCycle;
+    return `<tr style="${isToday?'background:color-mix(in srgb, var(--accent) 8%, transparent)':''}">
+      <td><b>${DAY_NAMES[day.d.getDay()]}</b>${isToday?' <span style="color:var(--accent);font-size:9px">● اليوم</span>':''}</td>
       <td>${day.d.getDate()}</td>
       <td style="color:var(--expense)">${day.exp>0?fmt(day.exp):'—'}</td>
       <td style="color:var(--income)">${day.inc>0?fmt(day.inc):'—'}</td>
@@ -2665,6 +2736,23 @@ function renderAnalysis(){
   netEl.textContent = fmt(totalInc-totalExp);
   netEl.style.color = (totalInc-totalExp)>=0?'var(--income)':'var(--expense)';
 
+  const svIdsYear = getSavingsLinkedCatIds();
+  const svYearAllTxs = state.transactions.filter(t=>svIdsYear.includes(t.category) && t.date.startsWith(String(year)));
+  const ySvIn = svYearAllTxs.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
+  const ySvOut = svYearAllTxs.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
+  document.getElementById('ay-sv-in').textContent = fmt(ySvIn);
+  document.getElementById('ay-sv-out').textContent = fmt(ySvOut);
+  const svNetEl = document.getElementById('ay-sv-net');
+  svNetEl.textContent = fmt(ySvIn-ySvOut);
+  svNetEl.style.color = (ySvIn-ySvOut)>=0?'var(--income)':'var(--expense)';
+
+  document.getElementById('ay-tot-inc').textContent = fmt(totalInc+ySvIn);
+  document.getElementById('ay-tot-exp').textContent = fmt(totalExp+ySvOut);
+  const totNetEl = document.getElementById('ay-tot-net');
+  const grandNet = (totalInc+ySvIn)-(totalExp+ySvOut);
+  totNetEl.textContent = fmt(grandNet);
+  totNetEl.style.color = grandNet>=0?'var(--income)':'var(--expense)';
+
   renderCategoryJumpAlert();
   renderSavingsJumpAlert();
   renderAnnualGoal(totalExp, year);
@@ -2768,26 +2856,51 @@ function renderAnalysis(){
       + (savingsSortedAn.length ? savingsDividerHtml() + savingsSortedAn.map(anCatRowHtml).join('') : '')
     : `<div class="empty"><div class="em-icon">🗂️</div><p>لا توجد بيانات لهذه السنة</p></div>`;
 
-  // توقّع بسيط بالانحدار الخطي على آخر 3 أشهر (من اليوم الفعلي)
+  // توقّع بسيط بالانحدار الخطي على آخر 3 أشهر (من اليوم الفعلي) — للصرف وصافي الادخار
   const today = localToday();
-  const last3 = [];
+  const last3Exp = [];
+  const last3Sv = [];
+  const svIdsForecast = getSavingsLinkedCatIds();
   for (let i=2;i>=0;i--){
     const d = new Date(today.getFullYear(), today.getMonth()-i, 1);
-    last3.push(excludeSavings(getMonthTxs(d.getFullYear(),d.getMonth())).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0));
+    last3Exp.push(excludeSavings(getMonthTxs(d.getFullYear(),d.getMonth())).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0));
+    const prefixSv = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const svTxsMonth = state.transactions.filter(t=>svIdsForecast.includes(t.category) && t.date.startsWith(prefixSv));
+    const svNetMonth = svTxsMonth.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0) - svTxsMonth.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
+    last3Sv.push(svNetMonth);
   }
-  const fEl = document.getElementById('an-forecast');
-  if (last3.every(v=>v===0)) {
-    fEl.innerHTML = `<p style="color:var(--ink-soft)">لا توجد بيانات كافية لعمل توقّع بعد.</p>`;
-  } else {
+  function linearForecast(vals, allowNegative){
     const xs=[0,1,2], n=3;
-    const sumX=xs.reduce((a,b)=>a+b,0), sumY=last3.reduce((a,b)=>a+b,0);
-    const sumXY=xs.reduce((s,x,i)=>s+x*last3[i],0), sumX2=xs.reduce((s,x)=>s+x*x,0);
+    const sumX=xs.reduce((a,b)=>a+b,0), sumY=vals.reduce((a,b)=>a+b,0);
+    const sumXY=xs.reduce((s,x,i)=>s+x*vals[i],0), sumX2=xs.reduce((s,x)=>s+x*x,0);
     const slope=(n*sumXY-sumX*sumY)/(n*sumX2-sumX*sumX) || 0;
     const intercept=(sumY-slope*sumX)/n;
-    const forecast = Math.round(Math.max(0, intercept+slope*3));
-    const trend = slope>50 ? '📈 الإنفاق في ارتفاع' : slope<-50 ? '📉 الإنفاق في انخفاض' : '➡️ إنفاق مستقر تقريباً';
-    fEl.innerHTML = `<div class="ledger-row"><span>المتوقع للشهر القادم</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--accent)">${fmt(forecast)}</span></div>
-      <p style="margin-top:8px;color:var(--ink-soft)">${trend}</p>`;
+    const raw = intercept+slope*3;
+    const forecast = Math.round(allowNegative ? raw : Math.max(0, raw));
+    const trend = slope>50 ? '📈 ارتفاع' : slope<-50 ? '📉 انخفاض' : '➡️ مستقر';
+    return { forecast, trend };
+  }
+  const expForecastEl = document.getElementById('an-forecast-exp');
+  const expTrendEl = document.getElementById('an-forecast-exp-trend');
+  if (last3Exp.every(v=>v===0)){
+    expForecastEl.textContent = '—';
+    expTrendEl.textContent = 'لا توجد بيانات كافية';
+  } else {
+    const r = linearForecast(last3Exp, false);
+    expForecastEl.textContent = fmt(r.forecast);
+    expTrendEl.textContent = r.trend;
+  }
+  const svForecastEl = document.getElementById('an-forecast-sv');
+  const svTrendEl = document.getElementById('an-forecast-sv-trend');
+  if (last3Sv.every(v=>v===0)){
+    svForecastEl.textContent = '—';
+    svForecastEl.style.color = 'var(--ink)';
+    svTrendEl.textContent = 'لا توجد بيانات كافية';
+  } else {
+    const rs = linearForecast(last3Sv, true);
+    svForecastEl.textContent = fmt(rs.forecast);
+    svForecastEl.style.color = rs.forecast>=0 ? 'var(--income)' : 'var(--expense)';
+    svTrendEl.textContent = rs.trend;
   }
 
   // ── أرقام قياسية: أفضل شهر / أسوأ شهر / أعلى يوم إنفاق ──
@@ -3075,6 +3188,7 @@ function deleteTx(id){
 function fillSettingsForm(){
   document.getElementById('st-salary').value = state.settings.salary||'';
   document.getElementById('st-payday').value = state.settings.payday||'';
+  document.getElementById('st-payday-time').value = state.settings.paydayTime||'09:00';
   document.getElementById('st-currency').value = state.settings.currency;
   document.getElementById('st-goal').value = state.settings.savingsGoal||'';
   document.getElementById('st-savings-goal').value = state.settings.savingsAccountGoal||'';
@@ -3088,6 +3202,7 @@ function fillSettingsForm(){
 function saveSettingsForm(){
   state.settings.salary = parseFloat(document.getElementById('st-salary').value)||0;
   state.settings.payday = parseInt(document.getElementById('st-payday').value)||27;
+  state.settings.paydayTime = document.getElementById('st-payday-time').value || '09:00';
   state.settings.currency = document.getElementById('st-currency').value;
   state.settings.savingsGoal = parseFloat(document.getElementById('st-goal').value)||0;
   state.settings.savingsAccountGoal = parseFloat(document.getElementById('st-savings-goal').value)||0;
