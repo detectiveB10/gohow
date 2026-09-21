@@ -133,12 +133,26 @@
   .toggle2 button { flex:1; padding:9px; border-radius:10px; border:1px dashed var(--line); background:transparent; color:var(--ink-soft); font-family:'Tajawal'; font-weight:700; font-size:13px; cursor:pointer; }
   .toggle2 button.on-exp { background:color-mix(in srgb, var(--expense) 16%, transparent); border-color:var(--expense); color:var(--expense); }
   .toggle2 button.on-inc { background:color-mix(in srgb, var(--income) 16%, transparent); border-color:var(--income); color:var(--income); }
+  .switch-row { display:flex; justify-content:space-between; align-items:center; gap:12px; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:12px; }
+  .switch-row-text { flex:1; }
+  .switch-row-title { font-size:13px; font-weight:700; margin-bottom:3px; }
+  .switch-row-sub { font-size:10.5px; color:var(--ink-soft); line-height:1.6; }
+  .switch-toggle { width:44px; height:26px; border-radius:14px; background:var(--line); position:relative; flex-shrink:0; cursor:pointer; border:none; padding:0; transition:background 0.2s; }
+  .switch-toggle.on { background:var(--accent); }
+  .switch-toggle .knob { width:20px; height:20px; background:#fff; border-radius:50%; position:absolute; top:3px; left:3px; box-shadow:0 1px 3px rgba(0,0,0,0.25); transition:left 0.2s; }
+  .switch-toggle.on .knob { left:21px; }
+  .nav-dots { display:flex; justify-content:center; align-items:center; gap:4px; margin-top:-8px; margin-bottom:12px; }
+  .nav-dot { width:5px; height:5px; border-radius:50%; background:var(--line); transition:all 0.2s; }
+  .nav-dot.active { width:14px; border-radius:3px; background:var(--accent); }
 
   /* ===== DAY NAV ===== */
   .day-nav { display:flex; align-items:center; justify-content:space-between; margin:10px 0 14px; }
   .day-nav .arrow { width:34px; height:34px; border-radius:50%; border:1px dashed var(--line); background:var(--card); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:15px; }
   .day-title { font-family:'El Messiri'; font-weight:700; font-size:15px; cursor:pointer; text-align:center; }
   .day-title .accent { color:var(--accent); }
+  .nav-dots { display:flex; justify-content:center; align-items:center; gap:4px; margin:-6px 0 12px; }
+  .nav-dots span { width:5px; height:5px; border-radius:50%; background:var(--line); transition:all 0.2s; }
+  .nav-dots span.active { width:14px; border-radius:3px; background:var(--accent); }
 
   /* ===== TX ROW (receipt line) ===== */
   .tx-row { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line); }
@@ -250,12 +264,12 @@
   .mp-month-btn.today-month { border-color:var(--accent); border-style:solid; }
 
   /* ===== ANALYSIS: DETAILED TABLE / CHIPS / MINI MONTHS ===== */
-  .a-table { width:100%; border-collapse:collapse; font-size:11px; }
-  .a-table th { padding:7px 5px; text-align:center; color:var(--ink-soft); font-weight:700; border-bottom:1px dashed var(--line); white-space:nowrap; }
-  #month-daily-table th, #month-daily-table td, #an-daily-table th, #an-daily-table td { padding:5px 2px; font-size:10.5px; white-space:normal; }
-  .wk-day-table th, .wk-day-table td { padding:5px 2px; font-size:10.5px; white-space:normal; }
+  .a-table { width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed; }
+  .a-table th { padding:7px 5px; text-align:center; color:var(--ink-soft); font-weight:700; border-bottom:1px dashed var(--line); white-space:normal; }
+  #month-daily-table th, #month-daily-table td, #an-daily-table th, #an-daily-table td { padding:5px 2px; font-size:10.5px; }
+  .wk-day-table th, .wk-day-table td { padding:5px 2px; font-size:10.5px; }
   .a-table th:first-child, .a-table td:first-child { text-align:right; }
-  .a-table td { padding:7px 5px; text-align:center; border-bottom:1px dashed var(--line); white-space:nowrap; }
+  .a-table td { padding:7px 5px; text-align:center; border-bottom:1px dashed var(--line); white-space:normal; }
   .a-table tfoot td { font-weight:800; border-top:1.5px solid var(--line); border-bottom:none; }
   .chip { display:inline-block; padding:2px 9px; border-radius:9px; font-size:10px; font-weight:800; }
   .chip-green  { background:color-mix(in srgb, var(--income) 18%, transparent); color:var(--income); }
@@ -415,6 +429,7 @@
         <div class="day-title" id="day-title" onclick="openSheet('sheet-datepick')"></div>
         <button class="arrow" onclick="changeDay(1)">←</button>
       </div>
+      <div class="nav-dots" id="day-nav-dots"></div>
       <div class="card">
         <div class="card-title">⚡ ملخص سريع</div>
         <div class="qs-grid">
@@ -444,6 +459,7 @@
         <div class="day-title" id="week-title"></div>
         <button class="arrow" onclick="changeWeek(1)">←</button>
       </div>
+      <div class="nav-dots" id="week-nav-dots"></div>
       <div id="week-page-nav" style="display:none;align-items:center;justify-content:center;gap:10px;margin-bottom:12px">
         <button class="arrow" style="width:28px;height:28px;font-size:13px" onclick="changeWeekPage(-1)">→</button>
         <span id="week-page-label" style="font-size:11px;color:var(--ink-soft)"></span>
@@ -477,11 +493,6 @@
 
     <!-- ===================== MONTH ===================== -->
     <section class="page" id="page-month">
-      <div class="month-nav">
-        <button class="arrow" onclick="changeMonth(-1)">→</button>
-        <div class="day-title" id="month-title" onclick="openSheet('sheet-month-picker')"></div>
-        <button class="arrow" onclick="changeMonth(1)">←</button>
-      </div>
       <div class="card">
         <div class="card-title">⚡ ملخص سريع</div>
         <div class="qs-grid">
@@ -499,6 +510,12 @@
       </div>
       <div id="mo-yoy" style="display:none;text-align:center;font-size:12px;font-weight:700;margin-bottom:12px"></div>
       <div class="card">
+        <div class="month-nav" style="margin-top:0">
+          <button class="arrow" onclick="changeMonth(-1)">→</button>
+          <div class="day-title" id="month-title" onclick="openSheet('sheet-month-picker')"></div>
+          <button class="arrow" onclick="changeMonth(1)">←</button>
+        </div>
+        <div class="nav-dots" id="month-nav-dots"></div>
         <div class="cal-head">
           <span>أحد</span><span>اثنين</span><span>ثلاثاء</span><span>أربعاء</span><span>خميس</span><span>جمعة</span><span>سبت</span>
         </div>
@@ -506,11 +523,6 @@
       </div>
       <div class="card">
         <div class="card-title">📋 تفصيل الأيام</div>
-        <div class="day-nav" style="margin:0 0 12px">
-          <button class="arrow" onclick="changeMonthDailyOffset(1)">→</button>
-          <div class="day-title" id="month-daily-title" style="font-size:12.5px"></div>
-          <button class="arrow" onclick="changeMonthDailyOffset(-1)">←</button>
-        </div>
         <div>
           <table class="a-table" id="month-daily-table" style="width:100%;table-layout:fixed">
             <thead><tr><th>اليوم</th><th>التاريخ</th><th>الصرف</th><th>الدخل</th><th>الصافي</th><th>🏦 ادخار</th><th>الصافي الشامل</th></tr></thead>
@@ -622,7 +634,7 @@
           </div>
         </div>
         <div style="overflow-x:auto">
-          <table class="a-table" style="min-width:380px">
+          <table class="a-table">
             <thead id="an-cmp-head"></thead>
             <tbody id="an-cmp-body"></tbody>
             <tfoot id="an-cmp-foot"></tfoot>
@@ -632,13 +644,7 @@
 
       <div class="card">
         <div class="card-title">📋 الجدول التفصيلي الشهري</div>
-        <div style="overflow-x:auto">
-          <table class="a-table">
-            <thead><tr><th>الشهر</th><th>الدخل</th><th>المصروف</th><th>المتبقي</th><th>٪</th><th>الحالة</th></tr></thead>
-            <tbody id="an-table-body"></tbody>
-            <tfoot id="an-table-foot"></tfoot>
-          </table>
-        </div>
+        <div id="an-table-cards"></div>
         <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="exportDetailedTableCSV()">⬇ تصدير الجدول (CSV)</button>
       </div>
 
@@ -646,7 +652,7 @@
         <div class="card-title">🔗 جدول الترحيل الشهري</div>
         <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">كل شهر يبدأ برصيد الشهر اللي قبله (مرحّل)، فلو صرفت أكثر من دخل الشهر يبان بوضوح إنك أخذت من رصيد سابق، مو نقص من فراغ.</p>
         <div style="overflow-x:auto">
-          <table class="a-table" style="min-width:340px">
+          <table class="a-table">
             <thead><tr><th>الشهر</th><th>= المتاح</th><th>المصروف</th><th>= يرحّل للي بعده</th></tr></thead>
             <tbody id="an-carry-body"></tbody>
             <tfoot id="an-carry-foot"></tfoot>
@@ -663,7 +669,7 @@
           <div class="strip-box"><div class="strip-lbl">الصافي</div><div class="strip-val" id="tr-net">—</div></div>
         </div>
         <div style="overflow-x:auto">
-          <table class="a-table" style="min-width:360px">
+          <table class="a-table">
             <thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>ملاحظة</th></tr></thead>
             <tbody id="tr-table-body"></tbody>
           </table>
@@ -678,7 +684,7 @@
           <div class="strip-box"><div class="strip-lbl">الرصيد الحالي</div><div class="strip-val" id="sv-balance">—</div></div>
         </div>
         <div style="overflow-x:auto">
-          <table class="a-table" style="min-width:380px">
+          <table class="a-table">
             <thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>= الرصيد بعدها</th></tr></thead>
             <tbody id="sv-table-body"></tbody>
           </table>
@@ -756,6 +762,13 @@
         <div class="fgroup"><label>🎯 هدف المخزون (اتركه 0 لإخفائه)</label><input type="number" id="st-goal" placeholder="مثال: 5000"></div>
         <div class="fgroup"><label>🎯 هدف حساب الادخار (مستقل تماماً عن هدف المخزون — اتركه 0 لإخفائه)</label><input type="number" id="st-savings-goal" placeholder="مثال: 3000"></div>
         <div class="fgroup"><label>📅 هدف السنة — سقف الصرف السنوي (يظهر بصفحة "تحليل" — اتركه 0 لإخفائه)</label><input type="number" id="st-annual-cap" placeholder="مثال: 40000"></div>
+        <div class="switch-row">
+          <div class="switch-row-text">
+            <div class="switch-row-title">🔗 ربط الادخار بالمخزون</div>
+            <div class="switch-row-sub" id="link-savings-sub">لما يكون مفعّل، أي تحويل للادخار ينخصم فوراً من متبقي دورتك (زي التحويل بين حسابين). لما يكون معطّل، الادخار يضل مستقل تماماً.</div>
+          </div>
+          <button class="switch-toggle" id="link-savings-toggle" onclick="toggleLinkSavings()"><div class="knob"></div></button>
+        </div>
         <button class="btn btn-accent btn-block" onclick="saveSettingsForm()">حفظ الإعدادات</button>
 
         <div style="height:1px;background:var(--line);margin:16px 0"></div>
@@ -776,6 +789,7 @@
       </div>
       <div class="settings-section" id="set-sec-cats" style="margin-top:4px">
         <div id="cat-counter" style="font-size:11px;color:var(--ink-soft);margin-bottom:8px"></div>
+        <button class="btn btn-ghost btn-block" style="margin-bottom:10px" onclick="showPage('settings-cats-order')">↕ ترتيب شامل لكل الفئات ›</button>
         <p style="font-size:11px;color:var(--ink-soft);margin-bottom:8px">اضغط ⋮⋮ لترتيب الفئة، وحدّد حد إنفاق شهري لأي فئة صرف (اتركه 0 لتجاهله).</p>
         <div class="cat-tabs" id="cat-tabs"></div>
         <div id="st-cats"></div>
@@ -796,6 +810,17 @@
         <button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="runDedupeCategories()">🧹 دمج الفئات المكررة</button>
         <button class="btn btn-ghost btn-block" style="margin-top:8px" onclick="restoreDefaultCategories()">↺ استعادة الفئات الافتراضية</button>
       </div>
+    </section>
+
+    <!-- ===================== SETTINGS: ترتيب الفئات الشامل ===================== -->
+    <section class="page" id="page-settings-cats-order">
+      <div class="day-nav">
+        <button class="arrow" onclick="showPage('settings-cats')">→</button>
+        <div class="day-title">↕ ترتيب الفئات</div>
+        <div style="width:34px"></div>
+      </div>
+      <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">اسحب أي فئة من مقبضها ⋮⋮ لتغيير ترتيبها العام — هذا الترتيب هو نفسه المستخدم بكل قوائم الفئات بالتطبيق (النموذج، التبويبات...).</p>
+      <div id="cats-order-list"></div>
     </section>
 
     <!-- ===================== SETTINGS: الألوان ===================== -->
@@ -945,7 +970,7 @@
     <div class="settings-section">
       <div class="settings-label">📖 لوحة التحكم</div>
       <p style="font-size:12px;color:var(--ink-soft);line-height:1.8">
-        الختم بالأعلى يعرض المتبقي من دورة راتبك الحالية وعدد الأيام المتبقية، مع تنبيه استباقي أحمر لو معدل صرفك اليومي زاد عن المسموح، وسطر مقارنة بنفس فترة الدورة السابقة. بطاقة <b>"💰 إجمالي أموالك"</b> تلخّص المخزون + حساب الادخار + مجموعهم بنظرة وحدة. تحتها "مصادر الدخل" تفصّل من وين جا دخلك هالدورة. <b>"المخزون"</b> رصيدك المتراكم من كل دورة راتب ماضية، و<b>"حساب الادخار"</b> رصيد مستقل تماماً (إيداعاتك وسحوباتك منه) مقسّم بفترات شهرية زي المخزون بالظبط. لو حددت "🎯 هدف الادخار" بالإعدادات يطلع شريط تقدم له. وتحته توزيع المصاريف برسم دائري وقائمة، وآخر عملياتك.
+        الختم بالأعلى يعرض المتبقي من دورة راتبك الحالية وعدد الأيام المتبقية، مع تنبيه استباقي أحمر لو معدل صرفك اليومي زاد عن المسموح، وسطر مقارنة بنفس فترة الدورة السابقة. بطاقة <b>"💰 إجمالي أموالك"</b> تلخّص المخزون + حساب الادخار + مجموعهم بنظرة وحدة. تحتها "مصادر الدخل" تفصّل من وين جا دخلك هالدورة. <b>"المخزون"</b> رصيدك المتراكم من كل دورة راتب ماضية، و<b>"حساب الادخار"</b> رصيد مستقل تماماً (إيداعاتك وسحوباتك منه) مقسّم بفترات شهرية زي المخزون بالضبط. لو حددت "🎯 هدف الادخار" بالإعدادات يطلع شريط تقدم له. وتحته توزيع المصاريف برسم دائري وقائمة، وآخر عملياتك.
       </p>
     </div>
 
@@ -1089,7 +1114,7 @@ function ensureCoreCategories(){
 let state = {
   transactions: [],
   categories: DEFAULT_CATEGORIES.slice(),
-  settings: { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'paper', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, weeksShown:'all' },
+  settings: { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'paper', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, weeksShown:'all', linkSavingsToReserve:false },
   currentDate: new Date(),
   weekViewYear: new Date().getFullYear(),
   weekViewMonth: new Date().getMonth(),
@@ -1097,7 +1122,6 @@ let state = {
   curMonth: new Date().getMonth(),
   curYear: new Date().getFullYear(),
   mpYear: new Date().getFullYear(),
-  monthDailyOffset: 0,
   anDailyOffset: 0,
   editingTx: null,
   currentTxType: 'expense',
@@ -1198,6 +1222,12 @@ function localToday(){ const n=new Date(); return new Date(n.getFullYear(),n.get
 function parseLocalDate(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 function getCat(id){ return state.categories.find(c=>c.id===id) || {name:'أخرى',emoji:'📦',type:'expense'}; }
+function txAmtHtml(t){
+  if (state.settings.linkSavingsToReserve && t.category==='s1'){
+    return `<div class="tx-amt" style="color:var(--accent2)">-${fmt(t.amount)}</div>`;
+  }
+  return `<div class="tx-amt ${t.type}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>`;
+}
 function getTxForDate(ds){ return state.transactions.filter(t=>t.date===ds); }
 function getMonthTxs(y,m){ const p=`${y}-${String(m+1).padStart(2,'0')}`; return state.transactions.filter(t=>t.date.startsWith(p)); }
 
@@ -1298,6 +1328,14 @@ function getSavingsCatIds(){
   return state.categories.filter(c => c.id==='s1' || c.id==='s2').map(c => c.id);
 }
 function excludeSavings(txs){
+  if (state.settings.linkSavingsToReserve){
+    // الادخار مرتبط بالمخزون: الإيداع (s1) يُحسب كخصم من الدورة، والسحب (s2) يُحسب كإضافة لها
+    return txs.map(t=>{
+      if (t.category==='s1') return { ...t, type:'expense' };
+      if (t.category==='s2') return { ...t, type:'income' };
+      return t;
+    });
+  }
   const ids = getSavingsCatIds();
   return txs.filter(t => !ids.includes(t.category));
 }
@@ -1702,7 +1740,7 @@ function renderIncomeSources(info){
 function renderSpendAlert(info){
   const el = document.getElementById('db-alert'); if(!el) return;
   const todayStr = dateKey(localToday());
-  const todayExpense = excludeSavings(state.transactions.filter(t=>t.type==='expense'&&t.date===todayStr)).reduce((s,t)=>s+t.amount,0);
+  const todayExpense = excludeSavings(state.transactions.filter(t=>t.date===todayStr)).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const idealDaily = info.totalDays>0 ? info.totalIncome/info.totalDays : 0;
   const actualDaily = info.elapsed>0 ? info.expense/info.elapsed : 0;
 
@@ -1730,7 +1768,7 @@ function renderCycleComparison(){
   const cutoffRaw = new Date(prev.start.getFullYear(), prev.start.getMonth(), prev.start.getDate()+elapsedDays-1);
   const cutoff = cutoffRaw > prev.end ? prev.end : cutoffRaw;
   const prevStr = dateKey(prev.start), cutoffStr = dateKey(cutoff);
-  const prevPartial = excludeSavings(state.transactions.filter(t=>t.type==='expense'&&t.date>=prevStr&&t.date<=cutoffStr)).reduce((s,t)=>s+t.amount,0);
+  const prevPartial = excludeSavings(state.transactions.filter(t=>t.date>=prevStr&&t.date<=cutoffStr)).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   const curExpense = cur.expense;
   if (prevPartial<=0){ el.textContent=''; return; }
   const diffPct = Math.round(((curExpense-prevPartial)/prevPartial)*100);
@@ -1916,7 +1954,7 @@ function getWeekdayAverage(viewDate){
   let total=0, count=0;
   while (dateKey(d) < viewStr){
     const ds = dateKey(d);
-    const exp = excludeSavings(state.transactions.filter(t=>t.type==='expense'&&t.date===ds)).reduce((s,t)=>s+t.amount,0);
+    const exp = excludeSavings(state.transactions.filter(t=>t.date===ds)).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
     total += exp; count++;
     d.setDate(d.getDate()+7);
   }
@@ -1925,6 +1963,12 @@ function getWeekdayAverage(viewDate){
 }
 
 // ---------- عرض: اليوم ----------
+function renderNavDots(id, count, activeIdx){
+  const el = document.getElementById(id); if(!el) return;
+  el.innerHTML = Array.from({length:count}).map((_,i)=>
+    `<span class="nav-dot${i===activeIdx?' active':''}"></span>`
+  ).join('');
+}
 function renderDay(){
   const d = state.currentDate;
   const ds = dateKey(d);
@@ -1933,6 +1977,7 @@ function renderDay(){
   document.getElementById('day-title').innerHTML = isToday
     ? `<span class="accent">اليوم</span> · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`
     : `${DAY_NAMES[d.getDay()]} · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+  renderNavDots('day-nav-dots', 7, d.getDay());
 
   const txs = getTxForDate(ds);
   const budgetTxs = excludeSavings(txs);
@@ -1964,7 +2009,7 @@ function renderDay(){
       <div class="tx-icon">${c.emoji}</div>
       <div class="tx-body"><div class="tx-name">${c.name}</div>${t.note?`<div class="tx-note">${t.note}</div>`:''}</div>
       <div class="tx-right">
-        <div class="tx-amt ${t.type}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div>
+        ${txAmtHtml(t)}
         <div class="tx-acts"><button onclick="editTx('${t.id}')">✏️</button><button onclick="deleteTx('${t.id}')">🗑️</button></div>
       </div>
     </div>`;
@@ -2025,7 +2070,7 @@ function getHistoricalWeeklyAverage(){
     const end = new Date(start.getFullYear(), start.getMonth(), start.getDate()+6);
     if (end >= today) break; // نحسب فقط أسابيع مكتملة بالكامل من الماضي
     const sStr = dateKey(start), eStr = dateKey(end);
-    const exp = excludeSavings(state.transactions.filter(t=>t.type==='expense'&&t.date>=sStr&&t.date<=eStr)).reduce((s,t)=>s+t.amount,0);
+    const exp = excludeSavings(state.transactions.filter(t=>t.date>=sStr&&t.date<=eStr)).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
     totals.push(exp);
     start = new Date(start.getFullYear(), start.getMonth(), start.getDate()+7);
   }
@@ -2058,6 +2103,7 @@ function renderWeek(){
   const totalExp = weeks.reduce((s,w)=>s+w.exp,0);
 
   document.getElementById('week-title').textContent = `${MONTH_NAMES[m]} ${y} · ${allStarts.length} أسابيع`;
+  renderNavDots('week-nav-dots', 12, m);
 
   document.getElementById('wk-inc').textContent = totalInc?fmt(totalInc):'—';
   document.getElementById('wk-exp').textContent = totalExp?fmt(totalExp):'—';
@@ -2183,7 +2229,7 @@ function renderWeek(){
     return `<div class="tx-row">
       <div class="tx-icon">${c.emoji}</div>
       <div class="tx-body"><div class="tx-name">${c.name}</div><div class="tx-note">${t.date}${t.note?' · '+t.note:''}</div></div>
-      <div class="tx-right"><div class="tx-amt ${t.type}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div></div>
+      <div class="tx-right">${txAmtHtml(t)}</div>
     </div>`;
   }).join('') : `<div class="empty"><div class="em-icon">📭</div><p>لا توجد عمليات في أسابيع هذا الشهر</p></div>`;
 }
@@ -2215,16 +2261,16 @@ function getCycleBoundsByOffset(offset){
   }
   return { start, end };
 }
-function renderCycleDailyTable(bodyId, footId, titleId, offset){
+function renderCycleDailyTable(bodyId, footId, titleId, offset, explicitBounds){
   const bodyEl = document.getElementById(bodyId);
   const footEl = document.getElementById(footId);
   if (!bodyEl || !footEl) return;
   offset = offset || 0;
-  const { start, end } = getCycleBoundsByOffset(offset);
+  const { start, end } = explicitBounds || getCycleBoundsByOffset(offset);
   const titleEl = titleId ? document.getElementById(titleId) : null;
   if (titleEl){
     const range = `${start.getDate()} ${MONTH_NAMES[start.getMonth()].slice(0,3)} ← ${end.getDate()} ${MONTH_NAMES[end.getMonth()].slice(0,3)}`;
-    titleEl.innerHTML = offset===0 ? `<span class="accent">الدورة الحالية</span> · ${range}` : range;
+    titleEl.innerHTML = (!explicitBounds && offset===0) ? `<span class="accent">الدورة الحالية</span> · ${range}` : range;
   }
   const allDays = [];
   let cursor = new Date(start);
@@ -2259,10 +2305,6 @@ function renderCycleDailyTable(bodyId, footId, titleId, offset){
     <td style="color:${totSv>=0?'var(--savings-in)':'var(--savings-out)'}">${fmt(totSv)}</td>
     <td style="color:${totGrand>=0?'var(--income)':'var(--expense)'}">${fmt(totGrand)}</td>
   </tr>`;
-}
-function changeMonthDailyOffset(dir){
-  state.monthDailyOffset = Math.max(0, state.monthDailyOffset + dir);
-  renderCycleDailyTable('month-daily-table-body','month-daily-table-foot','month-daily-title', state.monthDailyOffset);
 }
 function changeAnDailyOffset(dir){
   state.anDailyOffset = Math.max(0, state.anDailyOffset + dir);
@@ -2315,7 +2357,7 @@ function renderSearchResults(){
     return `<div class="tx-row" style="cursor:pointer" onclick="jumpToDate('${t.date}');closeSheet('sheet-search')">
       <div class="tx-icon">${c.emoji}</div>
       <div class="tx-body"><div class="tx-name">${c.name}</div><div class="tx-note">${t.date}${t.note?' · '+t.note:''}</div></div>
-      <div class="tx-right"><div class="tx-amt ${t.type}">${t.type==='income'?'+':'-'}${fmt(t.amount)}</div></div>
+      <div class="tx-right">${txAmtHtml(t)}</div>
     </div>`;
   }).join('') : `<div class="empty"><div class="em-icon">📭</div><p>ما فيه نتائج مطابقة</p></div>`;
 }
@@ -2324,6 +2366,7 @@ function renderSearchResults(){
 function renderMonth(){
   const y=state.curYear, m=state.curMonth;
   document.getElementById('month-title').textContent = `${MONTH_NAMES[m]} ${y}`;
+  renderNavDots('month-nav-dots', 12, m);
   const txs = excludeSavings(getMonthTxs(y,m));
   const inc = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const exp = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
@@ -2439,7 +2482,7 @@ function renderMonth(){
         </div>`;
       })();
 
-  renderCycleDailyTable('month-daily-table-body','month-daily-table-foot','month-daily-title', state.monthDailyOffset);
+  renderCycleDailyTable('month-daily-table-body','month-daily-table-foot', null, 0, { start: new Date(y,m,1), end: new Date(y,m+1,0) });
 }
 // المتبقي التراكمي حتى نهاية شهر معيّن (يشمل ترحيل كل الأشهر السابقة + راتب ودخل هذا الشهر - مصروفه)
 function getMonthCarryRemaining(year, month){
@@ -2982,41 +3025,32 @@ function renderAnalysis(){
 
   // ── الجدول التفصيلي الشهري (مطبّق عليه نظام الترحيل الشهري) ──
   const chipLabel = { ...CARRY_CHIP_LABELS, gray:'—' };
-  document.getElementById('an-table-body').innerHTML = carryRows.map(r=>{
-    const pctDisplay = r.carryPct>=100 ? Math.round(Math.min(999,r.carryPct)) : (Math.floor(r.carryPct*10)/10);
-    const bridge = getBridgeTransferAmounts(year, r.m);
-    const incomeMain = r.totalIncome - bridge.toReserve;
-    return `<tr style="${!r.hasData?'opacity:0.4':''}">
-      <td><b>${r.name}</b></td>
-      <td style="color:var(--income)">${fmt(incomeMain)}${bridge.toReserve>0?`<br><span style="color:var(--savings-in);font-size:9.5px">🟣 +${fmt(bridge.toReserve)}</span>`:''}</td>
-      <td style="color:var(--expense)">${r.hasData?fmt(r.expense):'—'}</td>
-      <td style="color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
-      <td>${r.hasData?pctDisplay+'٪':'—'}</td>
-      <td><span class="chip chip-${r.carryStatus}">${chipLabel[r.carryStatus]}</span></td>
-    </tr>`;
-  }).join('')
-  + `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;padding:10px 0;border-bottom:1px dashed var(--line)">ـــــــــــــــ 🏦 حساب الادخار ـــــــــــــــ</td></tr>`
-  + svCarryRows.map(r=>{
-    const pctDisplaySv = r.carryPct>=100 ? Math.round(Math.min(999,r.carryPct)) : (Math.floor(r.carryPct*10)/10);
-    return `<tr style="${!r.hasData?'opacity:0.4':''}">
-      <td><b>${r.name}</b></td>
-      <td style="color:var(--savings-in)">${r.dep>0?fmt(r.dep):'—'}</td>
-      <td style="color:var(--savings-out)">${r.wd>0?fmt(r.wd):'—'}</td>
-      <td style="color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
-      <td>${r.hasData?pctDisplaySv+'٪':'—'}</td>
-      <td><span class="chip chip-${r.carryStatus}">${chipLabel[r.carryStatus]}</span></td>
-    </tr>`;
-  }).join('');
+  document.getElementById('an-table-cards').innerHTML =
+    renderCarryPeriodRows(carryRows, {
+      label: r => r.name,
+      spent: r => r.expense,
+      available: r => r.available,
+      balance: r => r.carryOut,
+      isCurrent: r => r.m===localToday().getMonth() && year===localToday().getFullYear(),
+      currentSuffix: 'الشهر الحالي',
+      hasData: r => r.hasData,
+    })
+    + savingsDividerHtml()
+    + renderCarryPeriodRows(svCarryRows, {
+      label: r => r.name,
+      spent: r => r.wd,
+      available: r => r.available,
+      balance: r => r.carryOut,
+      isCurrent: r => r.m===localToday().getMonth() && year===localToday().getFullYear(),
+      currentSuffix: 'الشهر الحالي',
+      hasData: r => r.hasData,
+    });
   const finalCarryForTable = carryRows.length ? carryRows[carryRows.length-1].carryOut : opening;
-  document.getElementById('an-table-foot').innerHTML = `
-    <tr>
-      <td>الإجمالي</td>
-      <td style="color:var(--income)">${fmt(totalInc)}</td>
-      <td style="color:var(--expense)">${fmt(totalExp)}</td>
-      <td style="color:${finalCarryForTable>=0?'var(--income)':'var(--expense)'}">${fmt(finalCarryForTable)}</td>
-      <td></td>
-      <td></td>
-    </tr>`;
+  document.getElementById('an-table-cards').innerHTML += `<div class="ledger-row" style="border-top:1.5px solid var(--line);padding-top:10px;margin-top:10px">
+    <span style="font-weight:800">= الإجمالي</span><span class="ledger-fill"></span>
+    <span style="font-size:11px;color:var(--ink-soft)">دخل ${fmt(totalInc)} · صرف ${fmt(totalExp)} ·</span>
+    <span class="ledger-val" style="color:${finalCarryForTable>=0?'var(--income)':'var(--expense)'}">${fmt(finalCarryForTable)}</span>
+  </div>`;
 
   // ── جدول الترحيل الشهري (12 شهر مخزون، ثم فاصل، ثم 12 شهر حساب ادخار) ──
   document.getElementById('an-carry-body').innerHTML = carryRows.map(r => `
@@ -3236,10 +3270,29 @@ function fillSettingsForm(){
   document.getElementById('st-savings-goal').value = state.settings.savingsAccountGoal||'';
   document.getElementById('st-annual-cap').value = state.settings.annualSpendCap||'';
   document.getElementById('st-weeks-shown').value = state.settings.weeksShown||'all';
+  renderLinkSavingsToggle();
   renderCatSettings();
+  renderCatsOrderPage();
   renderThemeList();
   renderPaydayMonthGrid();
   renderBackupReminder();
+}
+function renderLinkSavingsToggle(){
+  const btn = document.getElementById('link-savings-toggle');
+  const sub = document.getElementById('link-savings-sub');
+  if (!btn) return;
+  const on = !!state.settings.linkSavingsToReserve;
+  btn.classList.toggle('on', on);
+  if (sub) sub.textContent = on
+    ? 'مفعّل — أي إيداع بالادخار ينخصم فوراً من متبقي دورتك (يظهر بلون مميز)، زي التحويل بين حسابين بنفس البنك.'
+    : 'معطّل — الادخار يضل مستقل تماماً عن حساب دورتك (الوضع الافتراضي).';
+}
+function toggleLinkSavings(){
+  state.settings.linkSavingsToReserve = !state.settings.linkSavingsToReserve;
+  save();
+  renderLinkSavingsToggle();
+  refreshAll();
+  showToast(state.settings.linkSavingsToReserve ? '🔗 تم تفعيل ربط الادخار بالمخزون' : '🔓 تم فصل الادخار عن المخزون مجدداً');
 }
 function saveSettingsForm(){
   state.settings.salary = parseFloat(document.getElementById('st-salary').value)||0;
@@ -3266,6 +3319,7 @@ function setCatTab(type){
 function toggleCatMoveMenu(id){
   _catMoveMenuOpen = (_catMoveMenuOpen === id) ? null : id;
   renderCatSettings();
+  renderCatsOrderPage();
 }
 function renderCatTabs(){
   const el = document.getElementById('cat-tabs'); if(!el) return;
@@ -3335,8 +3389,46 @@ document.addEventListener('click', (e)=>{
   if (_catMoveMenuOpen && !e.target.closest('.cat-handle-wrap')){
     _catMoveMenuOpen = null;
     renderCatSettings();
+    renderCatsOrderPage();
   }
 });
+function renderCatsOrderPage(){
+  const el = document.getElementById('cats-order-list'); if(!el) return;
+  const svIds = getSavingsLinkedCatIds();
+  const typeInfo = (c) => svIds.includes(c.id)
+    ? { label:'ادخار', cls:'chip-yellow' }
+    : c.type==='income' ? { label:'دخل', cls:'chip-green' }
+    : c.type==='both' ? { label:'كلاهما', cls:'chip-purple' }
+    : { label:'صرف', cls:'chip-red' };
+  el.innerHTML = state.categories.map((c,idx)=>{
+    const info = typeInfo(c);
+    const menuKey = 'order-'+c.id;
+    const menuOpen = _catMoveMenuOpen === menuKey;
+    return `<div class="cat-row">
+      <div class="cat-handle-wrap">
+        <button class="cat-handle-btn" onclick="toggleCatMoveMenu('${menuKey}')">⋮⋮</button>
+        <div class="cat-handle-menu ${menuOpen?'open':''}">
+          <button onclick="moveCategoryGlobal('${c.id}',-1)" ${idx===0?'disabled':''}>▲ نقل للأعلى</button>
+          <button onclick="moveCategoryGlobal('${c.id}',1)" ${idx===state.categories.length-1?'disabled':''}>▼ نقل للأسفل</button>
+        </div>
+      </div>
+      <span class="em">${c.emoji}</span>
+      <span class="nm">${c.name}</span>
+      <span class="chip ${info.cls}">${info.label}</span>
+    </div>`;
+  }).join('');
+}
+function moveCategoryGlobal(id, dir){
+  const idx = state.categories.findIndex(c=>c.id===id);
+  const newIdx = idx+dir;
+  if (idx<0 || newIdx<0 || newIdx>=state.categories.length) return;
+  const arr = state.categories;
+  [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+  _catMoveMenuOpen = null;
+  save();
+  renderCatsOrderPage();
+  renderCatSettings();
+}
 function moveCategory(id, dir){
   const groupIds = getCatTabGroupIds();
   const idx = groupIds.indexOf(id);
@@ -3350,7 +3442,7 @@ function moveCategory(id, dir){
   let gi = 0;
   state.categories = state.categories.map(c => groupSet.has(c.id) ? byId[newGroupOrder[gi++]] : c);
   _catMoveMenuOpen = null;
-  save(); renderCatSettings();
+  save(); renderCatSettings(); renderCatsOrderPage();
 }
 function setCategoryLimit(id, value){
   const cat = state.categories.find(c=>c.id===id); if(!cat) return;
