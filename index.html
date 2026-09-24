@@ -621,12 +621,17 @@
           </table>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title">🗂️ توزيع المصاريف على السنة</div>
-        <div id="an-cats"></div>
+      <div class="card" style="padding-bottom:14px">
+        <div class="card-title" style="margin-bottom:12px">📋 جداول تتبع الصرف</div>
+        <div style="display:flex;background:var(--bg);border-radius:10px;padding:2px">
+          <button class="btn-sm mode-btn stb-tab active" data-stb="cmp-years" onclick="setSpendTrackTab('cmp-years')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:'Tajawal';font-weight:700;cursor:pointer;font-size:10.5px">🔄 مقارنة سنتين</button>
+          <button class="btn-sm mode-btn stb-tab" data-stb="carry-monthly" onclick="setSpendTrackTab('carry-monthly')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:'Tajawal';font-weight:700;cursor:pointer;font-size:10.5px">🔗 الترحيل</button>
+          <button class="btn-sm mode-btn stb-tab" data-stb="detailed-monthly" onclick="setSpendTrackTab('detailed-monthly')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:'Tajawal';font-weight:700;cursor:pointer;font-size:10.5px">📋 التفصيلي</button>
+          <button class="btn-sm mode-btn stb-tab" data-stb="transfers" onclick="setSpendTrackTab('transfers')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:'Tajawal';font-weight:700;cursor:pointer;font-size:10.5px">🔁 التحويلات</button>
+          <button class="btn-sm mode-btn stb-tab" data-stb="savings-ledger" onclick="setSpendTrackTab('savings-ledger')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:'Tajawal';font-weight:700;cursor:pointer;font-size:10.5px">🏦 سجل الادخار</button>
+        </div>
       </div>
-
-      <div class="card">
+<div class="card" id="card-cmp-years">
         <div class="card-title" style="justify-content:space-between">
           <span>🔄 مقارنة سنتين</span>
           <div style="display:flex;gap:6px">
@@ -642,20 +647,7 @@
           </table>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-title" style="flex-wrap:wrap;gap:6px">
-          <span>📋 الجدول التفصيلي الشهري <small id="an-table-mode-sub">من بداية الشهر الميلادي لنهايته، بترحيل من اللي قبله</small></span>
-        </div>
-        <div style="display:flex;background:var(--bg);border-radius:10px;padding:2px;margin-bottom:12px">
-          <button class="btn-sm mode-btn" id="an-table-mode-cal" style="flex:1;border:none;border-radius:8px;padding:7px 0;font-family:'Tajawal';font-weight:700;cursor:pointer" onclick="setAnTableMode(false)">📅 شهر ميلادي</button>
-          <button class="btn-sm mode-btn" id="an-table-mode-cycle" style="flex:1;border:none;border-radius:8px;padding:7px 0;font-family:'Tajawal';font-weight:700;cursor:pointer" onclick="setAnTableMode(true)">💰 من راتب لراتب</button>
-        </div>
-        <div id="an-table-cards"></div>
-        <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="exportDetailedTableCSV()">⬇ تصدير الجدول (CSV)</button>
-      </div>
-
-      <div class="card">
+<div class="card" id="card-carry-monthly" style="display:none">
         <div class="card-title">🔗 جدول الترحيل الشهري</div>
         <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">كل شهر يبدأ برصيد الشهر اللي قبله (مرحّل)، فلو صرفت أكثر من دخل الشهر يبان بوضوح إنك أخذت من رصيد سابق، مو نقص من فراغ.</p>
         <div style="overflow-x:auto">
@@ -667,8 +659,12 @@
         </div>
         <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="exportCarryTableCSV()">⬇ تصدير الجدول (CSV)</button>
       </div>
-
-      <div class="card">
+<div class="card" id="card-detailed-monthly" style="display:none">
+        <div class="card-title">📋 الجدول التفصيلي الشهري <small>من بداية الشهر الميلادي لنهايته، بترحيل من اللي قبله</small></div>
+        <div id="an-table-cards"></div>
+        <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="exportDetailedTableCSV()">⬇ تصدير الجدول (CSV)</button>
+      </div>
+<div class="card" id="card-transfers" style="display:none">
         <div class="card-title">🔁 عمليات التحويل الداخلي <small>هذه السنة</small></div>
         <div class="strip" style="margin-bottom:12px">
           <div class="strip-box"><div class="strip-lbl">تحويل داخل</div><div class="strip-val" id="tr-in" style="color:var(--income)">—</div></div>
@@ -682,8 +678,7 @@
           </table>
         </div>
       </div>
-
-      <div class="card">
+<div class="card" id="card-savings-ledger" style="display:none">
         <div class="card-title">🏦 سجل حساب الادخار <small>هذه السنة</small></div>
         <div class="strip" style="margin-bottom:12px">
           <div class="strip-box"><div class="strip-lbl">إيداعات</div><div class="strip-val" id="sv-in" style="color:var(--income)">—</div></div>
@@ -697,6 +692,18 @@
           </table>
         </div>
       </div>
+      <div class="card">
+        <div class="card-title">🗂️ توزيع المصاريف على السنة</div>
+        <div id="an-cats"></div>
+      </div>
+
+      
+
+      
+
+      
+
+      
 
     </section>
 
@@ -2531,6 +2538,17 @@ function toggleDayActionMenu(btn, ev){
   closeDayActionMenus();
   if (!wasOpen) menu.classList.add('open');
 }
+// ---------- تبويبات جداول تتبع الصرف: يظهر جدول واحد بالوقت، بدل قفزة/تمرير ----------
+const SPEND_TRACK_IDS = { 'cmp-years':'card-cmp-years', 'carry-monthly':'card-carry-monthly', 'detailed-monthly':'card-detailed-monthly', 'transfers':'card-transfers', 'savings-ledger':'card-savings-ledger' };
+function setSpendTrackTab(key){
+  Object.entries(SPEND_TRACK_IDS).forEach(([k,id])=>{
+    const el = document.getElementById(id);
+    if (el) el.style.display = (k===key) ? 'block' : 'none';
+  });
+  document.querySelectorAll('.stb-tab').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.stb===key);
+  });
+}
 document.addEventListener('click', (e)=>{
   if (!e.target.closest('.day-act-wrap')) closeDayActionMenus();
 });
@@ -3233,52 +3251,22 @@ function renderAnalysis(){
     </div>`;
   }).join('');
 
-  // ── الجدول التفصيلي الشهري (مطبّق عليه نظام الترحيل الشهري، أو دورات الراتب حسب الوضع المختار) ──
+  // ── الجدول التفصيلي الشهري (مطبّق عليه نظام الترحيل الشهري، من بداية الشهر الميلادي لنهايته) ──
   const chipLabel = { ...CARRY_CHIP_LABELS, gray:'—' };
-  const calBtn = document.getElementById('an-table-mode-cal');
-  const cycleBtn = document.getElementById('an-table-mode-cycle');
-  const modeSubEl = document.getElementById('an-table-mode-sub');
-  if (calBtn && cycleBtn){
-    calBtn.classList.toggle('active', !_anTableCycleMode);
-    cycleBtn.classList.toggle('active', _anTableCycleMode);
-  }
-  if (modeSubEl) modeSubEl.textContent = _anTableCycleMode
-    ? 'من راتب إلى قبل الراتب اللي بعده'
-    : 'من بداية الشهر الميلادي لنهايته، بترحيل من اللي قبله';
 
-  let reserveCardsHtml, reserveTotalHtml;
-  if (_anTableCycleMode){
-    const cyclesInYear = getCycleReserve().filter(r => r.start.getFullYear()===year || r.end.getFullYear()===year);
-    reserveCardsHtml = renderMergedPeriodRows(cyclesInYear, {
-      label: r => `${r.start.getDate()} ${MONTH_NAMES[r.start.getMonth()]} ← ${r.end.getDate()} ${MONTH_NAMES[r.end.getMonth()]} <span style="color:var(--ink-soft);font-weight:400">(${hijriRangeStr(r.start, r.end)})</span>`,
-      reserveStats: r => ({ val:r.reserve, pct:r.carryPct, status:r.carryStatus, hasData:true, spent:r.expense, available:r.available }),
-      savingsStats: r => { const s=getSavingsPeriodStats(r.sStr, r.eStr); return { val:s.balance, pct:s.carryPct, status:s.carryStatus, hasData:s.hasData, spent:s.wd, available:s.available }; },
-      isCurrent: r => r.isCurrent,
-      currentSuffix: 'قيد التنفيذ',
-    });
-    const cycInc = cyclesInYear.reduce((s,r)=>s+r.income,0);
-    const cycExp = cyclesInYear.reduce((s,r)=>s+r.expense,0);
-    const cycFinal = cyclesInYear.length ? cyclesInYear[cyclesInYear.length-1].reserve : 0;
-    reserveTotalHtml = `<div class="ledger-row" style="border-top:1.5px solid var(--line);padding-top:10px;margin-top:10px">
-      <span style="font-weight:800">= الإجمالي</span><span class="ledger-fill"></span>
-      <span style="font-size:11px;color:var(--ink-soft)">دخل ${fmt(cycInc)} · صرف ${fmt(cycExp)} ·</span>
-      <span class="ledger-val" style="color:${cycFinal>=0?'var(--income)':'var(--expense)'}">${fmt(cycFinal)}</span>
-    </div>`;
-  } else {
-    reserveCardsHtml = renderMergedPeriodRows(carryRows, {
-      label: r => r.name,
-      reserveStats: r => ({ val:r.carryOut, pct:r.carryPct, status:r.carryStatus, hasData:r.hasData, spent:r.expense, available:r.available }),
-      savingsStats: r => { const s=svCarryRows[r.m]; return { val:s.carryOut, pct:s.carryPct, status:s.carryStatus, hasData:s.hasData, spent:s.wd, available:s.available }; },
-      isCurrent: r => r.m===localToday().getMonth() && year===localToday().getFullYear(),
-      currentSuffix: 'الشهر الحالي',
-    });
-    const finalCarryForTable = carryRows.length ? carryRows[carryRows.length-1].carryOut : opening;
-    reserveTotalHtml = `<div class="ledger-row" style="border-top:1.5px solid var(--line);padding-top:10px;margin-top:10px">
+  const reserveCardsHtml = renderMergedPeriodRows(carryRows, {
+    label: r => r.name,
+    reserveStats: r => ({ val:r.carryOut, pct:r.carryPct, status:r.carryStatus, hasData:r.hasData, spent:r.expense, available:r.available }),
+    savingsStats: r => { const s=svCarryRows[r.m]; return { val:s.carryOut, pct:s.carryPct, status:s.carryStatus, hasData:s.hasData, spent:s.wd, available:s.available }; },
+    isCurrent: r => r.m===localToday().getMonth() && year===localToday().getFullYear(),
+    currentSuffix: 'الشهر الحالي',
+  });
+  const finalCarryForTable = carryRows.length ? carryRows[carryRows.length-1].carryOut : opening;
+  const reserveTotalHtml = `<div class="ledger-row" style="border-top:1.5px solid var(--line);padding-top:10px;margin-top:10px">
       <span style="font-weight:800">= الإجمالي</span><span class="ledger-fill"></span>
       <span style="font-size:11px;color:var(--ink-soft)">دخل ${fmt(totalInc)} · صرف ${fmt(totalExp)} ·</span>
       <span class="ledger-val" style="color:${finalCarryForTable>=0?'var(--income)':'var(--expense)'}">${fmt(finalCarryForTable)}</span>
     </div>`;
-  }
   document.getElementById('an-table-cards').innerHTML = reserveCardsHtml + reserveTotalHtml;
 
   // ── جدول الترحيل الشهري (12 شهر مخزون، ثم فاصل، ثم صفوف الادخار — شهر ميلادي أو دورات حسب إعداد دورة الادخار المستقلة) ──
@@ -3562,11 +3550,6 @@ function saveSettingsForm(){
 let _catsExpanded = false;
 let _catActiveTab = 'expense';
 let _catMoveMenuOpen = null;
-let _anTableCycleMode = false;
-function setAnTableMode(cycleMode){
-  _anTableCycleMode = cycleMode;
-  renderAnalysis();
-}
 function setCatTab(type){
   _catActiveTab = type;
   _catsExpanded = false;
