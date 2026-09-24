@@ -172,6 +172,7 @@
   .group-tag { font-size:10px; font-weight:800; letter-spacing:0.4px; display:inline-block; padding:3px 10px; border-radius:8px; margin-bottom:8px; }
   .group-tag.expense { background:color-mix(in srgb, var(--expense) 15%, transparent); color:var(--expense); }
   .group-tag.income { background:color-mix(in srgb, var(--income) 15%, transparent); color:var(--income); }
+  .group-tag.transfer { background:color-mix(in srgb, var(--savings-in) 15%, transparent); color:var(--savings-in); }
 
   .empty { text-align:center; padding:34px 10px; color:var(--ink-soft); }
   .empty .em-icon { font-size:34px; margin-bottom:8px; }
@@ -395,22 +396,13 @@
       </div>
 
       <div class="card">
-        <div class="card-title">🏦 المخزون <small>من راتب إلى الراتب اللي بعده</small></div>
+        <div class="card-title">🏦 المخزون + الادخار <small>من راتب إلى الراتب اللي بعده</small></div>
         <div style="text-align:center;margin-bottom:14px">
           <div class="disp" id="reserve-total" style="font-size:26px;font-weight:800">—</div>
-          <div style="font-size:11px;color:var(--ink-soft);margin-top:2px">كل دورة راتب تنتهي، متبقّيها (أو تجاوزها) يروح تلقائياً للمخزون قبل ما تبدأ الدورة الجديدة</div>
-        </div>
-        <div id="reserve-months"></div>
-
-        <div style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;margin:20px 0 14px">ــــــــــــــــــــــ 🏦 حساب الادخار ــــــــــــــــــــــ</div>
-
-        <div style="text-align:center;margin-bottom:14px">
-          <div style="font-size:11px;color:var(--ink-soft);margin-bottom:4px">منفصل تماماً عن الراتب</div>
-          <div class="disp" id="savings-total" style="font-size:26px;font-weight:800">—</div>
-          <div style="font-size:11px;color:var(--ink-soft);margin-top:2px">كل شهر ميلادي ينتهي، صافي إيداعاتك وسحوباتك فيه يروح تلقائياً للرصيد قبل ما يبدأ الشهر الجديد</div>
+          <div style="font-size:11px;color:var(--ink-soft);margin-top:2px">كل دورة راتب تنتهي، متبقّي المخزون (أو تجاوزه) يترحّل تلقائياً، وتحته حركة حساب الادخار بنفس فترة كل دورة</div>
         </div>
         <div id="savings-reminder"></div>
-        <div id="savings-months"></div>
+        <div id="reserve-months"></div>
       </div>
 
       <div class="card" id="db-goal-card" style="display:none">
@@ -600,7 +592,7 @@
       </div>
 
       <div class="card">
-        <div class="card-title">📊 الدخل والصرف والادخار شهرياً</div>
+        <div class="card-title">📊 الدخل والصرف وحركة الادخار شهرياً</div>
         <div class="chart-box"><canvas id="an-chart"></canvas></div>
       </div>
       <div class="card">
@@ -685,7 +677,7 @@
         </div>
         <div style="overflow-x:auto">
           <table class="a-table">
-            <thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>ملاحظة</th></tr></thead>
+            <thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>ملاحظة</th><th></th></tr></thead>
             <tbody id="tr-table-body"></tbody>
           </table>
         </div>
@@ -700,7 +692,7 @@
         </div>
         <div style="overflow-x:auto">
           <table class="a-table">
-            <thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>= الرصيد بعدها</th></tr></thead>
+            <thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>= الرصيد بعدها</th><th></th></tr></thead>
             <tbody id="sv-table-body"></tbody>
           </table>
         </div>
@@ -753,6 +745,14 @@
       <div class="settings-section" id="set-sec-salary">
         <div class="fgroup"><label>الراتب الشهري</label><input type="number" id="st-salary" placeholder="0"></div>
         <div class="fgroup"><label>يوم نزول الراتب الافتراضي</label><input type="number" id="st-payday" min="1" max="31" placeholder="مثال: 27"></div>
+        <div class="switch-row" style="margin-bottom:10px">
+          <div class="switch-row-text">
+            <div class="switch-row-title">🔄 دورة مستقلة للادخار</div>
+            <div class="switch-row-sub" id="savings-cycle-sub">لما يكون مفعّل، حساب الادخار يترحّل بدورته الخاصة (من يوم إيداع لآخر) بدل الشهر الميلادي — بنفس فكرة دورة الراتب بالضبط.</div>
+          </div>
+          <button class="switch-toggle" id="savings-cycle-toggle" onclick="toggleSavingsCycle()"><div class="knob"></div></button>
+        </div>
+        <div class="fgroup" id="savings-cycle-day-wrap" style="display:none"><label>يوم الإيداع الافتراضي للادخار</label><input type="number" id="st-savings-day" min="1" max="31" placeholder="مثال: 5"></div>
         <div class="fgroup"><label>⏰ المتوقع نزول الراتب (الساعة)</label><input type="time" id="st-payday-time"></div>
         <div class="fgroup">
           <label>العملة</label>
@@ -792,6 +792,14 @@
         <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">التطبيق يتعرّف تلقائياً على يوم النزول من آخر عملية 💰 دخل بفئة "راتب" تسجّلها في كل شهر (تظهر بعلامة 🔎). تقدر تتركها كذا، أو تكتب يوماً يدوياً لأي شهر ليطغى على الاكتشاف التلقائي.</p>
         <div id="payday-month-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"></div>
         <button class="btn btn-accent btn-block" onclick="savePaydayMonths()">حفظ أيام الرواتب الشهرية</button>
+
+        <div id="savings-day-section" style="display:none">
+          <div style="height:1px;background:var(--line);margin:16px 0"></div>
+          <div class="settings-label" style="margin-top:0">📅 يوم إيداع الادخار لكل شهر</div>
+          <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">نفس فكرة يوم نزول الراتب بالضبط: يتعرّف تلقائياً على يوم الإيداع من آخر عملية إيداع بحساب الادخار بكل شهر (تظهر بعلامة 🔎)، أو تقدر تكتب يوماً يدوياً لأي شهر ليطغى على الاكتشاف التلقائي.</p>
+          <div id="savings-day-month-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"></div>
+          <button class="btn btn-accent btn-block" onclick="saveSavingsDayMonths()">حفظ أيام إيداع الادخار الشهرية</button>
+        </div>
       </div>
     </section>
 
@@ -1134,7 +1142,7 @@ function ensureCoreCategories(){
 let state = {
   transactions: [],
   categories: DEFAULT_CATEGORIES.slice(),
-  settings: { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'paper', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, weeksShown:'all', linkSavingsToReserve:false },
+  settings: { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'paper', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, weeksShown:'all', linkSavingsToReserve:false, savingsCycleEnabled:false, savingsDefaultDay:5, savingsDayByMonth:{} },
   currentDate: new Date(),
   weekViewYear: new Date().getFullYear(),
   weekViewMonth: new Date().getMonth(),
@@ -1342,6 +1350,72 @@ function savePaydayMonths(){
   showToast('✅ تم حفظ أيام الرواتب الشهرية');
 }
 
+// ---------- يوم إيداع الادخار لكل شهر (نفس آلية يوم نزول الراتب بالضبط، لكن مبنية على عمليات إيداع الادخار) ----------
+function detectAutoSavingsDay(m){
+  const depositTxs = state.transactions.filter(t => isSavingsDeposit(t) && (parseInt(t.date.slice(5,7))-1)===m);
+  if (!depositTxs.length) return null;
+  const latest = depositTxs.sort((a,b)=> a.date<b.date?1:-1)[0];
+  return parseInt(latest.date.slice(8,10));
+}
+function getSavingsDayForMonth(y,m){
+  const map = state.settings.savingsDayByMonth || {};
+  const v = map[m];
+  if (v>=1 && v<=31) return v; // تحديد يدوي له الأولوية دائماً
+  const auto = detectAutoSavingsDay(m);
+  if (auto) return auto; // ثم الاكتشاف التلقائي من عمليات الإيداع
+  return state.settings.savingsDefaultDay || 5; // وأخيراً اليوم العام الافتراضي
+}
+function renderSavingsDayMonthGrid(){
+  const el = document.getElementById('savings-day-month-grid'); if(!el) return;
+  const map = state.settings.savingsDayByMonth || {};
+  const fallback = state.settings.savingsDefaultDay || 5;
+  el.innerHTML = MONTH_NAMES.map((name,i)=>{
+    const manual = map[i];
+    const auto = manual ? null : detectAutoSavingsDay(i);
+    const placeholder = auto ? `تلقائي: يوم ${auto}` : 'أضف اليوم';
+    const hint = auto ? `<div style="font-size:9px;color:var(--accent);margin-top:2px">🔎 من عملية إيداع</div>` : '';
+    return `<div>
+      <label>${name}</label>
+      <input type="number" min="1" max="31" id="sdm-${i}" placeholder="${placeholder}" value="${manual ?? ''}" title="افتراضياً: يوم ${fallback}">
+      ${hint}
+    </div>`;
+  }).join('');
+}
+function saveSavingsDayMonths(){
+  const map = {};
+  MONTH_NAMES.forEach((_,i)=>{
+    const v = parseInt(document.getElementById('sdm-'+i).value);
+    if (v>=1 && v<=31) map[i]=v;
+  });
+  state.settings.savingsDayByMonth = map;
+  save(); refreshAll();
+  showToast('✅ تم حفظ أيام إيداع الادخار الشهرية');
+}
+function renderSavingsCycleToggle(){
+  const btn = document.getElementById('savings-cycle-toggle');
+  const sub = document.getElementById('savings-cycle-sub');
+  const dayWrap = document.getElementById('savings-cycle-day-wrap');
+  const daySection = document.getElementById('savings-day-section');
+  if (!btn) return;
+  const on = !!state.settings.savingsCycleEnabled;
+  btn.classList.toggle('on', on);
+  if (sub) sub.textContent = on
+    ? 'مفعّل — حساب الادخار يترحّل من يوم إيداع للي بعده (زي دورة الراتب بالضبط)، بدل الشهر الميلادي.'
+    : 'معطّل — الادخار يترحّل حسب الشهر الميلادي (الوضع الافتراضي).';
+  if (dayWrap) dayWrap.style.display = on ? 'block' : 'none';
+  if (daySection) daySection.style.display = on ? 'block' : 'none';
+  const dayInput = document.getElementById('st-savings-day');
+  if (dayInput) dayInput.value = state.settings.savingsDefaultDay || '';
+  if (on) renderSavingsDayMonthGrid();
+}
+function toggleSavingsCycle(){
+  state.settings.savingsCycleEnabled = !state.settings.savingsCycleEnabled;
+  save();
+  renderSavingsCycleToggle();
+  refreshAll();
+  showToast(state.settings.savingsCycleEnabled ? '🔄 تم تفعيل دورة الادخار المستقلة' : '📅 رجع الادخار لترحيل الشهر الميلادي');
+}
+
 // ---------- حساب الادخار (منفصل تماماً عن دورة الراتب والمخزون) ----------
 // فقط الفئات اللي تُستثنى بالكامل من حسابات الميزانية (إيداع/سحب مباشر من حساب الادخار)
 function getSavingsCatIds(){
@@ -1364,6 +1438,13 @@ function isSavingsDeposit(t){ return t.category==='s1' || t.category==='b1'; }
 function isSavingsWithdraw(t){ return t.category==='s2' || t.category==='b2'; }
 function getSavingsLinkedCatIds(){ return ['s1','s2','b1','b2']; }
 function getTransferCatIds(){ return ['b1','b2']; }
+// ---------- استبعاد إضافي للتحويلات الجسرية (🔀) من أرقام "صرف/دخل اليوم أو الأسبوع أو الشهر" بالعرض فقط ----------
+// التحويل الداخلي بين المخزون والادخار يبقى محسوباً بحساب المخزون نفسه (excludeSavings العادية)، لكن ما يفترض يظهر كصرف/دخل حقيقي بملخصات اليوم/الأسبوع/الشهر
+function excludeSavingsAndTransfers(txs){
+  const budgetTxs = excludeSavings(txs);
+  const transferIds = getTransferCatIds();
+  return budgetTxs.filter(t => !transferIds.includes(t.category));
+}
 function savingsDividerHtml(){
   return `<div style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;margin:10px 0 2px">ــــــــــــــــــــــ 🏦 حساب الادخار ــــــــــــــــــــــ</div><div style="text-align:center;color:var(--ink-soft);font-size:9.5px;margin-bottom:8px">منفصل عن ميزانيتك الأساسية</div>`;
 }
@@ -1389,6 +1470,20 @@ function getSavingsActivity(txs){
   const deposits = relevant.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
   const withdrawals = relevant.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
   return { deposits, withdrawals };
+}
+// ---------- إحصاءات حساب الادخار الكاملة (مرحّل، متاح، رصيد، حالة) ضمن أي نافذة تواريخ معطاة — أساس دمج بطاقة المخزون مع الادخار بنفس البطاقة، بغض النظر عن نظام فترات الادخار الخاص (شهري أو دورة مستقلة) ----------
+function getSavingsPeriodStats(sStr, eStr){
+  const ids = getSavingsLinkedCatIds();
+  const dayBefore = new Date(parseLocalDate(sStr).getFullYear(), parseLocalDate(sStr).getMonth(), parseLocalDate(sStr).getDate()-1);
+  const carryIn = getSavingsBalanceAsOf(dayBefore);
+  const txs = state.transactions.filter(t => ids.includes(t.category) && t.date>=sStr && t.date<=eStr);
+  const dep = txs.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
+  const wd = txs.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
+  const available = carryIn + dep;
+  const balance = available - wd;
+  const carryPct = available>0 ? (wd/available)*100 : (wd>0 ? 999 : 0);
+  const carryStatus = carryPct>=100 ? 'purple' : carryPct>85 ? 'red' : carryPct>50 ? 'yellow' : 'green';
+  return { carryIn, dep, wd, available, balance, carryPct, carryStatus, hasData: txs.length>0 };
 }
 // ---------- تحويلات الجسر بين المخزون وحساب الادخار لشهر معيّن (فئتا b1/b2 تحديداً) ----------
 function getBridgeTransferAmounts(year, m){
@@ -1490,6 +1585,49 @@ function getCycleReserve(){
   }
   return rows;
 }
+// ---------- دورة الادخار المستقلة (من يوم إيداع لآخر، بنفس آلية دورة الراتب بالضبط) — تُستخدم فقط لما يكون الإعداد savingsCycleEnabled مفعّلاً ----------
+function getSavingsCycleReserve(){
+  const svIds = getSavingsLinkedCatIds();
+  const svTxs = state.transactions.filter(t => svIds.includes(t.category));
+  if (!svTxs.length) return [];
+  const dates = svTxs.map(t=>t.date).sort();
+  const firstTx = parseLocalDate(dates[0]);
+  const today = localToday();
+
+  const dayFirst = getSavingsDayForMonth(firstTx.getFullYear(), firstTx.getMonth());
+  let cycleStart;
+  if (firstTx.getDate() >= dayFirst) {
+    cycleStart = new Date(firstTx.getFullYear(), firstTx.getMonth(), dayFirst);
+  } else {
+    let py=firstTx.getFullYear(), pm=firstTx.getMonth()-1; if (pm<0){pm=11;py--;}
+    cycleStart = new Date(py, pm, getSavingsDayForMonth(py,pm));
+  }
+
+  const rows = [];
+  let balance = 0;
+  let guard = 0;
+  while (guard < 600) {
+    guard++;
+    let ny=cycleStart.getFullYear(), nm=cycleStart.getMonth()+1; if (nm>11){nm=0;ny++;}
+    const dayNext = getSavingsDayForMonth(ny, nm);
+    const cycleEnd = new Date(ny, nm, dayNext-1);
+    const sStr = dateKey(cycleStart), eStr = dateKey(cycleEnd);
+    const txs = svTxs.filter(t => t.date>=sStr && t.date<=eStr);
+    const dep = txs.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
+    const wd = txs.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
+    const net = dep - wd;
+    const carryIn = balance;
+    const available = dep + carryIn;
+    const carryPct = available>0 ? (wd/available)*100 : (wd>0 ? 999 : 0);
+    const carryStatus = carryPct>=100 ? 'purple' : carryPct>85 ? 'red' : carryPct>50 ? 'yellow' : 'green';
+    balance += net;
+    const isCurrent = today >= cycleStart && today <= cycleEnd;
+    rows.push({ start:cycleStart, end:cycleEnd, sStr, eStr, dep, wd, net, balance, isCurrent, carryIn, available, carryPct, carryStatus, hasData: txs.length>0 });
+    if (cycleEnd >= today) break;
+    cycleStart = new Date(ny, nm, dayNext);
+  }
+  return rows;
+}
 // ---------- عرض صفوف الفترات (مشترك بين المخزون وحساب الادخار) ----------
 const CARRY_CHIP_LABELS = { green:'🟢 منتظم', yellow:'🟡 مرتفع', red:'🔴 مرتفع جدًا', purple:'🟣 تجاوز كامل' };
 function renderCarryPeriodRows(rows, opts){
@@ -1522,7 +1660,44 @@ function renderCarryPeriodRows(rows, opts){
     </div>`;
   }).join('');
 }
-
+// ---------- عرض بطاقة مدمجة: صفّين مستقلّين (🏦 المخزون / 🏦 الادخار) داخل نفس البطاقة، كل صف بشارة حالته وتفاصيله كاملة ----------
+const MERGED_STATUS_COLOR = { green:'var(--income)', yellow:'var(--accent2)', red:'var(--expense)', purple:'#8b5cf6', gray:'var(--line)' };
+function renderMergedPeriodRows(rows, opts){
+  return rows.map(r=>{
+    const res = opts.reserveStats(r); // { val, pct, status, hasData, spent, available }
+    const sv = opts.savingsStats(r);  // { val, pct, status, hasData, spent, available }
+    const labelExtra = opts.isCurrent(r) ? ` · ${opts.currentSuffix}` : '';
+    const row = (icon, label, s, barColor) => {
+      const chip = s.hasData
+        ? `<span class="chip chip-${s.status}">${CARRY_CHIP_LABELS[s.status]||''}</span>`
+        : `<span class="chip" style="background:var(--line);color:var(--ink-soft)">لا يوجد نشاط</span>`;
+      const pct = s.hasData ? Math.min(100, s.pct) : 0;
+      const pctDisplay = s.hasData ? (s.pct>=100 ? Math.round(Math.min(999,s.pct)) : (Math.floor(s.pct*10)/10)) : 0;
+      const footTxt = s.hasData ? `${fmt(s.spent)} من ${fmt(s.available)} (${pctDisplay}٪)` : 'لا يوجد نشاط';
+      const valColor = s.hasData ? barColor : 'var(--ink-soft)';
+      return `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <span style="font-size:11.5px">${icon} ${label}</span>
+        ${chip}
+      </div>
+      <div class="res-card-bar" style="margin-bottom:5px"><div class="res-card-bar-fill" style="width:${pct}%;background:${s.hasData?barColor:'var(--line)'}"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-soft)">
+        <span>${footTxt}</span>
+        <span style="font-weight:700;color:${valColor}">${s.hasData?fmt(s.val):'—'}</span>
+      </div>`;
+    };
+    const resColor = MERGED_STATUS_COLOR[res.status] || 'var(--accent)';
+    return `<div class="res-card">
+      <div class="res-card-title" style="margin-bottom:10px">${opts.label(r)}${labelExtra}</div>
+      <div style="padding-bottom:10px;margin-bottom:10px;border-bottom:1px dashed var(--line)">
+        ${row('🏦', 'المخزون', res, resColor)}
+      </div>
+      <div>
+        ${row('🏦', 'الادخار', sv, 'var(--savings-in)')}
+      </div>
+    </div>`;
+  }).join('');
+}
 function renderReserve(){
   const rows = getCycleReserve();
   const totalEl = document.getElementById('reserve-total');
@@ -1538,11 +1713,10 @@ function renderReserve(){
   totalEl.style.color = current>=0 ? 'var(--income)' : 'var(--expense)';
 
   const shown = rows.slice(-12); // آخر 12 دورة راتب، والرقم الإجمالي بالأعلى محسوب من أول دورة دائماً
-  listEl.innerHTML = renderCarryPeriodRows(shown, {
+  listEl.innerHTML = renderMergedPeriodRows(shown, {
     label: r => `${r.start.getDate()} ${MONTH_NAMES[r.start.getMonth()]} ← ${r.end.getDate()} ${MONTH_NAMES[r.end.getMonth()]} <span style="color:var(--ink-soft);font-weight:400">(${hijriRangeStr(r.start, r.end)})</span>`,
-    spent: r => r.expense,
-    available: r => r.available,
-    balance: r => r.reserve,
+    reserveStats: r => ({ val:r.reserve, pct:r.carryPct, status:r.carryStatus, hasData:true, spent:r.expense, available:r.available }),
+    savingsStats: r => { const s=getSavingsPeriodStats(r.sStr, r.eStr); return { val:s.balance, pct:s.carryPct, status:s.carryStatus, hasData:s.hasData, spent:s.wd, available:s.available }; },
     isCurrent: r => r.isCurrent,
     currentSuffix: 'قيد التنفيذ',
   });
@@ -1580,40 +1754,16 @@ function getSavingsMonthlyPeriods(){
   return rows;
 }
 function renderSavingsCard(){
-  const totalEl = document.getElementById('savings-total');
-  const periodsEl = document.getElementById('savings-months'); if(!totalEl || !periodsEl) return;
-  const { balance } = getSavingsBalance();
-  totalEl.textContent = fmt(balance);
-  totalEl.style.color = balance>=0 ? 'var(--income)' : 'var(--expense)';
-
-  const reminderEl = document.getElementById('savings-reminder');
-  if (reminderEl){
-    const depositDates = state.transactions.filter(t=>isSavingsDeposit(t)).map(t=>t.date).sort();
-    if (!depositDates.length){
-      reminderEl.innerHTML = `<div style="font-size:11px;color:var(--accent2);background:color-mix(in srgb, var(--accent2) 12%, transparent);border-radius:10px;padding:8px 10px;margin-bottom:12px">💡 ما فيه أي إيداع بحساب الادخار بعد — ابدأ بأول إيداع</div>`;
-    } else {
-      const lastDeposit = parseLocalDate(depositDates[depositDates.length-1]);
-      const days = Math.floor((localToday()-lastDeposit)/86400000);
-      reminderEl.innerHTML = days>=30
-        ? `<div style="font-size:11px;color:var(--accent2);background:color-mix(in srgb, var(--accent2) 12%, transparent);border-radius:10px;padding:8px 10px;margin-bottom:12px">📅 مرّ ${days} يوم من آخر إيداع بحساب الادخار</div>`
-        : '';
-    }
-  }
-
-  const rows = getSavingsMonthlyPeriods();
-  if (!rows.length){
-    periodsEl.innerHTML = `<div class="empty"><div class="em-icon">🏦</div><p>سجّل أول إيداع أو سحب ليبدأ حساب الادخار</p></div>`;
+  const reminderEl = document.getElementById('savings-reminder'); if(!reminderEl) return;
+  const depositDates = state.transactions.filter(t=>isSavingsDeposit(t)).map(t=>t.date).sort();
+  if (!depositDates.length){
+    reminderEl.innerHTML = `<div style="font-size:11px;color:var(--accent2);background:color-mix(in srgb, var(--accent2) 12%, transparent);border-radius:10px;padding:8px 10px;margin-bottom:12px">💡 ما فيه أي إيداع بحساب الادخار بعد — ابدأ بأول إيداع</div>`;
   } else {
-    const shown = rows.slice(-6);
-    periodsEl.innerHTML = renderCarryPeriodRows(shown, {
-      label: r => `${MONTH_NAMES[r.m]} ${r.y}`,
-      spent: r => r.wd,
-      available: r => r.available,
-      balance: r => r.balance,
-      isCurrent: r => r.isCurrent,
-      currentSuffix: 'الشهر الحالي',
-      hasData: r => r.hasData,
-    });
+    const lastDeposit = parseLocalDate(depositDates[depositDates.length-1]);
+    const days = Math.floor((localToday()-lastDeposit)/86400000);
+    reminderEl.innerHTML = days>=30
+      ? `<div style="font-size:11px;color:var(--accent2);background:color-mix(in srgb, var(--accent2) 12%, transparent);border-radius:10px;padding:8px 10px;margin-bottom:12px">📅 مرّ ${days} يوم من آخر إيداع بحساب الادخار</div>`
+      : '';
   }
 }
 
@@ -2000,7 +2150,7 @@ function renderDay(){
   renderNavDots('day-nav-dots', 7, d.getDay());
 
   const txs = getTxForDate(ds);
-  const budgetTxs = excludeSavings(txs);
+  const budgetTxs = excludeSavingsAndTransfers(txs);
   const inc = budgetTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const exp = budgetTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   document.getElementById('dv-inc').textContent = inc? fmt(inc):'—';
@@ -2021,8 +2171,10 @@ function renderDay(){
 
   const list = document.getElementById('day-list');
   if (!txs.length) { list.innerHTML = `<div class="empty"><div class="em-icon">📭</div><p>لا توجد عمليات في هذا اليوم</p></div>`; return; }
-  const expenses = txs.filter(t=>t.type==='expense');
-  const incomes  = txs.filter(t=>t.type==='income');
+  const transferIdsDay = getTransferCatIds();
+  const expenses = txs.filter(t=>t.type==='expense' && !transferIdsDay.includes(t.category));
+  const incomes  = txs.filter(t=>t.type==='income' && !transferIdsDay.includes(t.category));
+  const transfersDay = txs.filter(t=>transferIdsDay.includes(t.category));
   const rowHtml = (t)=>{
     const c = getCat(t.category);
     return `<div class="tx-row">
@@ -2036,7 +2188,8 @@ function renderDay(){
   };
   list.innerHTML =
     (expenses.length? `<span class="group-tag expense">💸 مصاريف</span>${expenses.map(rowHtml).join('')}`:'') +
-    (incomes.length? `<span class="group-tag income" style="margin-top:10px;display:inline-block">💰 إيرادات</span>${incomes.map(rowHtml).join('')}`:'');
+    (incomes.length? `<span class="group-tag income" style="margin-top:10px;display:inline-block">💰 إيرادات</span>${incomes.map(rowHtml).join('')}`:'') +
+    (transfersDay.length? `<span class="group-tag transfer" style="margin-top:10px;display:inline-block">🔀 تحويلات</span>${transfersDay.map(rowHtml).join('')}`:'');
 }
 
 function changeDay(dir){
@@ -2069,7 +2222,7 @@ function buildWeekDataFromStart(start){
     const d = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
     const ds = dateKey(d);
     const txs = getTxForDate(ds);
-    const budgetTxs = excludeSavings(txs);
+    const budgetTxs = excludeSavingsAndTransfers(txs);
     const di = budgetTxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
     const de = budgetTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
     inc+=di; exp+=de;
@@ -2249,14 +2402,23 @@ function renderWeek(){
   }).join('');
 
   const allTxs = weeks.flatMap(w=>w.days.flatMap(x=>x.txs)).sort((a,b)=> a.date<b.date?1:-1);
-  document.getElementById('week-list').innerHTML = allTxs.length ? allTxs.map(t=>{
+  const transferIdsWk = getTransferCatIds();
+  const wkExpenses = allTxs.filter(t=>t.type==='expense' && !transferIdsWk.includes(t.category));
+  const wkIncomes  = allTxs.filter(t=>t.type==='income' && !transferIdsWk.includes(t.category));
+  const wkTransfers = allTxs.filter(t=>transferIdsWk.includes(t.category));
+  const wkRowHtml = (t)=>{
     const c = getCat(t.category);
     return `<div class="tx-row">
       <div class="tx-icon">${c.emoji}</div>
       <div class="tx-body"><div class="tx-name">${c.name}</div><div class="tx-note">${t.date}${t.note?' · '+t.note:''}</div></div>
       <div class="tx-right">${txAmtHtml(t)}</div>
     </div>`;
-  }).join('') : `<div class="empty"><div class="em-icon">📭</div><p>لا توجد عمليات في أسابيع هذا الشهر</p></div>`;
+  };
+  document.getElementById('week-list').innerHTML = allTxs.length ?
+    (wkExpenses.length? `<span class="group-tag expense">💸 مصاريف</span>${wkExpenses.map(wkRowHtml).join('')}`:'') +
+    (wkIncomes.length? `<span class="group-tag income" style="margin-top:10px;display:inline-block">💰 إيرادات</span>${wkIncomes.map(wkRowHtml).join('')}`:'') +
+    (wkTransfers.length? `<span class="group-tag transfer" style="margin-top:10px;display:inline-block">🔀 تحويلات</span>${wkTransfers.map(wkRowHtml).join('')}`:'')
+    : `<div class="empty"><div class="em-icon">📭</div><p>لا توجد عمليات في أسابيع هذا الشهر</p></div>`;
 }
 // ---------- بناء بيانات يوم واحد (دخل/صرف/نشاط ادخار) بمعزل عن أي سياق أسبوعي ----------
 function buildSingleDayData(d){
@@ -2406,7 +2568,7 @@ function renderMonth(){
   const y=state.curYear, m=state.curMonth;
   document.getElementById('month-title').textContent = `${MONTH_NAMES[m]} ${y}`;
   renderNavDots('month-nav-dots', 12, m);
-  const txs = excludeSavings(getMonthTxs(y,m));
+  const txs = excludeSavingsAndTransfers(getMonthTxs(y,m));
   const inc = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
   const exp = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
   document.getElementById('mo-inc').textContent = inc?fmt(inc):'—';
@@ -2424,7 +2586,7 @@ function renderMonth(){
   // ── مقارنة بنفس الشهر السنة اللي فاتت ──
   const cmpEl = document.getElementById('mo-yoy');
   if (cmpEl){
-    const lastYearTxs = excludeSavings(getMonthTxs(y-1, m));
+    const lastYearTxs = excludeSavingsAndTransfers(getMonthTxs(y-1, m));
     const lastYearExp = lastYearTxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
     if (lastYearExp>0){
       const diffPct = Math.round(((exp-lastYearExp)/lastYearExp)*100);
@@ -2447,7 +2609,7 @@ function renderMonth(){
   const dayExpenses = [];
   for (let d=1; d<=daysInMonth; d++){
     const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const de = excludeSavings(getTxForDate(ds)).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+    const de = excludeSavingsAndTransfers(getTxForDate(ds)).filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
     if (de>0) dayExpenses.push(de);
   }
   const avgDayExpense = dayExpenses.length ? dayExpenses.reduce((s,v)=>s+v,0)/dayExpenses.length : 0;
@@ -2456,7 +2618,7 @@ function renderMonth(){
   for (let i=0;i<firstDay;i++) html += `<div class="cal-cell other"></div>`;
   for (let d=1; d<=daysInMonth; d++){
     const ds = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const dtxs = excludeSavings(getTxForDate(ds));
+    const dtxs = excludeSavingsAndTransfers(getTxForDate(ds));
     const de = dtxs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
     const di = dtxs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
     const dayActivity = getSavingsActivity(getTxForDate(ds));
@@ -2806,8 +2968,10 @@ function renderAnalysis(){
     if (hasData) status = spendPct>90 ? 'red' : spendPct>70 ? 'yellow' : 'green';
     const prefixSvChart = `${year}-${String(m+1).padStart(2,'0')}`;
     const svTxsChart = state.transactions.filter(t=>svIdsChart.includes(t.category) && t.date.startsWith(prefixSvChart));
-    const svNet = svTxsChart.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0) - svTxsChart.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
-    return { name, m, txs, totalIncome, expense, remaining: totalIncome-expense, spendPct, status, hasData, svNet };
+    const svDep = svTxsChart.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
+    const svWd = svTxsChart.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
+    const svNet = svDep - svWd;
+    return { name, m, txs, totalIncome, expense, remaining: totalIncome-expense, spendPct, status, hasData, svNet, svDep, svWd };
   });
   const totalInc = months.reduce((s,x)=>s+x.totalIncome,0);
   const totalExp = months.reduce((s,x)=>s+x.expense,0);
@@ -2911,7 +3075,8 @@ function renderAnalysis(){
         datasets:[
           {label:'دخل', data:months.map(m=>m.totalIncome), backgroundColor:rootStyle.getPropertyValue('--income').trim()||'#4c8c5a', borderRadius:5},
           {label:'صرف', data:months.map(m=>m.expense), backgroundColor:rootStyle.getPropertyValue('--expense').trim()||'#c1502f', borderRadius:5},
-          {label:'ادخار', data:months.map(m=>m.svNet), backgroundColor:rootStyle.getPropertyValue('--savings-in').trim()||'#8b5cf6', borderRadius:5},
+          {label:'إيداع ادخار', data:months.map(m=>m.svDep), backgroundColor:rootStyle.getPropertyValue('--savings-in').trim()||'#8b5cf6', borderRadius:5},
+          {label:'سحب ادخار', data:months.map(m=>m.svWd), backgroundColor:rootStyle.getPropertyValue('--savings-out').trim()||'#c9962e', borderRadius:5},
         ]},
       options:{ responsive:true, maintainAspectRatio:false,
         plugins:{ legend:{ labels:{ color: rootStyle.getPropertyValue('--ink-soft').trim(), font:{size:10} } } },
@@ -3084,11 +3249,10 @@ function renderAnalysis(){
   let reserveCardsHtml, reserveTotalHtml;
   if (_anTableCycleMode){
     const cyclesInYear = getCycleReserve().filter(r => r.start.getFullYear()===year || r.end.getFullYear()===year);
-    reserveCardsHtml = renderCarryPeriodRows(cyclesInYear, {
+    reserveCardsHtml = renderMergedPeriodRows(cyclesInYear, {
       label: r => `${r.start.getDate()} ${MONTH_NAMES[r.start.getMonth()]} ← ${r.end.getDate()} ${MONTH_NAMES[r.end.getMonth()]} <span style="color:var(--ink-soft);font-weight:400">(${hijriRangeStr(r.start, r.end)})</span>`,
-      spent: r => r.expense,
-      available: r => r.available,
-      balance: r => r.reserve,
+      reserveStats: r => ({ val:r.reserve, pct:r.carryPct, status:r.carryStatus, hasData:true, spent:r.expense, available:r.available }),
+      savingsStats: r => { const s=getSavingsPeriodStats(r.sStr, r.eStr); return { val:s.balance, pct:s.carryPct, status:s.carryStatus, hasData:s.hasData, spent:s.wd, available:s.available }; },
       isCurrent: r => r.isCurrent,
       currentSuffix: 'قيد التنفيذ',
     });
@@ -3101,14 +3265,12 @@ function renderAnalysis(){
       <span class="ledger-val" style="color:${cycFinal>=0?'var(--income)':'var(--expense)'}">${fmt(cycFinal)}</span>
     </div>`;
   } else {
-    reserveCardsHtml = renderCarryPeriodRows(carryRows, {
+    reserveCardsHtml = renderMergedPeriodRows(carryRows, {
       label: r => r.name,
-      spent: r => r.expense,
-      available: r => r.available,
-      balance: r => r.carryOut,
+      reserveStats: r => ({ val:r.carryOut, pct:r.carryPct, status:r.carryStatus, hasData:r.hasData, spent:r.expense, available:r.available }),
+      savingsStats: r => { const s=svCarryRows[r.m]; return { val:s.carryOut, pct:s.carryPct, status:s.carryStatus, hasData:s.hasData, spent:s.wd, available:s.available }; },
       isCurrent: r => r.m===localToday().getMonth() && year===localToday().getFullYear(),
       currentSuffix: 'الشهر الحالي',
-      hasData: r => r.hasData,
     });
     const finalCarryForTable = carryRows.length ? carryRows[carryRows.length-1].carryOut : opening;
     reserveTotalHtml = `<div class="ledger-row" style="border-top:1.5px solid var(--line);padding-top:10px;margin-top:10px">
@@ -3117,21 +3279,16 @@ function renderAnalysis(){
       <span class="ledger-val" style="color:${finalCarryForTable>=0?'var(--income)':'var(--expense)'}">${fmt(finalCarryForTable)}</span>
     </div>`;
   }
-  document.getElementById('an-table-cards').innerHTML =
-    reserveCardsHtml
-    + savingsDividerHtml()
-    + renderCarryPeriodRows(svCarryRows, {
-      label: r => r.name,
-      spent: r => r.wd,
-      available: r => r.available,
-      balance: r => r.carryOut,
-      isCurrent: r => r.m===localToday().getMonth() && year===localToday().getFullYear(),
-      currentSuffix: 'الشهر الحالي',
-      hasData: r => r.hasData,
-    })
-    + reserveTotalHtml;
+  document.getElementById('an-table-cards').innerHTML = reserveCardsHtml + reserveTotalHtml;
 
-  // ── جدول الترحيل الشهري (12 شهر مخزون، ثم فاصل، ثم 12 شهر حساب ادخار) ──
+  // ── جدول الترحيل الشهري (12 شهر مخزون، ثم فاصل، ثم صفوف الادخار — شهر ميلادي أو دورات حسب إعداد دورة الادخار المستقلة) ──
+  const svCarryDisplayRows = state.settings.savingsCycleEnabled
+    ? getSavingsCycleReserve().filter(r => r.start.getFullYear()===year || r.end.getFullYear()===year)
+    : svCarryRows;
+  const svCarryLabel = r => state.settings.savingsCycleEnabled
+    ? `${r.start.getDate()} ${MONTH_NAMES[r.start.getMonth()].slice(0,3)} ← ${r.end.getDate()} ${MONTH_NAMES[r.end.getMonth()].slice(0,3)}`
+    : r.name;
+  const svCarryOutVal = r => state.settings.savingsCycleEnabled ? r.balance : r.carryOut;
   document.getElementById('an-carry-body').innerHTML = carryRows.map(r => `
     <tr style="${!r.hasData?'opacity:0.4':''}">
       <td><b>${r.name}</b></td>
@@ -3140,15 +3297,15 @@ function renderAnalysis(){
       <td style="font-weight:800;color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
     </tr>`).join('')
   + `<tr><td colspan="4" style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;padding:10px 0;border-bottom:1px dashed var(--line)">ـــــــــــــــ 🏦 حساب الادخار ـــــــــــــــ</td></tr>`
-  + svCarryRows.map(r => `
+  + svCarryDisplayRows.map(r => `
     <tr style="${!r.hasData?'opacity:0.4':''}">
-      <td><b>${r.name}</b></td>
+      <td><b>${svCarryLabel(r)}</b></td>
       <td style="font-weight:700;color:var(--savings-in)">${fmt(r.available)}</td>
       <td style="color:var(--savings-out)">${r.wd>0?fmt(r.wd):'—'}</td>
-      <td style="font-weight:800;color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
+      <td style="font-weight:800;color:${svCarryOutVal(r)>=0?'var(--income)':'var(--expense)'}">${fmt(svCarryOutVal(r))}</td>
     </tr>`).join('');
   const finalCarry = carryRows.length ? carryRows[carryRows.length-1].carryOut : opening;
-  const finalCarrySv = svCarryRows.length ? svCarryRows[svCarryRows.length-1].carryOut : openingSv;
+  const finalCarrySv = svCarryDisplayRows.length ? svCarryOutVal(svCarryDisplayRows[svCarryDisplayRows.length-1]) : openingSv;
   document.getElementById('an-carry-foot').innerHTML = `
     <tr>
       <td colspan="2" style="white-space:normal;text-align:right;font-size:10.5px">الرصيد الافتتاحي لأول شهر: <b style="color:${opening>=0?'var(--income)':'var(--expense)'}">${fmt(opening)}</b></td>
@@ -3159,10 +3316,13 @@ function renderAnalysis(){
       <td colspan="2" style="white-space:normal;text-align:right;font-size:10.5px;color:var(--savings-in)">🏦 الرصيد الختامي: <b>${fmt(finalCarrySv)}</b></td>
     </tr>`;
 
-  // ── عمليات التحويل الداخلي (فئات type='both' أو أي فئة تحمل نفس المعنى) ──
-  const transferCatIds = state.categories
-    .filter(c => c.type==='both' || normalizeArabic(c.name).includes(normalizeArabic('تحويل داخل')))
-    .map(c => c.id);
+  // ── عمليات التحويل الداخلي (فئات type='both'، أي فئة تحمل نفس المعنى، وفئتا التحويل الجسر بين المخزون والادخار) ──
+  const transferCatIds = [
+    ...state.categories
+      .filter(c => c.type==='both' || normalizeArabic(c.name).includes(normalizeArabic('تحويل داخل')))
+      .map(c => c.id),
+    ...getTransferCatIds(),
+  ];
   const transferTxs = state.transactions
     .filter(t => transferCatIds.includes(t.category) && t.date.startsWith(String(year)))
     .sort((a,b)=> a.date<b.date?1:-1);
@@ -3180,8 +3340,9 @@ function renderAnalysis(){
       <td style="color:${t.type==='income'?'var(--income)':'var(--expense)'}">${t.type==='income'?'⬅️ داخل':'➡️ خارج'}</td>
       <td style="font-weight:700;color:${t.type==='income'?'var(--income)':'var(--expense)'}">${fmt(t.amount)}</td>
       <td style="white-space:normal;color:var(--ink-soft)">${t.note||c.name}</td>
+      <td style="white-space:nowrap"><span style="color:var(--accent);font-size:10.5px;font-weight:700;cursor:pointer" onclick="jumpToDate('${t.date}')">عرض ›</span></td>
     </tr>`;
-  }).join('') : `<tr><td colspan="4" style="white-space:normal;color:var(--ink-soft);padding:14px 4px">لا توجد عمليات تحويل داخلي مسجّلة لهذه السنة</td></tr>`;
+  }).join('') : `<tr><td colspan="5" style="white-space:normal;color:var(--ink-soft);padding:14px 4px">لا توجد عمليات تحويل داخلي مسجّلة لهذه السنة</td></tr>`;
 
   // ── سجل حساب الادخار (رصيد تراكمي مستقل تماماً، غير مرتبط بدورة الراتب أو المخزون) ──
   const svIds = getSavingsLinkedCatIds();
@@ -3207,7 +3368,8 @@ function renderAnalysis(){
       <td style="color:${t.isDep?'var(--income)':'var(--expense)'}">${t.isDep?'⬅️ إيداع':'➡️ سحب'}</td>
       <td style="font-weight:700;color:${t.isDep?'var(--income)':'var(--expense)'}">${fmt(t.amount)}</td>
       <td style="font-weight:800;color:${t.balanceAfter>=0?'var(--income)':'var(--expense)'}">${fmt(t.balanceAfter)}</td>
-    </tr>`).join('') : `<tr><td colspan="4" style="white-space:normal;color:var(--ink-soft);padding:14px 4px">لا توجد عمليات إيداع أو سحب من حساب الادخار لهذه السنة</td></tr>`;
+      <td style="white-space:nowrap"><span style="color:var(--accent);font-size:10.5px;font-weight:700;cursor:pointer" onclick="jumpToDate('${t.date}')">عرض ›</span></td>
+    </tr>`).join('') : `<tr><td colspan="5" style="white-space:normal;color:var(--ink-soft);padding:14px 4px">لا توجد عمليات إيداع أو سحب من حساب الادخار لهذه السنة</td></tr>`;
 }
 
 // ---------- إضافة/تعديل العمليات ----------
@@ -3359,6 +3521,7 @@ function fillSettingsForm(){
   document.getElementById('st-annual-cap').value = state.settings.annualSpendCap||'';
   document.getElementById('st-weeks-shown').value = state.settings.weeksShown||'all';
   renderLinkSavingsToggle();
+  renderSavingsCycleToggle();
   renderCatSettings();
   renderCatsOrderPage();
   renderThemeList();
@@ -3391,6 +3554,7 @@ function saveSettingsForm(){
   state.settings.savingsAccountGoal = parseFloat(document.getElementById('st-savings-goal').value)||0;
   state.settings.annualSpendCap = parseFloat(document.getElementById('st-annual-cap').value)||0;
   state.settings.weeksShown = document.getElementById('st-weeks-shown').value || 'all';
+  state.settings.savingsDefaultDay = parseInt(document.getElementById('st-savings-day').value)||5;
   state.weekPageIndex = 0;
   save(); refreshAll();
   showToast('✅ تم حفظ الإعدادات');
