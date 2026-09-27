@@ -117,6 +117,7 @@
   .btn-accent { background:var(--accent); color:#fff; }
   .btn-ghost { background:transparent; border:1px dashed var(--line); color:var(--ink); }
   .btn-danger { background:var(--expense); color:#fff; }
+  .btn:disabled { opacity:0.35; cursor:default; }
   .btn-block { width:100%; }
   .btn-sm { padding:6px 10px; font-size:11px; border-radius:9px; }
   .row-gap { display:flex; gap:8px; }
@@ -230,6 +231,8 @@
   .cat-handle-menu.open { display:block; }
   .cat-handle-menu button { display:block; width:100%; background:none; border:none; padding:9px 14px; font-size:12px; text-align:right; cursor:pointer; color:var(--ink); white-space:nowrap; font-family:'Tajawal'; }
   .cat-handle-menu button:disabled { opacity:0.35; cursor:default; }
+  #cats-order-list .cat-handle-btn { cursor:grab; touch-action:none; }
+  #cats-order-list .cat-row-dragging { opacity:0.88; box-shadow:0 8px 20px rgba(0,0,0,0.3); z-index:50; position:relative; background:var(--card); border-radius:10px; cursor:grabbing; }
   .day-act-wrap { position:relative; display:inline-block; }
   .day-act-btn { background:none; border:none; cursor:pointer; color:var(--ink-soft); font-size:16px; padding:2px 8px; line-height:1; }
   .day-act-menu { position:absolute; top:100%; left:0; margin-top:4px; background:var(--card); border:1px solid var(--line); border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.25); z-index:20; overflow:hidden; display:none; min-width:140px; }
@@ -354,19 +357,29 @@
 
       <div class="card">
         <div class="card-title">⚡ ملخص سريع</div>
-        <div class="qs-grid">
-          <div><div class="qs-lbl">💰 الدخل</div><div class="qs-val" id="db-inc" style="color:var(--income)">—</div></div>
-          <div><div class="qs-lbl">🏦 الادخار</div><div class="qs-val" id="db-savings-balance">—</div></div>
-          <div><div class="qs-lbl">المجموع</div><div class="qs-val" id="db-inc-savings-total">—</div></div>
-          <div><div class="qs-lbl">💸 الصرف</div><div class="qs-val" id="db-exp" style="color:var(--expense)">—</div></div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <div style="padding:7px 0;border-bottom:1px dashed var(--line)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:12px">💰 الدخل</span>
+              <span style="font-size:13px;font-weight:800;color:var(--income)" id="db-inc">—</span>
+            </div>
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:2px">📎 يومياً: <b id="db-daily-inc" style="color:var(--ink)">—</b> · متبقي <b id="db-inc-remaining" style="color:var(--ink)">—</b></div>
+          </div>
+          <div style="padding:7px 0;border-bottom:1px dashed var(--line)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:12px">🏦 الادخار</span>
+              <span style="font-size:13px;font-weight:800" id="db-savings-balance">—</span>
+            </div>
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:2px">📎 يومياً: <b id="db-daily-savings" style="color:var(--ink)">—</b> · صافي الدورة <b id="db-savings-remaining" style="color:var(--ink)">—</b></div>
+          </div>
+          <div style="padding:7px 0">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:12px">💸 الصرف</span>
+              <span style="font-size:13px;font-weight:800;color:var(--expense)" id="db-exp">—</span>
+            </div>
+            <div style="font-size:10px;color:var(--ink-soft);margin-top:2px">📎 يومياً المجموع المسموح: <b id="db-daily-total" style="color:var(--ink)">—</b> · نسبة الصرف <b id="db-exp-remaining" style="color:var(--ink)">—</b></div>
+          </div>
         </div>
-        <div class="qs-grid qs-divider">
-          <div><div class="qs-lbl">المتبقي</div><div class="qs-val" style="font-size:11px" id="db-inc-remaining">—</div></div>
-          <div><div class="qs-lbl">المتبقي</div><div class="qs-val" style="font-size:11px" id="db-savings-remaining">—</div></div>
-          <div><div class="qs-lbl">المتبقي</div><div class="qs-val" style="font-size:11px" id="db-total-remaining">—</div></div>
-          <div><div class="qs-lbl">مجموع المتبقي</div><div class="qs-val" style="font-size:11px" id="db-exp-remaining">—</div></div>
-        </div>
-        <div class="qs-footer">📎 يومياً مسموح — دخل <b id="db-daily-inc" style="color:var(--ink)">—</b> · ادخار <b id="db-daily-savings" style="color:var(--ink)">—</b> · مجموع <b id="db-daily-total" style="color:var(--ink)">—</b></div>
       </div>
 
       <div class="card">
@@ -752,14 +765,6 @@
       <div class="settings-section" id="set-sec-salary">
         <div class="fgroup"><label>الراتب الشهري</label><input type="number" id="st-salary" placeholder="0"></div>
         <div class="fgroup"><label>يوم نزول الراتب الافتراضي</label><input type="number" id="st-payday" min="1" max="31" placeholder="مثال: 27"></div>
-        <div class="switch-row" style="margin-bottom:10px">
-          <div class="switch-row-text">
-            <div class="switch-row-title">🔄 دورة مستقلة للادخار</div>
-            <div class="switch-row-sub" id="savings-cycle-sub">لما يكون مفعّل، حساب الادخار يترحّل بدورته الخاصة (من يوم إيداع لآخر) بدل الشهر الميلادي — بنفس فكرة دورة الراتب بالضبط.</div>
-          </div>
-          <button class="switch-toggle" id="savings-cycle-toggle" onclick="toggleSavingsCycle()"><div class="knob"></div></button>
-        </div>
-        <div class="fgroup" id="savings-cycle-day-wrap" style="display:none"><label>يوم الإيداع الافتراضي للادخار</label><input type="number" id="st-savings-day" min="1" max="31" placeholder="مثال: 5"></div>
         <div class="fgroup"><label>⏰ المتوقع نزول الراتب (الساعة)</label><input type="time" id="st-payday-time"></div>
         <div class="fgroup">
           <label>العملة</label>
@@ -799,14 +804,6 @@
         <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">التطبيق يتعرّف تلقائياً على يوم النزول من آخر عملية 💰 دخل بفئة "راتب" تسجّلها في كل شهر (تظهر بعلامة 🔎). تقدر تتركها كذا، أو تكتب يوماً يدوياً لأي شهر ليطغى على الاكتشاف التلقائي.</p>
         <div id="payday-month-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"></div>
         <button class="btn btn-accent btn-block" onclick="savePaydayMonths()">حفظ أيام الرواتب الشهرية</button>
-
-        <div id="savings-day-section" style="display:none">
-          <div style="height:1px;background:var(--line);margin:16px 0"></div>
-          <div class="settings-label" style="margin-top:0">📅 يوم إيداع الادخار لكل شهر</div>
-          <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">نفس فكرة يوم نزول الراتب بالضبط: يتعرّف تلقائياً على يوم الإيداع من آخر عملية إيداع بحساب الادخار بكل شهر (تظهر بعلامة 🔎)، أو تقدر تكتب يوماً يدوياً لأي شهر ليطغى على الاكتشاف التلقائي.</p>
-          <div id="savings-day-month-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"></div>
-          <button class="btn btn-accent btn-block" onclick="saveSavingsDayMonths()">حفظ أيام إيداع الادخار الشهرية</button>
-        </div>
       </div>
     </section>
 
@@ -1119,6 +1116,11 @@ function hijriRangeStr(start, end){
   if (!hijriFmt) return '';
   try { return `${hijriFmt.format(start)} ← ${hijriFmt.format(end)}`; } catch(e){ return ''; }
 }
+const hijriMonthYearFmt = (()=>{ try { return new Intl.DateTimeFormat('ar-SA-u-ca-islamic', { month:'long', year:'numeric' }); } catch(e){ return null; } })();
+function hijriMonthYearStr(date){
+  if (!hijriMonthYearFmt) return '';
+  try { return hijriMonthYearFmt.format(date); } catch(e){ return ''; }
+}
 
 const DEFAULT_CATEGORIES = [
   {id:'e1',name:'طعام',emoji:'🍞',type:'expense'},
@@ -1149,7 +1151,7 @@ function ensureCoreCategories(){
 let state = {
   transactions: [],
   categories: DEFAULT_CATEGORIES.slice(),
-  settings: { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'paper', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, weeksShown:'all', linkSavingsToReserve:false, savingsCycleEnabled:false, savingsDefaultDay:5, savingsDayByMonth:{} },
+  settings: { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'paper', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, weeksShown:'all', linkSavingsToReserve:false },
   currentDate: new Date(),
   weekViewYear: new Date().getFullYear(),
   weekViewMonth: new Date().getMonth(),
@@ -1357,72 +1359,6 @@ function savePaydayMonths(){
   showToast('✅ تم حفظ أيام الرواتب الشهرية');
 }
 
-// ---------- يوم إيداع الادخار لكل شهر (نفس آلية يوم نزول الراتب بالضبط، لكن مبنية على عمليات إيداع الادخار) ----------
-function detectAutoSavingsDay(m){
-  const depositTxs = state.transactions.filter(t => isSavingsDeposit(t) && (parseInt(t.date.slice(5,7))-1)===m);
-  if (!depositTxs.length) return null;
-  const latest = depositTxs.sort((a,b)=> a.date<b.date?1:-1)[0];
-  return parseInt(latest.date.slice(8,10));
-}
-function getSavingsDayForMonth(y,m){
-  const map = state.settings.savingsDayByMonth || {};
-  const v = map[m];
-  if (v>=1 && v<=31) return v; // تحديد يدوي له الأولوية دائماً
-  const auto = detectAutoSavingsDay(m);
-  if (auto) return auto; // ثم الاكتشاف التلقائي من عمليات الإيداع
-  return state.settings.savingsDefaultDay || 5; // وأخيراً اليوم العام الافتراضي
-}
-function renderSavingsDayMonthGrid(){
-  const el = document.getElementById('savings-day-month-grid'); if(!el) return;
-  const map = state.settings.savingsDayByMonth || {};
-  const fallback = state.settings.savingsDefaultDay || 5;
-  el.innerHTML = MONTH_NAMES.map((name,i)=>{
-    const manual = map[i];
-    const auto = manual ? null : detectAutoSavingsDay(i);
-    const placeholder = auto ? `تلقائي: يوم ${auto}` : 'أضف اليوم';
-    const hint = auto ? `<div style="font-size:9px;color:var(--accent);margin-top:2px">🔎 من عملية إيداع</div>` : '';
-    return `<div>
-      <label>${name}</label>
-      <input type="number" min="1" max="31" id="sdm-${i}" placeholder="${placeholder}" value="${manual ?? ''}" title="افتراضياً: يوم ${fallback}">
-      ${hint}
-    </div>`;
-  }).join('');
-}
-function saveSavingsDayMonths(){
-  const map = {};
-  MONTH_NAMES.forEach((_,i)=>{
-    const v = parseInt(document.getElementById('sdm-'+i).value);
-    if (v>=1 && v<=31) map[i]=v;
-  });
-  state.settings.savingsDayByMonth = map;
-  save(); refreshAll();
-  showToast('✅ تم حفظ أيام إيداع الادخار الشهرية');
-}
-function renderSavingsCycleToggle(){
-  const btn = document.getElementById('savings-cycle-toggle');
-  const sub = document.getElementById('savings-cycle-sub');
-  const dayWrap = document.getElementById('savings-cycle-day-wrap');
-  const daySection = document.getElementById('savings-day-section');
-  if (!btn) return;
-  const on = !!state.settings.savingsCycleEnabled;
-  btn.classList.toggle('on', on);
-  if (sub) sub.textContent = on
-    ? 'مفعّل — حساب الادخار يترحّل من يوم إيداع للي بعده (زي دورة الراتب بالضبط)، بدل الشهر الميلادي.'
-    : 'معطّل — الادخار يترحّل حسب الشهر الميلادي (الوضع الافتراضي).';
-  if (dayWrap) dayWrap.style.display = on ? 'block' : 'none';
-  if (daySection) daySection.style.display = on ? 'block' : 'none';
-  const dayInput = document.getElementById('st-savings-day');
-  if (dayInput) dayInput.value = state.settings.savingsDefaultDay || '';
-  if (on) renderSavingsDayMonthGrid();
-}
-function toggleSavingsCycle(){
-  state.settings.savingsCycleEnabled = !state.settings.savingsCycleEnabled;
-  save();
-  renderSavingsCycleToggle();
-  refreshAll();
-  showToast(state.settings.savingsCycleEnabled ? '🔄 تم تفعيل دورة الادخار المستقلة' : '📅 رجع الادخار لترحيل الشهر الميلادي');
-}
-
 // ---------- حساب الادخار (منفصل تماماً عن دورة الراتب والمخزون) ----------
 // فقط الفئات اللي تُستثنى بالكامل من حسابات الميزانية (إيداع/سحب مباشر من حساب الادخار)
 function getSavingsCatIds(){
@@ -1589,49 +1525,6 @@ function getCycleReserve(){
     rows.push({ start:cycleStart, end:cycleEnd, sStr, eStr, income, expense, net, reserve, isCurrent, carryIn, available, carryPct, carryStatus });
     if (cycleEnd >= today) break; // وصلنا لدورة الراتب الحالية غير المكتملة — نتوقف بعدها
     cycleStart = new Date(ny, nm, paydayNext);
-  }
-  return rows;
-}
-// ---------- دورة الادخار المستقلة (من يوم إيداع لآخر، بنفس آلية دورة الراتب بالضبط) — تُستخدم فقط لما يكون الإعداد savingsCycleEnabled مفعّلاً ----------
-function getSavingsCycleReserve(){
-  const svIds = getSavingsLinkedCatIds();
-  const svTxs = state.transactions.filter(t => svIds.includes(t.category));
-  if (!svTxs.length) return [];
-  const dates = svTxs.map(t=>t.date).sort();
-  const firstTx = parseLocalDate(dates[0]);
-  const today = localToday();
-
-  const dayFirst = getSavingsDayForMonth(firstTx.getFullYear(), firstTx.getMonth());
-  let cycleStart;
-  if (firstTx.getDate() >= dayFirst) {
-    cycleStart = new Date(firstTx.getFullYear(), firstTx.getMonth(), dayFirst);
-  } else {
-    let py=firstTx.getFullYear(), pm=firstTx.getMonth()-1; if (pm<0){pm=11;py--;}
-    cycleStart = new Date(py, pm, getSavingsDayForMonth(py,pm));
-  }
-
-  const rows = [];
-  let balance = 0;
-  let guard = 0;
-  while (guard < 600) {
-    guard++;
-    let ny=cycleStart.getFullYear(), nm=cycleStart.getMonth()+1; if (nm>11){nm=0;ny++;}
-    const dayNext = getSavingsDayForMonth(ny, nm);
-    const cycleEnd = new Date(ny, nm, dayNext-1);
-    const sStr = dateKey(cycleStart), eStr = dateKey(cycleEnd);
-    const txs = svTxs.filter(t => t.date>=sStr && t.date<=eStr);
-    const dep = txs.filter(isSavingsDeposit).reduce((s,t)=>s+t.amount,0);
-    const wd = txs.filter(isSavingsWithdraw).reduce((s,t)=>s+t.amount,0);
-    const net = dep - wd;
-    const carryIn = balance;
-    const available = dep + carryIn;
-    const carryPct = available>0 ? (wd/available)*100 : (wd>0 ? 999 : 0);
-    const carryStatus = carryPct>=100 ? 'purple' : carryPct>85 ? 'red' : carryPct>50 ? 'yellow' : 'green';
-    balance += net;
-    const isCurrent = today >= cycleStart && today <= cycleEnd;
-    rows.push({ start:cycleStart, end:cycleEnd, sStr, eStr, dep, wd, net, balance, isCurrent, carryIn, available, carryPct, carryStatus, hasData: txs.length>0 });
-    if (cycleEnd >= today) break;
-    cycleStart = new Date(ny, nm, dayNext);
   }
   return rows;
 }
@@ -2045,11 +1938,13 @@ function renderDashboard(){
   document.getElementById('db-exp').textContent = fmt(info.expense);
   const dbTotalRemaining = info.remaining + dbSavingsBal;
   document.getElementById('db-savings-balance').textContent = fmt(dbSavingsBal);
-  document.getElementById('db-inc-savings-total').textContent = fmt(info.totalIncome + dbSavingsBal);
   document.getElementById('db-inc-remaining').textContent = fmt(info.remaining);
-  document.getElementById('db-savings-remaining').textContent = fmt(dbSavingsBal);
-  document.getElementById('db-total-remaining').textContent = fmt(dbTotalRemaining);
-  document.getElementById('db-exp-remaining').textContent = fmt(dbTotalRemaining);
+  const svCycleActivity = getSavingsActivity(getFullCycleTxs(info));
+  const svCycleNet = svCycleActivity.deposits - svCycleActivity.withdrawals;
+  const svCycleEl = document.getElementById('db-savings-remaining');
+  svCycleEl.textContent = (svCycleNet>=0?'+':'') + fmt(svCycleNet);
+  svCycleEl.style.color = svCycleNet>=0 ? 'var(--income)' : 'var(--expense)';
+  document.getElementById('db-exp-remaining').textContent = `${Math.round(info.pctSpent)}%`;
   document.getElementById('db-daily-inc').textContent = fmt(info.avgPerDay);
   document.getElementById('db-daily-savings').textContent = fmt(info.daysLeft>0 ? dbSavingsBal/info.daysLeft : 0);
   document.getElementById('db-daily-total').textContent = fmt(info.daysLeft>0 ? dbTotalRemaining/info.daysLeft : 0);
@@ -2151,9 +2046,10 @@ function renderDay(){
   const ds = dateKey(d);
   const todayStr = dateKey(localToday());
   const isToday = ds===todayStr;
+  const hijriToday = hijriFmt ? hijriFmt.format(d) : '';
   document.getElementById('day-title').innerHTML = isToday
-    ? `<span class="accent">اليوم</span> · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`
-    : `${DAY_NAMES[d.getDay()]} · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+    ? `<span class="accent">اليوم</span> · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}${hijriToday?` <span style="color:var(--ink-soft);font-weight:400">${hijriToday}</span>`:''}`
+    : `${DAY_NAMES[d.getDay()]} · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}${hijriToday?` <span style="color:var(--ink-soft);font-weight:400">${hijriToday}</span>`:''}`;
   renderNavDots('day-nav-dots', 7, d.getDay());
 
   const txs = getTxForDate(ds);
@@ -2282,7 +2178,8 @@ function renderWeek(){
   const totalInc = weeks.reduce((s,w)=>s+w.inc,0);
   const totalExp = weeks.reduce((s,w)=>s+w.exp,0);
 
-  document.getElementById('week-title').textContent = `${MONTH_NAMES[m]} ${y} · ${allStarts.length} أسابيع`;
+  const hijriLabelWk = hijriMonthYearStr(new Date(y, m, 1));
+  document.getElementById('week-title').innerHTML = `${MONTH_NAMES[m]} ${y} <span style="color:var(--ink-soft);font-weight:400">${hijriLabelWk?'— '+hijriLabelWk+' · ':'· '}${allStarts.length} أسابيع</span>`;
   renderNavDots('week-nav-dots', 12, m);
 
   document.getElementById('wk-inc').textContent = totalInc?fmt(totalInc):'—';
@@ -2331,11 +2228,12 @@ function renderWeek(){
     const wNet = w.inc - w.exp;
     const hasData = w.inc || w.exp;
     const overAvg = weeklyAvg && w.exp > weeklyAvg*1.3;
-    return `<div class="wk-card">
+    const isCurrentWeek = w.days.some(day=>day.ds===todayStr);
+    return `<div class="wk-card" style="${isCurrentWeek?'background:color-mix(in srgb, var(--accent) 8%, var(--card));':''}">
       <div class="wk-card-head">
         <div class="wk-badge">${absIdx+1}</div>
         <div class="wk-card-title">الأسبوع ${WEEK_ORDINALS[absIdx]||(absIdx+1)}</div>
-        <div class="wk-card-sub">${w.days[0].d.getDate()} ${MONTH_NAMES[w.days[0].d.getMonth()].slice(0,3)} – ${w.days[6].d.getDate()} ${MONTH_NAMES[w.days[6].d.getMonth()].slice(0,3)}</div>
+        <div class="wk-card-sub">${w.days[0].d.getDate()} ${MONTH_NAMES[w.days[0].d.getMonth()].slice(0,3)} – ${w.days[6].d.getDate()} ${MONTH_NAMES[w.days[6].d.getMonth()].slice(0,3)}<br><span style="font-size:9px;opacity:0.8">${hijriRangeStr(w.days[0].d, w.days[6].d)}</span></div>
         <div class="wk-card-net" style="color:${hasData?(wNet>=0?'var(--income)':'var(--expense)'):'var(--ink-soft)'}">${hasData?fmt(wNet):'—'}</div>
       </div>
       ${overAvg ? `<div style="font-size:10.5px;font-weight:700;color:var(--expense);background:color-mix(in srgb, var(--expense) 12%, transparent);border-radius:8px;padding:4px 8px;margin-bottom:8px">⚠️ هذا الأسبوع أعلى من معدلك المعتاد (${fmt(weeklyAvg)})</div>` : ''}
@@ -2648,7 +2546,9 @@ function renderMonth(){
       intensityStyle = `background:color-mix(in srgb, var(--expense) ${Math.round(tint*100)}%, var(--card));`;
     }
     const isPayday = d===paydayThisMonth;
+    const hijriDay = hijriFmt ? hijriFmt.format(new Date(y,m,d)) : '';
     html += `<div class="cal-cell ${ds===todayStr?'today':''}" style="${intensityStyle}" onclick="jumpToDate('${ds}')">
+      ${hijriDay?`<div style="font-size:8px;color:var(--ink);opacity:0.8">${hijriDay}</div>`:''}
       <div class="cal-num">${d}${isPayday?' 💰':''}</div>
       ${de>0?`<div class="cal-exp">-${de.toLocaleString('ar-SA',{maximumFractionDigits:2})}</div>`:''}
       ${di>0?`<div class="cal-inc">+${di.toLocaleString('ar-SA',{maximumFractionDigits:2})}</div>`:''}
@@ -2738,7 +2638,11 @@ function renderMonthPicker(){
   document.getElementById('mp-month-grid').innerHTML = MONTH_NAMES.map((name,i)=>{
     const isActive = state.mpYear===state.curYear && i===state.curMonth;
     const isToday = state.mpYear===today.getFullYear() && i===today.getMonth();
-    return `<button class="mp-month-btn ${isActive?'active':''} ${isToday&&!isActive?'today-month':''}" onclick="selectPickerMonth(${i})">${name}</button>`;
+    const hijriLabel = hijriMonthYearStr(new Date(state.mpYear, i, 1));
+    return `<button class="mp-month-btn ${isActive?'active':''} ${isToday&&!isActive?'today-month':''}" onclick="selectPickerMonth(${i})">
+      <div>${name}</div>
+      ${hijriLabel?`<div style="font-size:9.5px;font-weight:500;opacity:0.75;margin-top:2px">${hijriLabel}</div>`:''}
+    </button>`;
   }).join('');
 }
 function changeMonthPickerYear(dir){
@@ -3269,14 +3173,7 @@ function renderAnalysis(){
     </div>`;
   document.getElementById('an-table-cards').innerHTML = reserveCardsHtml + reserveTotalHtml;
 
-  // ── جدول الترحيل الشهري (12 شهر مخزون، ثم فاصل، ثم صفوف الادخار — شهر ميلادي أو دورات حسب إعداد دورة الادخار المستقلة) ──
-  const svCarryDisplayRows = state.settings.savingsCycleEnabled
-    ? getSavingsCycleReserve().filter(r => r.start.getFullYear()===year || r.end.getFullYear()===year)
-    : svCarryRows;
-  const svCarryLabel = r => state.settings.savingsCycleEnabled
-    ? `${r.start.getDate()} ${MONTH_NAMES[r.start.getMonth()].slice(0,3)} ← ${r.end.getDate()} ${MONTH_NAMES[r.end.getMonth()].slice(0,3)}`
-    : r.name;
-  const svCarryOutVal = r => state.settings.savingsCycleEnabled ? r.balance : r.carryOut;
+  // ── جدول الترحيل الشهري (12 شهر مخزون، ثم فاصل، ثم 12 شهر حساب ادخار) ──
   document.getElementById('an-carry-body').innerHTML = carryRows.map(r => `
     <tr style="${!r.hasData?'opacity:0.4':''}">
       <td><b>${r.name}</b></td>
@@ -3285,15 +3182,15 @@ function renderAnalysis(){
       <td style="font-weight:800;color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
     </tr>`).join('')
   + `<tr><td colspan="4" style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;padding:10px 0;border-bottom:1px dashed var(--line)">ـــــــــــــــ 🏦 حساب الادخار ـــــــــــــــ</td></tr>`
-  + svCarryDisplayRows.map(r => `
+  + svCarryRows.map(r => `
     <tr style="${!r.hasData?'opacity:0.4':''}">
-      <td><b>${svCarryLabel(r)}</b></td>
+      <td><b>${r.name}</b></td>
       <td style="font-weight:700;color:var(--savings-in)">${fmt(r.available)}</td>
       <td style="color:var(--savings-out)">${r.wd>0?fmt(r.wd):'—'}</td>
-      <td style="font-weight:800;color:${svCarryOutVal(r)>=0?'var(--income)':'var(--expense)'}">${fmt(svCarryOutVal(r))}</td>
+      <td style="font-weight:800;color:${r.carryOut>=0?'var(--income)':'var(--expense)'}">${fmt(r.carryOut)}</td>
     </tr>`).join('');
   const finalCarry = carryRows.length ? carryRows[carryRows.length-1].carryOut : opening;
-  const finalCarrySv = svCarryDisplayRows.length ? svCarryOutVal(svCarryDisplayRows[svCarryDisplayRows.length-1]) : openingSv;
+  const finalCarrySv = svCarryRows.length ? svCarryRows[svCarryRows.length-1].carryOut : openingSv;
   document.getElementById('an-carry-foot').innerHTML = `
     <tr>
       <td colspan="2" style="white-space:normal;text-align:right;font-size:10.5px">الرصيد الافتتاحي لأول شهر: <b style="color:${opening>=0?'var(--income)':'var(--expense)'}">${fmt(opening)}</b></td>
@@ -3509,7 +3406,6 @@ function fillSettingsForm(){
   document.getElementById('st-annual-cap').value = state.settings.annualSpendCap||'';
   document.getElementById('st-weeks-shown').value = state.settings.weeksShown||'all';
   renderLinkSavingsToggle();
-  renderSavingsCycleToggle();
   renderCatSettings();
   renderCatsOrderPage();
   renderThemeList();
@@ -3542,7 +3438,6 @@ function saveSettingsForm(){
   state.settings.savingsAccountGoal = parseFloat(document.getElementById('st-savings-goal').value)||0;
   state.settings.annualSpendCap = parseFloat(document.getElementById('st-annual-cap').value)||0;
   state.settings.weeksShown = document.getElementById('st-weeks-shown').value || 'all';
-  state.settings.savingsDefaultDay = parseInt(document.getElementById('st-savings-day').value)||5;
   state.weekPageIndex = 0;
   save(); refreshAll();
   showToast('✅ تم حفظ الإعدادات');
@@ -3612,14 +3507,24 @@ function renderCatSettings(){
       ${c.type==='expense' ? `<input type="number" class="cat-limit-input" placeholder="حد الصرف" value="${c.limit||''}" onchange="setCategoryLimit('${c.id}', this.value)" title="حد إنفاق شهري (اتركه فاضي لتجاهله)">` : ''}
       <div class="acts">
         <button class="btn btn-ghost btn-sm" onclick="editCategory('${c.id}')">✏️</button>
-        <button class="btn btn-ghost btn-sm" onclick="deleteCategory('${c.id}')">🗑️</button>
+        <button class="btn btn-ghost btn-sm" onclick="deleteCategory('${c.id}')" ${CORE_CATEGORY_IDS.includes(c.id)?'disabled title="فئة أساسية محمية"':''}>🗑️</button>
       </div>
     </div>`;
   };
   const sectionDivider = (label) => `<div style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;margin:10px 0">ــــــــــــــــــــــ ${label} ــــــــــــــــــــــ</div>`;
 
+  if (_catActiveTab === 'savings'){
+    const directCats = regularCats.filter(c=>['s1','s2'].includes(c.id));
+    const transferCats = regularCats.filter(c=>['b1','b2'].includes(c.id));
+    el.innerHTML = regularCats.length ? (
+      (directCats.length ? sectionDivider('🏦 الادخار المباشر') + directCats.map(renderRow).join('') : '')
+      + (transferCats.length ? sectionDivider('🔀 التحويل الجسر') + transferCats.map(renderRow).join('') : '')
+    ) : `<div style="text-align:center;font-size:12px;color:var(--ink-soft);padding:16px 0">لا توجد فئات بهذا النوع بعد</div>`;
+    return;
+  }
+
   el.innerHTML = regularCats.length ? (
-    `${sectionDivider(_catActiveTab==='savings' ? '🏦 فئات حساب الادخار' : '🏷️ الفئات الأساسية')}`
+    `${sectionDivider('🏷️ الفئات الأساسية')}`
     + (basicCats.length ? shownBasic.map(renderRow).join('') : `<div style="text-align:center;font-size:11px;color:var(--ink-soft);padding:10px 0">لا توجد فئات أساسية بهذا النوع</div>`)
     + (basicCats.length>3 ? `<button class="btn btn-ghost btn-block btn-sm" style="margin-top:8px" onclick="toggleCatsExpanded()">${_catsExpanded ? '▲ عرض أقل' : '▼ عرض المزيد ('+(basicCats.length-3)+')'}</button>` : '')
     + (addedCats.length ? sectionDivider('➕ الفئات المضافة') + addedCats.map(renderRow).join('') : '')
@@ -3644,12 +3549,14 @@ function renderCatsOrderPage(){
     const info = typeInfo(c);
     const menuKey = 'order-'+c.id;
     const menuOpen = _catMoveMenuOpen === menuKey;
-    return `<div class="cat-row">
+    return `<div class="cat-row" id="cat-order-row-${c.id}" data-cat-id="${c.id}">
       <div class="cat-handle-wrap">
-        <button class="cat-handle-btn" onclick="toggleCatMoveMenu('${menuKey}')">⋮⋮</button>
+        <button class="cat-handle-btn" onpointerdown="startCatDrag(event,'${c.id}')">⋮⋮</button>
         <div class="cat-handle-menu ${menuOpen?'open':''}">
+          <button onclick="moveCategoryGlobalToTop('${c.id}')" ${idx===0?'disabled':''}>⏫ نقل للقمة</button>
           <button onclick="moveCategoryGlobal('${c.id}',-1)" ${idx===0?'disabled':''}>▲ نقل للأعلى</button>
           <button onclick="moveCategoryGlobal('${c.id}',1)" ${idx===state.categories.length-1?'disabled':''}>▼ نقل للأسفل</button>
+          <button onclick="moveCategoryGlobalToBottom('${c.id}')" ${idx===state.categories.length-1?'disabled':''}>⏬ نقل للقاع</button>
         </div>
       </div>
       <span class="em">${c.emoji}</span>
@@ -3657,6 +3564,79 @@ function renderCatsOrderPage(){
       <span class="chip ${info.cls}">${info.label}</span>
     </div>`;
   }).join('');
+}
+// ---------- سحب وإفلات فئات صفحة الترتيب الشامل (يعمل بالماوس واللمس معاً عبر Pointer Events) ----------
+let _catDragState = null;
+function startCatDrag(e, id){
+  if (_catMoveMenuOpen) return; // لا تبدأ سحب والقائمة مفتوحة أصلاً
+  e.preventDefault();
+  const rowEl = document.getElementById('cat-order-row-'+id); if (!rowEl) return;
+  const rows = Array.from(document.querySelectorAll('#cats-order-list .cat-row'));
+  const rects = rows.map(r => { const b=r.getBoundingClientRect(); return { id:r.dataset.catId, top:b.top, height:b.height }; });
+  _catDragState = { id, startY:e.clientY, moved:false, rowEl, rects };
+  document.addEventListener('pointermove', onCatDragMove);
+  document.addEventListener('pointerup', onCatDragEnd);
+}
+function onCatDragMove(e){
+  if (!_catDragState) return;
+  const dy = e.clientY - _catDragState.startY;
+  if (!_catDragState.moved && Math.abs(dy) > 5){
+    _catDragState.moved = true;
+    _catDragState.rowEl.classList.add('cat-row-dragging');
+  }
+  if (!_catDragState.moved) return;
+  _catDragState.rowEl.style.transform = `translateY(${dy}px)`;
+}
+function onCatDragEnd(e){
+  if (!_catDragState) return;
+  document.removeEventListener('pointermove', onCatDragMove);
+  document.removeEventListener('pointerup', onCatDragEnd);
+  const { id, moved, rowEl, rects } = _catDragState;
+  rowEl.style.transform = '';
+  rowEl.classList.remove('cat-row-dragging');
+  _catDragState = null;
+
+  if (!moved){
+    toggleCatMoveMenu('order-'+id);
+    return;
+  }
+
+  const pointerY = e.clientY;
+  let targetIndex = rects.findIndex(r => pointerY < r.top + r.height/2);
+  if (targetIndex === -1) targetIndex = rects.length;
+  const fromIndex = state.categories.findIndex(c=>c.id===id);
+  if (fromIndex === -1) return;
+  const insertAt = fromIndex < targetIndex ? targetIndex - 1 : targetIndex;
+  if (insertAt === fromIndex) { renderCatsOrderPage(); return; }
+
+  const arr = state.categories;
+  const [item] = arr.splice(fromIndex, 1);
+  arr.splice(insertAt, 0, item);
+  save();
+  renderCatsOrderPage();
+  renderCatSettings();
+}
+function moveCategoryGlobalToTop(id){
+  const idx = state.categories.findIndex(c=>c.id===id);
+  if (idx<=0) return;
+  const arr = state.categories;
+  const [item] = arr.splice(idx,1);
+  arr.unshift(item);
+  _catMoveMenuOpen = null;
+  save();
+  renderCatsOrderPage();
+  renderCatSettings();
+}
+function moveCategoryGlobalToBottom(id){
+  const idx = state.categories.findIndex(c=>c.id===id);
+  if (idx<0 || idx>=state.categories.length-1) return;
+  const arr = state.categories;
+  const [item] = arr.splice(idx,1);
+  arr.push(item);
+  _catMoveMenuOpen = null;
+  save();
+  renderCatsOrderPage();
+  renderCatSettings();
 }
 function moveCategoryGlobal(id, dir){
   const idx = state.categories.findIndex(c=>c.id===id);
@@ -3751,6 +3731,10 @@ function addCategory(){
   showToast('✅ تمت إضافة الفئة');
 }
 function deleteCategory(id){
+  if (CORE_CATEGORY_IDS.includes(id)){
+    showToast('🔒 هذي فئة أساسية محمية — ما تقدر تحذفها');
+    return;
+  }
   showConfirm('حذف الفئة','هل تريد حذف هذه الفئة؟','🏷️', ()=>{
     state.categories = state.categories.filter(c=>c.id!==id);
     if (_editingCatId===id) cancelEditCategory();
