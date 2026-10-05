@@ -2,6 +2,9 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#f6f1e6">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>ميزانيتي — دفتر الحساب</title>
 <link rel="icon" type="image/png" href="favicon.png">
@@ -84,8 +87,6 @@
   .cy-ring-sub { font-size:9px; color:var(--ink-soft); margin-top:2px; line-height:1.3; }
   .cy-ba { margin-bottom:12px; }
   .cy-ba-num { font-family:var(--font-disp); font-weight:800; }
-  table.cy-ba th, table.cy-ba td { padding-left:2px; padding-right:2px; }
-  table.cy-ba th:first-child, table.cy-ba td:first-child { padding-right:6px; }
   .cy-transfer { margin-top:12px; background:var(--accent); color:#fff; border:none; border-radius:20px; padding:6px 16px; font-size:11.5px; cursor:pointer; font-family:var(--font-body); font-weight:700; }
   /* ===== QUICK SUMMARY (ملخص سريع) ===== */
   .qs-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:4px; text-align:center; }
@@ -322,6 +323,221 @@
   .wk-note { font-size:8.5px; font-weight:400; color:var(--ink-soft); line-height:1.3; }
   .wk-bal { font-family:var(--font-disp); font-weight:800; white-space:nowrap; }
   .wk-r-today td { background:color-mix(in srgb, var(--accent) 24%, transparent); }
+/* ===== تصميم «مركز»: لوحة قيادة كثيفة وهادئة، تبويبات علوية بالأيقونات، شريط لون جانبي لكل قسم ===== */
+body{ font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums; }
+.app{ max-width:560px; }
+.topbar{ position:static; padding:calc(14px + env(safe-area-inset-top)) 16px 10px; background:transparent; }
+.brand-mark{ width:38px; height:38px; border-radius:10px; border:none; background:var(--accent); color:var(--bg); font-size:17px; }
+.brand-title{ font-size:18px; font-weight:900; }
+.brand-sub{ font-size:11px; }
+.icon-btn{ width:36px; height:36px; border:1px solid var(--line); border-radius:10px; background:var(--card); font-size:15px; }
+/* التبويبات في الأعلى فوق المحتوى */
+.nav-row{ position:sticky; top:0; z-index:50; bottom:auto; left:auto; right:auto; transform:none; width:auto; max-width:none; display:flex; gap:6px; overflow-x:auto; padding:8px 16px 10px; background:var(--bg); border:none; border-bottom:1px solid var(--line); border-radius:0; box-shadow:none; scrollbar-width:none; }
+.nav-row::-webkit-scrollbar{ display:none; }
+.nav-row .tab-btn{ flex:1 0 auto; max-width:none; flex-direction:row; align-items:center; justify-content:center; gap:6px; padding:9px 13px; border:1px solid var(--line); border-radius:10px; background:var(--card); color:var(--ink-soft); font-size:13px; font-weight:700; margin:0; white-space:nowrap; }
+.nav-row .tab-btn .tab-icon{ width:auto; height:auto; background:none; font-size:16px; filter:none; transform:none; }
+.nav-row .tab-btn.active{ background:var(--accent); border-color:var(--accent); color:var(--bg); font-weight:900; }
+@media(min-width:600px){ .nav-row{ left:auto; right:auto; width:auto; transform:none; } }
+main{ padding:14px 16px 40px; }
+.page{ animation:none; }
+#toasts{ bottom:24px; }
+/* الأقسام */
+.card{ background:var(--card); border:1px solid var(--line); border-inline-start:4px solid var(--accent); border-radius:12px; padding:15px; margin-bottom:12px; box-shadow:none; }
+.page > .card:nth-of-type(even){ border-inline-start-color:var(--accent2); }
+.card-title{ font-size:14px; font-weight:800; margin-bottom:12px; }
+.card-title small{ font-size:11px; font-weight:500; }
+details.card summary.card-summary{ font-size:14px; font-weight:800; }
+.card:has(#db-ring){ padding:18px 14px 16px; }
+.cy-ring-wrap{ width:176px; height:176px; margin:2px auto 14px; }
+.cy-ring-wrap svg{ width:176px; height:176px; }
+.cy-ring-wrap circle{ stroke-width:8; }
+.cy-transfer{ border-radius:8px; padding:10px 24px; font-size:13px; font-weight:800; color:var(--bg); }
+.cd-box{ border:1px solid var(--line); background:var(--bg); border-radius:8px; min-width:56px; }
+.cd-box .cd-num{ font-size:20px; font-weight:900; }
+.qs-grid{ gap:6px; }
+.qs-grid > div{ background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:9px 2px; }
+.qs-grid.qs-divider{ border:none; padding-top:0; margin-top:6px; }
+.qs-val{ font-size:13px; font-weight:900; }
+.strip{ gap:6px; }
+.strip-box{ background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 5px; }
+.strip-val{ font-size:15px; font-weight:900; }
+.ledger-row{ border-bottom:1px solid var(--line); padding:9px 0; }
+.ledger-fill{ border-bottom:none; }
+.rec-box{ background:var(--bg); border:1px solid var(--line); border-radius:8px; }
+/* أزرار ونماذج */
+.btn{ border-radius:8px; padding:12px 16px; font-size:14px; font-weight:800; }
+.btn-accent{ background:var(--accent); color:var(--bg); }
+.btn-ghost{ border:1px solid var(--line); background:var(--bg); color:var(--ink); }
+.btn-sm{ border-radius:7px; }
+input,select,textarea{ background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:11px 12px; font-size:16px; }
+input:focus,select:focus,textarea:focus{ border-color:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent); }
+label{ font-size:12px; font-weight:700; color:var(--ink-soft); }
+.toggle2{ gap:6px; }
+.toggle2 button{ border:1px solid var(--line); border-radius:8px; background:var(--bg); padding:11px; font-weight:800; }
+.toggle2 button.on-exp{ background:var(--expense); border-color:var(--expense); color:#fff; }
+.toggle2 button.on-inc{ background:var(--income); border-color:var(--income); color:#fff; }
+.switch-row,.settings-menu-item{ background:var(--card); border:1px solid var(--line); border-radius:12px; box-shadow:none; }
+.settings-menu-item{ padding:14px; }
+.smi-icon{ width:40px; height:40px; display:flex; align-items:center; justify-content:center; border-radius:10px; background:color-mix(in srgb,var(--accent) 16%,transparent); }
+.day-nav .arrow,.month-nav .arrow{ width:36px; height:36px; border:1px solid var(--line); border-radius:10px; background:var(--card); }
+.day-title{ font-size:16px; font-weight:900; }
+.nav-dot,.nav-dots span{ background:color-mix(in srgb,var(--ink) 18%,transparent); }
+.tx-row{ padding:10px 0; border-bottom:1px solid var(--line); }
+.tx-icon{ width:38px; height:38px; border:1px solid var(--line); border-radius:9px; background:var(--bg); font-size:18px; }
+.tx-amt{ font-size:15px; font-weight:900; }
+.group-tag{ border-radius:6px; padding:3px 10px; }
+.cal-grid,.cal-head{ gap:3px; }
+.cal-cell{ border:1px solid var(--line); border-radius:8px; background:var(--bg); min-height:54px; }
+.cal-cell.today{ border-color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
+.a-table th{ border-bottom:1px solid var(--line); font-weight:800; }
+.a-table td{ border-bottom:1px solid var(--line); }
+.chip{ border-radius:6px; }
+.mini-month{ border:1px solid var(--line); border-radius:10px; background:var(--bg); }
+.res-card{ border:1px solid var(--line); border-radius:10px; background:var(--bg); padding:12px; }
+.res-card-bar{ height:6px; border-radius:3px; }
+.wk-card{ border:1px solid var(--line); border-radius:10px; background:var(--bg); }
+.theme-swatch{ border-radius:10px; background:var(--bg); }
+.cat-tab-btn{ border:1px solid var(--line); border-radius:8px; background:var(--bg); }
+.sheet-overlay{ background:rgba(0,0,0,.55); }
+.sheet{ border:1px solid var(--line); border-bottom:none; border-radius:16px 16px 0 0; padding:24px 18px calc(22px + env(safe-area-inset-bottom)); position:relative; background:var(--card); }
+.sheet::before{ content:""; position:absolute; top:8px; left:50%; width:38px; height:4px; margin-left:-19px; border-radius:2px; background:color-mix(in srgb,var(--ink) 22%,transparent); }
+.sheet-title{ font-size:17px; font-weight:900; }
+.toast{ background:var(--ink); color:var(--bg); border:none; border-radius:10px; }
+.day-act-menu,.cat-handle-menu{ background:var(--card); border:1px solid var(--line); border-radius:10px; box-shadow:0 10px 26px rgba(0,0,0,.35); }
+/* عرض التبويبات: ستة أعمدة متساوية، أيقونة فوق الاسم، بدون تمرير جانبي */
+.nav-row{ display:grid; grid-template-columns:repeat(6,1fr); gap:4px; overflow:visible; padding:8px 10px; background:var(--bg); }
+.nav-row .tab-btn{ flex:none; min-width:0; flex-direction:column; justify-content:center; gap:3px; padding:9px 0 8px; border:1px solid transparent; border-radius:12px; background:transparent; font-size:11px; font-weight:700; white-space:nowrap; }
+.nav-row .tab-btn .tab-icon{ font-size:21px; line-height:1; filter:grayscale(1) opacity(.7); transition:transform .15s; }
+.nav-row .tab-btn.active{ background:var(--accent); border-color:var(--accent); color:var(--bg); font-weight:900; }
+.nav-row .tab-btn.active .tab-icon{ filter:none; transform:scale(1.1); }
+@media(max-width:360px){ .nav-row .tab-btn{ font-size:10px; } .nav-row .tab-btn .tab-icon{ font-size:19px; } }
+/* عرض التبويبات: شبكة ٣×٢ من البلاطات الكبيرة، أيقونة داخل دائرة */
+.nav-row{ position:static; display:grid; grid-template-columns:repeat(3,1fr); gap:8px; overflow:visible; padding:4px 16px 14px; background:transparent; border:none; }
+.nav-row .tab-btn{ flex-direction:row; justify-content:flex-start; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:14px; background:var(--card); color:var(--ink); font-size:14px; font-weight:800; white-space:nowrap; min-width:0; }
+.nav-row .tab-btn .tab-icon{ flex:none; width:34px; height:34px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:color-mix(in srgb,var(--accent) 16%,transparent); font-size:18px; filter:none; transform:none; }
+.nav-row .tab-btn.active{ background:var(--accent); border-color:var(--accent); color:var(--bg); }
+.nav-row .tab-btn.active .tab-icon{ background:color-mix(in srgb,var(--bg) 22%,transparent); filter:none; transform:none; }
+@media(max-width:380px){ .nav-row .tab-btn{ font-size:12.5px; gap:7px; padding:9px 8px; } .nav-row .tab-btn .tab-icon{ width:30px; height:30px; font-size:16px; } }
+/* عرض التبويبات: دوائر أيقونات بصف واحد (مثل القصص)، الاسم تحتها، والحالية بحلقة ملوّنة */
+.nav-wrap{ position:sticky; top:0; z-index:60; padding:8px 10px 10px; background:var(--bg); border-bottom:1px solid var(--line); }
+.nav-current{ display:none; }
+.nav-wrap .nav-row{ position:static; transform:none; width:auto; display:flex; flex-direction:row; grid-template-columns:none; justify-content:space-between; gap:2px; padding:0; background:transparent; border:none; border-radius:0; box-shadow:none; overflow:visible; }
+.nav-wrap .nav-row .tab-btn{ flex:1; min-width:0; flex-direction:column; align-items:center; justify-content:flex-start; gap:6px; padding:0; border:none; border-radius:0; background:transparent; color:var(--ink-soft); font-size:11px; font-weight:700; white-space:nowrap; }
+.nav-wrap .nav-row .tab-btn .tab-icon{ flex:none; width:50px; height:50px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:color-mix(in srgb,var(--ink) 7%,transparent); font-size:23px; filter:none; transform:none; transition:background .2s, box-shadow .2s; }
+.nav-wrap .nav-row .tab-btn:active .tab-icon{ transform:scale(.92); }
+.nav-wrap .nav-row .tab-btn.active{ background:transparent; border:none; color:var(--accent); font-weight:900; }
+.nav-wrap .nav-row .tab-btn.active .tab-icon{ background:color-mix(in srgb,var(--accent) 22%,transparent); box-shadow:0 0 0 2.5px var(--accent); }
+@media(max-width:360px){ .nav-wrap .nav-row .tab-btn .tab-icon{ width:44px; height:44px; font-size:20px; } .nav-wrap .nav-row .tab-btn{ font-size:10px; } }
+/* ===== تصميم «جريء»: حدود سميكة، ظلال صلبة، ألوان حيّة وخلفية منقّطة — (التبويبات لم تُمس) ===== */
+:root{ --bd:2.5px solid var(--ink); --sh:4px 4px 0 var(--ink); --sh-s:2px 2px 0 var(--ink); }
+body{ background-image:radial-gradient(color-mix(in srgb,var(--ink) 16%,transparent) 1.1px,transparent 1.2px); background-size:18px 18px; font-size:14px; }
+.topbar{ background:transparent; margin:0; padding:calc(16px + env(safe-area-inset-top)) 18px 10px; border:none; }
+.brand-mark{ width:44px; height:44px; border:var(--bd); border-radius:13px; background:var(--accent2); color:var(--ink); font-size:20px; font-weight:900; box-shadow:var(--sh-s); transform:rotate(-5deg); }
+.brand-title{ font-family:var(--font-body),sans-serif; font-size:21px; font-weight:900; }
+.brand-sub{ font-size:11.5px; font-style:normal; font-weight:700; }
+.icon-btn{ width:40px; height:40px; border:var(--bd); border-radius:12px; background:var(--card); font-size:16px; box-shadow:var(--sh-s); }
+.icon-btn:active{ transform:translate(2px,2px); box-shadow:none; }
+main{ padding:18px 16px calc(44px + env(safe-area-inset-bottom)); }
+.card{ background:var(--card); border:var(--bd); border-top:var(--bd); border-radius:18px; padding:16px; margin-bottom:20px; box-shadow:5px 5px 0 var(--ink); }
+.card-title{ font-family:var(--font-body),sans-serif; font-size:16px; font-weight:900; padding:0; margin-bottom:14px; border:none; }
+.card-title small{ font-family:var(--font-body),sans-serif; font-size:11px; font-weight:800; font-style:normal; background:var(--accent2); color:#111; border:2px solid var(--ink); border-radius:20px; padding:1px 9px; }
+details.card summary.card-summary{ font-family:var(--font-body),sans-serif; font-size:16px; font-weight:900; }
+.card:has(#db-ring){ background:color-mix(in srgb,var(--accent2) 42%,var(--card)); padding:20px 14px 16px; }
+.card:has(#db-ring) .card-title{ justify-content:center; }
+.cy-ring-wrap{ width:196px; height:196px; margin:4px auto 14px; }
+.cy-ring-wrap svg{ width:196px; height:196px; }
+.cy-ring-wrap circle{ stroke-width:14; }
+.cy-ring-wrap circle:first-child{ stroke:color-mix(in srgb,var(--ink) 14%,var(--card)); }
+.cy-ring-num,.qs-val,.strip-val,.cd-box .cd-num,.rec-val,.tx-amt,.res-card-val{ font-family:var(--font-body),sans-serif; font-weight:900; }
+.cy-transfer{ border:var(--bd); border-radius:14px; padding:10px 26px; font-size:14px; font-weight:900; background:var(--accent); color:#fff; box-shadow:var(--sh-s); }
+.cy-transfer:active{ transform:translate(2px,2px); box-shadow:none; }
+.cd-box{ border:var(--bd); background:var(--card); border-radius:12px; min-width:58px; box-shadow:var(--sh-s); }
+.cd-box .cd-num{ font-size:21px; }
+.qs-grid{ gap:7px; }
+.qs-grid > div{ background:var(--card); border:2px solid var(--ink); border-radius:12px; padding:9px 2px; }
+.qs-grid.qs-divider{ border:none; padding-top:0; margin-top:7px; }
+.qs-val{ font-size:13px; }
+.strip{ gap:8px; }
+.strip-box{ background:var(--card); border:2px solid var(--ink); border-radius:12px; padding:12px 5px; }
+.strip-box:first-child{ border-inline-start:2px solid var(--ink); }
+.strip-val{ font-size:15px; }
+.ledger-row{ border-bottom:2px dashed color-mix(in srgb,var(--ink) 30%,transparent); padding:10px 0; }
+.ledger-fill{ border-bottom:none; }
+.rec-box{ background:var(--card); border:2px solid var(--ink); border-radius:12px; }
+.btn{ border:var(--bd); border-radius:13px; padding:12px 18px; font-size:14px; font-weight:900; box-shadow:var(--sh-s); }
+.btn:active{ transform:translate(2px,2px); box-shadow:none; }
+.btn-accent{ background:var(--accent); color:#fff; }
+.btn-ghost{ background:var(--card); color:var(--ink); }
+.btn-danger{ color:#fff; }
+.btn-sm{ border-width:2px; border-radius:10px; box-shadow:none; }
+input,select,textarea{ background:var(--card); border:var(--bd); border-radius:12px; padding:11px 13px; font-size:16px; font-weight:600; box-shadow:none; }
+input:focus,select:focus,textarea:focus{ border-color:var(--ink); background:color-mix(in srgb,var(--accent2) 30%,var(--card)); box-shadow:var(--sh-s); }
+label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
+.toggle2{ gap:8px; padding:0; border:none; background:transparent; overflow:visible; }
+.toggle2 button{ border:var(--bd); border-radius:12px; background:var(--card); color:var(--ink); font-weight:900; padding:11px; box-shadow:var(--sh-s); }
+.toggle2 button.on-exp{ background:var(--expense); color:#fff; }
+.toggle2 button.on-inc{ background:var(--income); color:#fff; }
+.switch-row,.settings-menu-item{ background:var(--card); border:var(--bd); border-radius:16px; box-shadow:var(--sh); }
+.settings-menu-item{ padding:14px; margin-bottom:14px; }
+.smi-icon{ width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:2px solid var(--ink); border-radius:13px; background:var(--accent2); }
+.smi-title,.sheet-title,.day-title{ font-family:var(--font-body),sans-serif; font-weight:900; }
+.day-title{ font-size:18px; }
+.nav-dot,.nav-dots span{ background:color-mix(in srgb,var(--ink) 22%,transparent); }
+.nav-dot.active,.nav-dots span.active{ background:var(--accent); border:1.5px solid var(--ink); }
+.tx-row{ padding:11px 0; border-bottom:2px dashed color-mix(in srgb,var(--ink) 28%,transparent); }
+.tx-icon{ width:44px; height:44px; border:2px solid var(--ink); border-radius:13px; background:var(--accent2); font-size:20px; }
+.tx-amt{ font-size:15px; }
+.group-tag{ border:2px solid currentColor; border-radius:20px; padding:2px 12px; font-weight:900; }
+.cal-grid,.cal-head{ gap:4px; }
+.cal-cell{ border:2px solid var(--ink); border-radius:10px; background:var(--card); min-height:56px; }
+.cal-cell.today{ background:var(--accent2); }
+.a-table th{ font-family:var(--font-body),sans-serif; border-bottom:2.5px solid var(--ink); color:var(--ink); font-weight:900; }
+.a-table td{ border-bottom:1.5px dashed color-mix(in srgb,var(--ink) 30%,transparent); }
+.a-table tfoot td{ border-top:2.5px solid var(--ink); }
+.chip{ border:1.5px solid currentColor; border-radius:8px; font-weight:900; }
+.mini-month{ border:2px solid var(--ink); border-radius:14px; background:var(--card); box-shadow:var(--sh-s); }
+.res-card{ border:2px solid var(--ink); border-radius:14px; background:var(--card); padding:12px; }
+.res-card-bar{ height:10px; border:2px solid var(--ink); border-radius:6px; background:var(--card); }
+.res-card-bar-fill{ border-radius:0; }
+.wk-card{ border:2px solid var(--ink); border-radius:14px; background:var(--card); }
+.theme-swatch{ border-radius:14px; border-width:2px; }
+.cat-tab-btn{ border:2px solid var(--ink); border-radius:11px; background:var(--card); font-weight:900; }
+.cat-tab-btn.active{ background:var(--accent); color:#fff; }
+.sheet-overlay{ background:rgba(0,0,0,.5); }
+.sheet{ background:var(--bg); border:var(--bd); border-bottom:none; border-radius:24px 24px 0 0; padding:28px 18px calc(22px + env(safe-area-inset-bottom)); position:relative; }
+.sheet::before{ display:block; content:""; position:absolute; top:10px; left:50%; width:46px; height:6px; margin-left:-23px; border-radius:3px; background:var(--ink); }
+.sheet-title{ font-size:19px; padding:0; border:none; }
+.toast{ background:var(--accent2); color:#111; border:var(--bd); border-radius:14px; box-shadow:var(--sh-s); font-weight:900; }
+.day-act-menu,.cat-handle-menu{ background:var(--card); border:var(--bd); border-radius:12px; box-shadow:var(--sh-s); }
+/* الأسهم: شفرونات سميكة داخل أزرار ملوّنة */
+.arrow{ width:42px !important; height:42px !important; display:flex; align-items:center; justify-content:center; padding:0; border:var(--bd) !important; border-radius:13px !important; background:var(--accent2) !important; color:#111; box-shadow:var(--sh-s) !important; font-size:0; cursor:pointer; }
+.arrow svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
+.arrow:active{ transform:translate(2px,2px); box-shadow:none !important; }
+/* مقابض تقسيم الشريط */
+.pl-seg{ display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:900; text-shadow:0 1px 2px rgba(0,0,0,.5); white-space:nowrap; overflow:hidden; transition:none; }
+.pl-handle{ position:absolute; top:-7px; bottom:-7px; width:30px; margin-right:-15px; display:flex; justify-content:center; align-items:center; cursor:ew-resize; touch-action:none; z-index:3; }
+.pl-handle span{ position:relative; width:4px; height:100%; border-radius:2px; background:var(--ink); box-shadow:0 0 0 2px var(--card); }
+.pl-handle span::after{ content:"⇄"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:24px; height:24px; border-radius:50%; background:var(--ink); color:var(--card); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; box-shadow:0 0 0 2px var(--card); }
+#pl-strip .strip-val{ font-size:12.5px; }
+#pl-strip .strip-lbl{ font-size:9.5px; }
+.pl-chip{ display:inline-flex; align-items:center; gap:4px; margin:0 0 6px 6px; padding:6px 11px; border:1.5px solid var(--line); border-radius:20px; background:transparent; color:var(--ink); font-family:var(--font-body); font-size:12px; font-weight:700; cursor:pointer; }
+.pl-chip.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
+.pl-chip.other{ opacity:.5; }
+.pl-chip small{ font-size:9px; font-weight:500; }
+#db-compare:empty{ margin:0 !important; }
+#month-daily-table th, #month-daily-table td, #an-daily-table th, #an-daily-table td{ font-size:9.8px; padding-inline:1px; }
+/* جداول تتبع الصرف: بطاقة واحدة بتبويبات أيقونية وأقسام داخلها */
+.stb-tabs{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:14px; }
+.stb-tab{ display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:4px; min-width:0; padding:9px 2px 8px; border:2px solid var(--ink); border-radius:12px; background:var(--card); color:var(--ink); font-family:var(--font-body); cursor:pointer; transition:transform .12s, box-shadow .12s; }
+.stb-tab:active{ transform:translate(2px,2px); }
+.stb-ic{ font-size:20px; line-height:1; }
+.stb-lb{ font-size:10px; font-weight:800; line-height:1.3; text-align:center; }
+.stb-tab.active{ background:var(--accent); color:#fff; box-shadow:2px 2px 0 var(--ink); }
+.stb-panel{ border-top:2px dashed color-mix(in srgb,var(--ink) 30%,transparent); padding-top:12px; }
+.stb-panel .card-title{ font-size:14px; margin-bottom:10px; }
+.stb-panel .a-table tbody tr:nth-child(even) td{ background:color-mix(in srgb,var(--ink) 4%,transparent); }
+.stb-panel .a-table tfoot td{ background:color-mix(in srgb,var(--accent2) 22%,transparent); }
+.stb-panel .btn-block{ margin-top:12px; }
 </style>
 </head>
 <body>
@@ -343,13 +559,17 @@
     </div>
   </header>
 
+  <div class="nav-wrap" id="nav-wrap">
+  <button class="nav-current" id="nav-current" onclick="toggleNav(event)"><span id="nav-cur-text">📖 لوحة</span><span class="nc-arrow">▾</span></button>
   <nav class="nav-row">
     <button class="tab-btn" data-p="dashboard" onclick="showPage('dashboard')"><span class="tab-icon">📖</span>لوحة</button>
     <button class="tab-btn" data-p="day" onclick="showPage('day')"><span class="tab-icon">📅</span>اليوم</button>
     <button class="tab-btn" data-p="week" onclick="showPage('week')"><span class="tab-icon">🗓️</span>الأسبوع</button>
     <button class="tab-btn" data-p="month" onclick="showPage('month')"><span class="tab-icon">📆</span>الشهر</button>
     <button class="tab-btn" data-p="analysis" onclick="showPage('analysis')"><span class="tab-icon">📈</span>تحليل</button>
+    <button class="tab-btn" data-p="plan" onclick="showPage('plan')"><span class="tab-icon">🧭</span>تخطيط</button>
   </nav>
+  </div>
 
   <main>
 
@@ -371,11 +591,12 @@
             <div class="cy-ring-sub" id="db-ring-sub"></div>
           </div>
         </div>
+        <div id="db-compare" style="font-size:11.5px;font-weight:700;margin-bottom:8px"></div>
         <div id="db-ba"></div>
+        <div style="margin:2px 0 14px"><button class="cy-transfer" style="margin-top:6px" onclick="openTransferModal()">🔀 تحويل</button></div>
         <div id="db-countdown" style="display:flex;justify-content:center;gap:6px"></div>
         <div id="db-stamp-sub" style="font-size:11px;color:var(--ink-soft);margin-top:8px"></div>
-        <div id="db-compare" style="font-size:11px;font-weight:700;margin-top:6px"></div>
-        <button class="cy-transfer" onclick="openTransferModal()">🔀 تحويل</button>
+        <div id="db-prev-cycle" style="margin-top:10px"></div>
       </div>
 
       <div class="card">
@@ -446,9 +667,9 @@
     <!-- ===================== DAY ===================== -->
     <section class="page" id="page-day">
       <div class="day-nav">
-        <button class="arrow" onclick="changeDay(-1)">→</button>
+        <button class="arrow" onclick="changeDay(-1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <div class="day-title" id="day-title" onclick="openSheet('sheet-datepick')"></div>
-        <button class="arrow" onclick="changeDay(1)">←</button>
+        <button class="arrow" onclick="changeDay(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
       </div>
       <div class="nav-dots" id="day-nav-dots"></div>
       <div class="card">
@@ -476,9 +697,9 @@
     <!-- ===================== WEEK (يعرض أسبوعين معاً وينتقل أسبوعين أسبوعين) ===================== -->
     <section class="page" id="page-week">
       <div class="day-nav">
-        <button class="arrow" onclick="changeWeek(-1)">→</button>
+        <button class="arrow" onclick="changeWeek(-1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <div class="day-title" id="week-title"></div>
-        <button class="arrow" onclick="changeWeek(1)">←</button>
+        <button class="arrow" onclick="changeWeek(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
       </div>
       <div class="nav-dots" id="week-nav-dots"></div>
       <div class="card">
@@ -527,9 +748,9 @@
       <div id="mo-yoy" style="display:none;text-align:center;font-size:12px;font-weight:700;margin-bottom:12px"></div>
       <div class="card">
         <div class="month-nav" style="margin-top:0">
-          <button class="arrow" onclick="changeMonth(-1)">→</button>
+          <button class="arrow" onclick="changeMonth(-1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
           <div class="day-title" id="month-title" onclick="openSheet('sheet-month-picker')"></div>
-          <button class="arrow" onclick="changeMonth(1)">←</button>
+          <button class="arrow" onclick="changeMonth(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
         </div>
         <div class="nav-dots" id="month-nav-dots"></div>
         <div class="cal-head">
@@ -539,9 +760,18 @@
       </div>
       <div class="card">
         <div class="card-title">📋 تفصيل الأيام</div>
+        <div class="switch-row" style="padding:10px 12px;margin-bottom:10px">
+          <div class="switch-row-text">
+            <div class="switch-row-title" style="font-size:12.5px">🔄 عرض دورة الراتب</div>
+            <div class="switch-row-sub" id="month-daily-sub"></div>
+          </div>
+          <button class="switch-toggle" id="month-daily-toggle" onclick="toggleDailyCycle('month')"><div class="knob"></div></button>
+        </div>
+        <div class="day-title" id="month-daily-title" style="font-size:12.5px;margin-bottom:10px;display:none"></div>
         <div>
           <table class="a-table" id="month-daily-table" style="width:100%;table-layout:fixed">
-            <thead><tr><th>اليوم</th><th>التاريخ</th><th>الصرف</th><th>الدخل</th><th>الصافي</th><th>🏦 ادخار</th><th>الصافي الشامل</th></tr></thead>
+            <colgroup><col style="width:12%"><col style="width:8%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:15%"></colgroup>
+            <thead><tr><th>اليوم</th><th>التاريخ</th><th>الصرف</th><th>الدخل</th><th>الصافي</th><th>🏦 ادخار</th><th>الصافي الشامل</th><th>الرصيد الجاري</th></tr></thead>
             <tbody id="month-daily-table-body"></tbody>
             <tfoot id="month-daily-table-foot"></tfoot>
           </table>
@@ -623,30 +853,31 @@
       </div>
       <div class="card">
         <div class="card-title">📋 تفصيل الأيام</div>
+        <div class="switch-row" style="padding:10px 12px;margin-bottom:10px">
+          <div class="switch-row-text">
+            <div class="switch-row-title" style="font-size:12.5px">🔄 عرض دورة الراتب</div>
+            <div class="switch-row-sub" id="an-daily-sub"></div>
+          </div>
+          <button class="switch-toggle" id="an-daily-toggle" onclick="toggleDailyCycle('an')"><div class="knob"></div></button>
+        </div>
         <div class="day-nav" style="margin:0 0 12px">
-          <button class="arrow" onclick="changeAnDailyOffset(1)">→</button>
+          <button class="arrow" onclick="changeAnDailyOffset(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
           <div class="day-title" id="an-daily-title" style="font-size:12.5px"></div>
-          <button class="arrow" onclick="changeAnDailyOffset(-1)">←</button>
+          <button class="arrow" onclick="changeAnDailyOffset(-1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
         </div>
         <div>
           <table class="a-table" id="an-daily-table" style="width:100%;table-layout:fixed">
-            <thead><tr><th>اليوم</th><th>التاريخ</th><th>الصرف</th><th>الدخل</th><th>الصافي</th><th>🏦 ادخار</th><th>الصافي الشامل</th></tr></thead>
+            <colgroup><col style="width:12%"><col style="width:8%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:13%"><col style="width:15%"></colgroup>
+            <thead><tr><th>اليوم</th><th>التاريخ</th><th>الصرف</th><th>الدخل</th><th>الصافي</th><th>🏦 ادخار</th><th>الصافي الشامل</th><th>الرصيد الجاري</th></tr></thead>
             <tbody id="an-daily-table-body"></tbody>
             <tfoot id="an-daily-table-foot"></tfoot>
           </table>
         </div>
       </div>
-      <div class="card" style="padding-bottom:14px">
-        <div class="card-title" style="margin-bottom:12px">📋 جداول تتبع الصرف</div>
-        <div style="display:flex;background:var(--bg);border-radius:10px;padding:2px">
-          <button class="btn-sm mode-btn stb-tab active" data-stb="cmp-years" onclick="setSpendTrackTab('cmp-years')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:var(--font-body);font-weight:700;cursor:pointer;font-size:10.5px">🔄 مقارنة سنتين</button>
-          <button class="btn-sm mode-btn stb-tab" data-stb="carry-monthly" onclick="setSpendTrackTab('carry-monthly')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:var(--font-body);font-weight:700;cursor:pointer;font-size:10.5px">🔗 الترحيل</button>
-          <button class="btn-sm mode-btn stb-tab" data-stb="detailed-monthly" onclick="setSpendTrackTab('detailed-monthly')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:var(--font-body);font-weight:700;cursor:pointer;font-size:10.5px">📋 التفصيلي</button>
-          <button class="btn-sm mode-btn stb-tab" data-stb="transfers" onclick="setSpendTrackTab('transfers')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:var(--font-body);font-weight:700;cursor:pointer;font-size:10.5px">🔁 التحويلات</button>
-          <button class="btn-sm mode-btn stb-tab" data-stb="savings-ledger" onclick="setSpendTrackTab('savings-ledger')" style="flex:1;border:none;border-radius:8px;padding:8px 2px;font-family:var(--font-body);font-weight:700;cursor:pointer;font-size:10.5px">🏦 سجل الادخار</button>
-        </div>
-      </div>
-<div class="card" id="card-cmp-years">
+      <div class="card stb-wrap">
+        <div class="card-title">📋 جداول تتبع الصرف <small>اختر الجدول</small></div>
+        <div class="stb-tabs"><button class="stb-tab active" data-stb="cmp-years" onclick="setSpendTrackTab('cmp-years')"><span class="stb-ic">🔄</span><span class="stb-lb">مقارنة سنتين</span></button><button class="stb-tab" data-stb="carry-monthly" onclick="setSpendTrackTab('carry-monthly')"><span class="stb-ic">🔗</span><span class="stb-lb">الترحيل</span></button><button class="stb-tab" data-stb="detailed-monthly" onclick="setSpendTrackTab('detailed-monthly')"><span class="stb-ic">📋</span><span class="stb-lb">التفصيلي</span></button><button class="stb-tab" data-stb="transfers" onclick="setSpendTrackTab('transfers')"><span class="stb-ic">🔁</span><span class="stb-lb">التحويلات</span></button><button class="stb-tab" data-stb="savings-ledger" onclick="setSpendTrackTab('savings-ledger')"><span class="stb-ic">🏦</span><span class="stb-lb">سجل الادخار</span></button></div>
+<div class="stb-panel" id="card-cmp-years">
         <div class="card-title" style="justify-content:space-between">
           <span>🔄 مقارنة سنتين</span>
           <div style="display:flex;gap:6px">
@@ -662,7 +893,7 @@
           </table>
         </div>
       </div>
-<div class="card" id="card-carry-monthly" style="display:none">
+<div class="stb-panel" id="card-carry-monthly" style="display:none">
         <div class="card-title">🔗 جدول الترحيل الشهري</div>
         <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">كل شهر يبدأ برصيد الشهر اللي قبله (مرحّل)، فلو صرفت أكثر من دخل الشهر يبان بوضوح إنك أخذت من رصيد سابق، مو نقص من فراغ.</p>
         <div style="overflow-x:auto">
@@ -674,12 +905,12 @@
         </div>
         <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="exportCarryTableCSV()">⬇ تصدير الجدول (CSV)</button>
       </div>
-<div class="card" id="card-detailed-monthly" style="display:none">
+<div class="stb-panel" id="card-detailed-monthly" style="display:none">
         <div class="card-title">📋 الجدول التفصيلي الشهري <small>من بداية الشهر الميلادي لنهايته، بترحيل من اللي قبله</small></div>
         <div id="an-table-cards"></div>
         <button class="btn btn-ghost btn-block" style="margin-top:10px" onclick="exportDetailedTableCSV()">⬇ تصدير الجدول (CSV)</button>
       </div>
-<div class="card" id="card-transfers" style="display:none">
+<div class="stb-panel" id="card-transfers" style="display:none">
         <div class="card-title">🔁 عمليات التحويل الداخلي <small>هذه السنة</small></div>
         <div class="strip" style="margin-bottom:12px">
           <div class="strip-box"><div class="strip-lbl">تحويل داخل</div><div class="strip-val" id="tr-in" style="color:var(--income)">—</div></div>
@@ -693,7 +924,7 @@
           </table>
         </div>
       </div>
-<div class="card" id="card-savings-ledger" style="display:none">
+<div class="stb-panel" id="card-savings-ledger" style="display:none">
         <div class="card-title">🏦 سجل حساب الادخار <small>هذه السنة</small></div>
         <div class="strip" style="margin-bottom:12px">
           <div class="strip-box"><div class="strip-lbl">إيداعات</div><div class="strip-val" id="sv-in" style="color:var(--income)">—</div></div>
@@ -707,6 +938,8 @@
           </table>
         </div>
       </div>
+            </div>
+
       <div class="card">
         <div class="card-title">🗂️ توزيع المصاريف على السنة</div>
         <div id="an-cats"></div>
@@ -722,10 +955,111 @@
 
     </section>
 
+    <!-- ===================== PLAN (تخطيط 50/30/20) ===================== -->
+    <section class="page" id="page-plan">
+      <div class="day-nav">
+        <div style="width:72px"></div>
+        <div class="day-title">🧭 تخطيط الراتب</div>
+        <button class="btn btn-ghost btn-sm" style="width:72px;white-space:nowrap" onclick="openSheet('sheet-plan-about')">❓ عن</button>
+      </div>
+      <div class="card">
+        <div class="card-title">🧪 جرّب التقسيم <small>للتجربة فقط، ما يتغير راتبك</small></div>
+        <div class="switch-row" style="margin-bottom:12px">
+          <div class="switch-row-text">
+            <div class="switch-row-title">💾 تذكّر التقسيم</div>
+            <div class="switch-row-sub" id="pl-remember-sub">فعّله لحفظ الراتب للتجربة والدخل الإضافي والمبالغ، فلا تكتبها كل مرة.</div>
+          </div>
+          <button class="switch-toggle" id="pl-remember-toggle" onclick="togglePlanRemember()"><div class="knob"></div></button>
+        </div>
+        <div class="fgroup"><label>الراتب للتجربة</label><input type="number" inputmode="decimal" id="pl-try" placeholder="اكتب أي راتب وشوف التقسيم" oninput="onPlanTry()"></div>
+        <div class="fgroup">
+          <label>➕ دخل إضافي (اختياري)</label>
+          <div id="pl-extras"></div>
+          <button class="btn btn-ghost btn-block btn-sm" style="margin-top:2px" onclick="addPlanExtra()">➕ إضافة دخل إضافي آخر</button>
+          <div id="pl-extra-total" style="font-size:11px;color:var(--ink-soft);margin-top:6px;text-align:center"></div>
+        </div>
+        <div id="pl-bar-wrap" style="position:relative;margin:8px 0 16px">
+          <div id="pl-bar" style="display:flex;height:36px;border-radius:10px;overflow:hidden;background:var(--line)">
+            <div class="pl-seg" id="pl-bar-need" style="width:50%;background:var(--accent)"></div><div class="pl-seg" id="pl-bar-want" style="width:30%;background:var(--accent2)"></div><div class="pl-seg" id="pl-bar-save" style="width:20%;background:var(--income)"></div><div class="pl-seg" id="pl-bar-bills" style="width:0%;background:var(--expense)"></div>
+          </div>
+        </div>
+        <div style="font-size:12px;font-weight:800;margin-bottom:6px">✏️ اكتب مبلغ كل بند</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:6px">
+          <div class="fgroup" style="margin:0"><label>أساسيات</label><input type="number" inputmode="decimal" min="0" id="pl-p-need" oninput="onPlanAmt()"></div>
+          <div class="fgroup" style="margin:0"><label>رغبات</label><input type="number" inputmode="decimal" min="0" id="pl-p-want" oninput="onPlanAmt()"></div>
+          <div class="fgroup" style="margin:0"><label>ادخار</label><input type="number" inputmode="decimal" min="0" id="pl-p-save" oninput="onPlanAmt()"></div>
+          <div class="fgroup" style="margin:0"><label>🧾 تسديد فواتير / أقساط (اختياري)</label><input type="number" inputmode="decimal" min="0" id="pl-p-bills" oninput="onPlanAmt()"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px">
+          <div id="pl-total-pct" style="font-size:11.5px;font-weight:700"></div>
+          <button class="btn btn-ghost btn-sm" onclick="resetPlanSplit()">↺ التقسيم الافتراضي ٥٠ / ٣٠ / ٢٠</button>
+        </div>
+        <div class="strip" id="pl-strip">
+          <div class="strip-box"><div class="strip-lbl" id="pl-lbl-need">٥٠٪ أساسيات</div><div class="strip-val" id="pl-need">—</div></div>
+          <div class="strip-box"><div class="strip-lbl" id="pl-lbl-want">٣٠٪ رغبات</div><div class="strip-val" id="pl-want">—</div></div>
+          <div class="strip-box"><div class="strip-lbl" id="pl-lbl-save">٢٠٪ ادخار</div><div class="strip-val" id="pl-save">—</div></div>
+          <div class="strip-box"><div class="strip-lbl" id="pl-lbl-bills">فواتير وأقساط</div><div class="strip-val" id="pl-bills">—</div></div>
+        </div>
+        <div id="pl-rest" style="margin-top:10px"></div>
+        <div style="font-size:10.5px;color:var(--ink-soft);margin-top:8px;text-align:center" id="pl-base"></div>
+      </div>
+
+      <div class="card" id="pl-card-need">
+        <div class="card-title">1️⃣ الاحتياجات الأساسية <small>قابل للتحرير</small></div>
+        <p style="font-size:11px;color:var(--ink-soft);margin:-6px 0 10px">اكتب بنودك ومبالغها، مثل: إيجار، كهرباء، ماء، إنترنت، مقاضي، بنزين.</p>
+        <div id="pl-link-ui-need"></div>
+        <div id="pl-manual-need">
+          <div id="pl-rows-need"></div>
+          <button class="btn btn-ghost btn-block btn-sm" onclick="addPlanListRow('need')">➕ إضافة بند</button>
+        </div>
+        <div class="strip" style="margin-top:12px" id="pl-sum-need"></div>
+      </div>
+
+      <div class="card" id="pl-card-want">
+        <div class="card-title">2️⃣ الرغبات والأسلوب المعيشي <small>قابل للتحرير</small></div>
+        <p style="font-size:11px;color:var(--ink-soft);margin:-6px 0 10px">اكتب بنودك ومبالغها، مثل: مطاعم، قهوة، تسوق، اشتراكات.</p>
+        <div id="pl-link-ui-want"></div>
+        <div id="pl-manual-want">
+          <div id="pl-rows-want"></div>
+          <button class="btn btn-ghost btn-block btn-sm" onclick="addPlanListRow('want')">➕ إضافة بند</button>
+        </div>
+        <div class="strip" style="margin-top:12px" id="pl-sum-want"></div>
+      </div>
+
+      <div class="card" id="pl-card-bills">
+        <div class="card-title">3️⃣ 🧾 تسديد فواتير / أقساط (اختياري) <small>قابل للتحرير</small></div>
+        <p style="font-size:11px;color:var(--ink-soft);margin:-6px 0 10px">اكتب بنودك ومبالغها، مثل: قسط سيارة، قسط جوال، سداد دين.</p>
+        <div id="pl-link-ui-bills"></div>
+        <div id="pl-manual-bills">
+          <div id="pl-rows-bills"></div>
+          <button class="btn btn-ghost btn-block btn-sm" onclick="addPlanListRow('bills')">➕ إضافة بند</button>
+        </div>
+        <div class="strip" style="margin-top:12px" id="pl-sum-bills"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">4️⃣ الادخار والمستقبل <small>الدورات السابقة</small></div>
+        <div class="fgroup"><label>🎯 هدف الادخار (نفس هدف حساب الادخار في الإعدادات)</label><input type="number" inputmode="decimal" min="0" id="pl-sv-goal" placeholder="اختياري" oninput="onPlanSvGoal()"></div>
+        <div id="pl-sv-goal-box" style="margin-bottom:16px"></div>
+        <div class="strip" style="margin-bottom:10px">
+          <div class="strip-box"><div class="strip-lbl">مجموع ما ادخرته</div><div class="strip-val" id="pl-total">—</div></div>
+          <div class="strip-box"><div class="strip-lbl">متوسط الدورة</div><div class="strip-val" id="pl-avg">—</div></div>
+          <div class="strip-box"><div class="strip-lbl" id="pl-lbl-hit">دورات حققت ٢٠٪</div><div class="strip-val" id="pl-hit">—</div></div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="a-table">
+            <thead><tr><th>الدورة</th><th>الدخل</th><th id="pl-th-target">المستهدف ٢٠٪</th><th>ما ادخرته</th><th>النسبة</th></tr></thead>
+            <tbody id="pl-body"></tbody>
+          </table>
+        </div>
+        <p style="font-size:10.5px;color:var(--ink-soft);margin-top:8px">«ما ادخرته» = إيداعات الادخار − السحوبات منه خلال الدورة (من نزول الراتب إلى الذي بعده). الجدول للعرض فقط.</p>
+      </div>
+    </section>
+
     <!-- ===================== SETTINGS (صفحة كاملة) ===================== -->
     <section class="page" id="page-settings">
       <div class="day-nav">
-        <button class="arrow" onclick="showPage('dashboard')">→</button>
+        <button class="arrow" onclick="showPage('dashboard')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <div class="day-title">⚙️ الإعدادات</div>
         <div style="width:34px"></div>
       </div>
@@ -742,7 +1076,7 @@
       </div>
       <div class="settings-menu-item" onclick="showPage('settings-colors')">
         <div class="smi-icon">🎨</div>
-        <div class="smi-text"><div class="smi-title">الألوان</div><div class="smi-sub">٢١ ثيم موزّعة على ٧ مجموعات</div></div>
+        <div class="smi-text"><div class="smi-title">الألوان</div><div class="smi-sub">٤٥ ثيم موزّعة على ١٥ مجموعة</div></div>
         <div class="smi-arrow">‹</div>
       </div>
       <div class="settings-menu-item" onclick="showPage('settings-font')">
@@ -765,7 +1099,7 @@
     <!-- ===================== SETTINGS: الراتب ===================== -->
     <section class="page" id="page-settings-salary">
       <div class="day-nav">
-        <button class="arrow" onclick="showPage('settings')">→</button>
+        <button class="arrow" onclick="showPage('settings')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <div class="day-title">💵 الراتب والدورة</div>
         <div style="width:34px"></div>
       </div>
@@ -807,7 +1141,7 @@
     <!-- ===================== SETTINGS: الفئات (وحساب الادخار فوقها) ===================== -->
     <section class="page" id="page-settings-cats">
       <div class="day-nav">
-        <button class="arrow" onclick="showPage('settings')">→</button>
+        <button class="arrow" onclick="showPage('settings')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <div class="day-title">🏷️ الفئات</div>
         <div style="width:34px"></div>
       </div>
@@ -851,7 +1185,7 @@
     <!-- ===================== SETTINGS: الألوان ===================== -->
     <section class="page" id="page-settings-colors">
       <div class="day-nav">
-        <button class="arrow" onclick="showPage('settings')">→</button>
+        <button class="arrow" onclick="showPage('settings')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <div class="day-title">🎨 الألوان</div>
         <div style="width:34px"></div>
       </div>
@@ -863,7 +1197,7 @@
     <!-- ===================== SETTINGS: الخط والأرقام ===================== -->
     <section class="page" id="page-settings-font">
       <div class="day-nav">
-        <button class="arrow" onclick="showPage('settings')">→</button>
+        <button class="arrow" onclick="showPage('settings')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <div class="day-title">🔤 الخط والأرقام</div>
         <div style="width:34px"></div>
       </div>
@@ -878,7 +1212,7 @@
     <!-- ===================== SETTINGS: البيانات ===================== -->
     <section class="page" id="page-settings-data">
       <div class="day-nav">
-        <button class="arrow" onclick="showPage('settings')">→</button>
+        <button class="arrow" onclick="showPage('settings')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <div class="day-title">🗄️ البيانات</div>
         <div style="width:34px"></div>
       </div>
@@ -908,7 +1242,7 @@
     <!-- ===================== SETTINGS: حذف كل البيانات ===================== -->
     <section class="page" id="page-settings-delete">
       <div class="day-nav">
-        <button class="arrow" onclick="showPage('settings')">→</button>
+        <button class="arrow" onclick="showPage('settings')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         <div class="day-title">🗑️ حذف كل البيانات</div>
         <div style="width:34px"></div>
       </div>
@@ -983,9 +1317,9 @@
     <div class="sheet-title"><span>📆 انتقال سريع</span><button onclick="closeSheet('sheet-month-picker')">✕</button></div>
     <button class="btn btn-ghost btn-block" style="margin-bottom:14px" onclick="goToCurrentMonth()">🏠 الشهر الحالي</button>
     <div class="day-nav" style="margin:0 0 14px">
-      <button class="arrow" onclick="changeMonthPickerYear(-1)">→</button>
+      <button class="arrow" onclick="changeMonthPickerYear(-1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
       <div class="day-title" id="mp-year-title"></div>
-      <button class="arrow" onclick="changeMonthPickerYear(1)">←</button>
+      <button class="arrow" onclick="changeMonthPickerYear(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
     </div>
     <div id="mp-month-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div>
   </div>
@@ -1006,59 +1340,106 @@
 <div class="sheet-overlay hidden" id="sheet-about">
   <div class="sheet" style="max-width:560px">
     <div class="sheet-title"><span>❓ حول ميزانيتي</span><button onclick="closeSheet('sheet-about')">✕</button></div>
-
-    <div class="settings-section">
-      <div class="settings-label">📖 لوحة التحكم</div>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8">
-        البطاقة بالأعلى فيها حلقة تعرض <b>"💰 إجمالي أموالك"</b> (المخزون + حساب الادخار) بالوسط، وقوسها يبيّن نسبة ما صُرف من دخل الدورة (يتلوّن بالأخضر، ثم الأصفر فوق ٧٠٪، ثم الأحمر فوق ٩٠٪). تحتها جدول صغير (قبل · الآن · الفرق · نسبة التغيّر ٪) للمخزون والادخار والإجمالي يبيّن كيف تغيّر رصيدك من بداية الدورة، والعد التنازلي لنزول الراتب، وتواريخ الدورة، وسطر مقارنة بنفس فترة الدورة السابقة، وزر "🔀 تحويل" بين المخزون والادخار. وفوقها تنبيه استباقي أحمر لو معدل صرفك اليومي زاد عن المسموح. تحتها "مصادر الدخل" تفصّل من وين جا دخلك هالدورة. <b>"المخزون"</b> رصيدك المتراكم من كل دورة راتب ماضية، و<b>"حساب الادخار"</b> رصيد مستقل تماماً (إيداعاتك وسحوباتك منه) مقسّم بفترات شهرية زي المخزون بالضبط. لو حددت "🎯 هدف الادخار" بالإعدادات يطلع شريط تقدم له. وتحته توزيع المصاريف برسم دائري وقائمة، وآخر عملياتك.
-      </p>
+    <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:18px;line-height:1.8">دفتر حساب يومي يتتبع دخلك وصرفك على دورة الراتب، ويفصل المخزون (رصيد دوراتك) عن حساب الادخار. تنقّل بين الصفحات من صف الأيقونات في أعلى الشاشة، وهذا شرح لكل صفحة.</p>
+    <div class="settings-section" style="margin-bottom:22px">
+      <div class="card-title">1️⃣ 📖 لوحة التحكم</div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">الصفحة الرئيسية: تعطيك صورة سريعة عن دورة راتبك الحالية وأموالك كلها.</p>
+      <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
+      <div class="ledger-row"><span>حلقة «💰 إجمالي أموالك» (المخزون + الادخار)، وقوسها يبيّن نسبة ما صُرف من دخل الدورة: أخضر، ثم أصفر فوق ٧٠٪، ثم أحمر فوق ٩٠٪</span></div><div class="ledger-row"><span>جدول «قبل · الآن · الفرق» للمخزون والادخار والإجمالي، وتحته العد التنازلي لنزول الراتب وتواريخ الدورة</span></div><div class="ledger-row"><span>قائمة «↩️ الأشهر الماضية» تعرض كل دورة سابقة بنفس الجدول</span></div><div class="ledger-row"><span>زر «🔀 تحويل» بين المخزون وحساب الادخار</span></div><div class="ledger-row"><span>ملخص سريع ومصادر الدخل ونمو المخزون والادخار وأهدافهما وتوزيع المصاريف</span></div><div class="ledger-row"><span>تنبيه أحمر في الأعلى لو معدل صرفك اليومي زاد عن المسموح</span></div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> المخزون هو رصيدك المتراكم من دورات الراتب الماضية، وحساب الادخار رصيد مستقل عنه.</div>
     </div>
-
-    <div class="settings-section">
-      <div class="settings-label">📅 اليوم</div>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8">
-        تصفّح أي يوم بالأسهم أو باختيار تاريخ مباشرة. الشريط فوق يعرض دخل/صرف/صافي اليوم + "🏦 المخزون". سطر "📊 عادةً تصرف حوالي..." يقارن اليوم بمعدلك المعتاد بنفس اليوم من الأسبوع. زر "🧾 تسجيل عملية جديدة" فوق القائمة يفتح نافذة إضافة بتاريخ ذلك اليوم، وبعد كل حفظ يطلع إشعار يذكّرك بالمتبقي اليومي والمتبقي من الدورة مع بعض. تقدر تعدّل ✏️ أو تحذف 🗑️ أي عملية.
-      </p>
+    <div class="settings-section" style="margin-bottom:22px">
+      <div class="card-title">2️⃣ 📅 اليوم</div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">تفاصيل يوم واحد، وهنا تسجّل عملياتك.</p>
+      <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
+      <div class="ledger-row"><span>تنقّل بين الأيام بالأسهم، أو اضغط التاريخ لاختيار يوم مباشرة</span></div><div class="ledger-row"><span>ملخص اليوم: المخزون والادخار والمجموع، والدخل والصرف والصافي، وسحوبات الادخار وإيداعاته</span></div><div class="ledger-row"><span>سطر «📊 عادةً تصرف حوالي...» يقارن اليوم بمعدلك المعتاد في نفس يوم الأسبوع</span></div><div class="ledger-row"><span>زر «🧾 تسجيل عملية جديدة» يفتح النافذة بتاريخ ذلك اليوم، وتقدر تعدّل ✏️ أو تحذف 🗑️ أي عملية</span></div><div class="ledger-row"><span>بعد كل حفظ يطلع إشعار بالمتبقي اليومي والمتبقي من الدورة</span></div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> سجّل العملية في يومها نفسه، فتبقى أرقام الأسبوع والشهر دقيقة.</div>
     </div>
-
-    <div class="settings-section">
-      <div class="settings-label">🗓️ الأسبوع</div>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8">
-        الشريط فوق يعرض دخل/صرف/صافي كل أسابيع الشهر + "🏦 المخزون". تحته جدولان يعرضان أيام الشهر من أول يوم لآخر يوم فقط (بدون أيام الشهر اللي قبله أو بعده): الأول للنصف الأول من أسابيع الشهر والثاني للباقي. كل جدول بشكل دفتر يومية: لكل يوم الصرف والدخل وحركة الادخار، وعمود "الرصيد الجاري" يبيّن إجمالي أموالك (المخزون + الادخار) بعد كل يوم. يبدأ الجدول برصيد مرحّل من الشهر السابق (والراتب الشهري بصف مستقل لو محسوب)، ووسم "أسبوع ٢" يحدد بداية كل أسبوع مع خط أثخن يفصله، وتنبيه فوق الجدول لو أسبوع تجاوز معدلك. التحويل بين المخزون والادخار ما يغيّر الرصيد. وفي آخر الجدول مجموع الصرف والدخل والادخار والرصيد الأخير. كل يوم بالجدول له زر خيارات "⋮" يفتح قائمة صغيرة فيها "➕ إضافة عملية" و"📄 عرض اليوم". اليوم اللي صرفت فيه أكثر شي يتميّز بشارة 🔥، وأي أسبوع يتجاوز معدلك المعتاد يطلع له تنبيه. تحت البطاقات رسم "📊 مقارنة صرف الأسابيع"، وبالأسفل قائمة مطوية "عمليات أسابيع الشهر" (اضغط عليها لفتحها). الأسهم فوق تنقلك بين الأشهر.
-      </p>
+    <div class="settings-section" style="margin-bottom:22px">
+      <div class="card-title">3️⃣ 🗓️ الأسبوع</div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">أيام الشهر على شكل دفتر يومية، جدولان لأسابيع الشهر.</p>
+      <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
+      <div class="ledger-row"><span>لكل يوم: الصرف والدخل وحركة الادخار، وعمود «الرصيد الجاري» لإجمالي أموالك بعد اليوم</span></div><div class="ledger-row"><span>يبدأ الجدول برصيد مرحّل من الشهر السابق، ووسم «أسبوع ٢» وخط أثخن يفصل كل أسبوع</span></div><div class="ledger-row"><span>قائمة «⋮» لكل يوم فيها «➕ إضافة عملية» و«📄 عرض اليوم»</span></div><div class="ledger-row"><span>🔥 على أعلى يوم صرف، وتنبيه لأي أسبوع تجاوز معدلك المعتاد</span></div><div class="ledger-row"><span>رسم «📊 مقارنة صرف الأسابيع»، وقائمة مطوية بعمليات أسابيع الشهر</span></div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> الأسهم في الأعلى تنقلك بين الأشهر.</div>
     </div>
-
-    <div class="settings-section">
-      <div class="settings-label">📆 الشهر</div>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8">
-        اضغط اسم الشهر لفتح نافذة "📆 انتقال سريع" (اختيار شهر وسنة مباشرة، أو زر "🏠 الشهر الحالي"). التقويم يلوّن كل يوم حسب شدة الصرف (خفيف/متوسط/مرتفع)، ويحط 💰 على خلية يوم الراتب. فوق التقويم مقارنة بنفس الشهر السنة اللي فاتت (لو فيه بيانات). تحت التقويم توزيع المصاريف بالفئات، مع شارات 🟡🔴 لو قربت أو تجاوزت حد فئة معينة (من الإعدادات)، وآخر سطر "💰 الإجمالي المتبقي من الراتب" يطبّق نظام الترحيل من كل الأشهر السابقة.
-      </p>
+    <div class="settings-section" style="margin-bottom:22px">
+      <div class="card-title">4️⃣ 📆 الشهر</div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">الصورة الكاملة للشهر الميلادي.</p>
+      <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
+      <div class="ledger-row"><span>اضغط اسم الشهر لفتح «انتقال سريع» (شهر وسنة، أو زر «🏠 الشهر الحالي»)</span></div><div class="ledger-row"><span>التقويم يلوّن كل يوم حسب شدة الصرف، ويضع 💰 على يوم الراتب</span></div><div class="ledger-row"><span>مقارنة بنفس الشهر في السنة الماضية إن توفرت بيانات</span></div><div class="ledger-row"><span>جدول تفصيل الأيام، وتوزيع المصاريف بالفئات مع شارات 🟡🔴 لو قربت أو تجاوزت حد فئة</span></div><div class="ledger-row"><span>آخر سطر «💰 الإجمالي المتبقي من الراتب» بنظام الترحيل من الأشهر السابقة</span></div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> حدّد حد إنفاق شهري لفئاتك من الإعدادات لتظهر لك شارات التنبيه.</div>
     </div>
-
-    <div class="settings-section">
-      <div class="settings-label">📈 تحليل</div>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8">
-        تقرير سنوي كامل: رسم بياني شهري، توزيع الفئات، توقّع الشهر القادم، "🏅 أرقام قياسية" (أفضل شهر، أعلى إنفاق، أعلى يوم صرف)، وشبكة "📅 أداء الأشهر" الاثني عشر. أهم أجزاء الصفحة: <b>الجدول التفصيلي الشهري</b> اللي يطبّق نظام الترحيل فيحسب المتبقي الحقيقي (🟢 منتظم / 🟡 مرتفع / 🔴 تجاوز / 🟣 تجاوز كامل)، <b>جدول الترحيل الشهري</b> اللي يفصّل انتقال الرصيد شهر لشهر، خط زمني يتتبع "المخزون" من البداية، و"🔄 مقارنة سنتين" جنب بعض بجدول واحد. بالأسفل جدولين مستقلين: "🔁 عمليات التحويل الداخلي" و<b>"🏦 سجل حساب الادخار"</b> (برصيد تراكمي بعد كل عملية).
-      </p>
+    <div class="settings-section" style="margin-bottom:22px">
+      <div class="card-title">5️⃣ 📈 تحليل</div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">تقرير سنوي كامل لمساعدتك على فهم صرفك.</p>
+      <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
+      <div class="ledger-row"><span>ملخص السنة للدخل والصرف والادخار، وهدف السنة (سقف الصرف) لو حددته</span></div><div class="ledger-row"><span>شبكة «📅 أداء الأشهر» الاثني عشر، وتوقّع الشهر القادم، و«🏅 أرقام قياسية»</span></div><div class="ledger-row"><span>رسوم شهرية، ومسار المخزون والادخار منذ البداية</span></div><div class="ledger-row"><span>جداول تتبع الصرف بتبويبات: مقارنة سنتين، الترحيل، التفصيلي، التحويلات، سجل الادخار</span></div><div class="ledger-row"><span>تنبيه بقفزات الفئات عن الشهر الذي قبله</span></div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> جدول الترحيل يبيّن لك إذا صرفت من رصيد سابق، فلا يظهر الشهر وكأنه ناقص من فراغ.</div>
     </div>
+    <div class="settings-section" style="margin-bottom:22px">
+      <div class="card-title">6️⃣ 🧭 تخطيط</div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">تقسيم راتبك على بنودك، وتابع ما ادخرته.</p>
+      <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
+      <div class="ledger-row"><span>اكتب مبلغ أساسياتك ورغباتك وادخارك، وتسديد فواتير وأقساط (اختياري)، أو اتركها للتقسيم الافتراضي ٥٠/٣٠/٢٠</span></div><div class="ledger-row"><span>جرّب راتباً مختلفاً وأضف أكثر من دخل إضافي، بدون ما يتغير راتبك المحفوظ</span></div><div class="ledger-row"><span>يظهر لك «المتبقي بدون إنفاق» أو «الزايد عن الراتب»</span></div><div class="ledger-row"><span>جداول قابلة للتحرير للأساسيات والرغبات والفواتير مع المتبقي من كل منها، ومفتاح «🔗 ربط مع الدورة» يحسب المصروف الفعلي حسب فئات تختارها</span></div><div class="ledger-row"><span>قسم «4️⃣ الادخار والمستقبل»: هدف الادخار والمتبقي لبلوغه، وجدول الدورات السابقة</span></div><div class="ledger-row"><span>مفتاح «💾 تذكّر التقسيم» يحفظ كل ما كتبته، وزر «❓ عن» يشرح القاعدة وطريقة الاستخدام</span></div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> الأرقام التي تكتبها هنا للتخطيط فقط ولا تغيّر عملياتك المسجلة. وهدف الادخار هو الوحيد الذي يتغير في إعدادات التطبيق.</div>
+    </div>
+    <div class="settings-section" style="margin-bottom:22px">
+      <div class="card-title">7️⃣ ⚙️ الإعدادات</div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">من الترس في الأعلى.</p>
+      <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
+      <div class="ledger-row"><span>💵 الراتب والدورة: المبلغ والعملة ويوم النزول وأهداف المخزون والادخار وسقف السنة، ويوم نزول الراتب لكل شهر</span></div><div class="ledger-row"><span>🏷️ الفئات: أضف وعدّل ورتّب، وحدّد حد إنفاق شهري لفئات الصرف</span></div><div class="ledger-row"><span>🎨 الألوان و🔤 الخط والأرقام لتغيير مظهر التطبيق</span></div><div class="ledger-row"><span>🗄️ البيانات: نسخة احتياطية JSON، وتصدير CSV، واستعادة بدمج أو استبدال، وحذف كل البيانات</span></div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> خذ نسخة احتياطية من البيانات بين فترة وأخرى، فالبيانات محفوظة على جهازك فقط.</div>
+    </div>
+  </div>
+</div>
 
-    <div class="settings-section">
-      <div class="settings-label">⚙️ الإعدادات</div>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8;margin-bottom:8px">
-        <b>💵 الراتب والدورة:</b> المبلغ، العملة، يوم نزول الراتب الافتراضي، و"🎯 هدف الادخار" (شريط تقدم مربوط بالمخزون).
-      </p>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8;margin-bottom:8px">
-        <b>📅 يوم نزول الراتب لكل شهر:</b> يتعرّف تلقائياً 🔎 من آخر عملية "دخل - راتب" تسجّلها في كل شهر، وتقدر تكتب يوماً يدوياً لأي شهر يختلف بسبب العطل.
-      </p>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8;margin-bottom:8px">
-        <b>🏷️ الفئات:</b> تعرض ٣ فقط مع زر "عرض المزيد"، وفئات حساب الادخار الأربعة مفصولة بخط تحت. لكل فئة صرف تقدر تحدد حد إنفاق شهري (تنبيه 🟡🔴 بصفحة الشهر)، ترتّبها بالأسهم ▲▼، تعدّل اسمها أو إيموجيها ✏️ بدون ما تفقد عملياتها القديمة، أو تحذفها 🗑️. زر "🧹 دمج الفئات المكررة" ينظّف أي تشابه بالأسماء تلقائياً.
-      </p>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8;margin-bottom:8px">
-        <b>🎨 الألوان:</b> ٢١ ثيم موزّعة على ٧ مجموعات (داكن، فاتح، دافئ، بارد، طبيعة، بنفسجي، معدني).
-      </p>
-      <p style="font-size:12px;color:var(--ink-soft);line-height:1.8">
-        <b>🗄️ البيانات:</b> تذكير لطيف يطلع لو مرّ وقت طويل بدون نسخة احتياطية جديدة. "تصدير نسخة احتياطية" يعرض نص بياناتك كامل لتنسخه وتحفظه بأي مكان (بدون تنزيل ملفات، تجنّباً لأي حظر أمني بالمتصفح). للاستعادة، ارفع ملف JSON أو الصق النص مباشرة، واختر دمج (يستورد الإعدادات أيضاً) أو استبدال. الفئات الأساسية محمية دائماً وما تختفي حتى لو الملف قديم. وفي الأسفل زر لحذف كل البيانات نهائياً.
-      </p>
+<!-- ===================== SHEET: عن تخطيط الراتب ===================== -->
+<div class="sheet-overlay hidden" id="sheet-plan-about">
+  <div class="sheet" style="max-width:560px">
+    <div class="sheet-title"><span>🧭 عن تخطيط الراتب</span><button onclick="closeSheet('sheet-plan-about')">✕</button></div>
+    <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:18px;line-height:1.8">قاعدة بسيطة لتقسيم راتبك على ثلاثة بنود: ٥٠٪ احتياجات، ٣٠٪ رغبات، ٢٠٪ ادخار. تقدر تعدّلها بمبالغك أنت، وتضيف لها بند «تسديد فواتير وأقساط» إن وجد.</p>
+    <div class="settings-section" style="margin-bottom:22px">
+      <div class="card-title">🛠️ كيف تستخدم الصفحة؟</div>
+      <div class="ledger-row"><span><b>1.</b> اكتب راتباً للتجربة (اختياري) وأي دخل إضافي، وتقدر تضيف أكثر من مصدر. هذا لا يغيّر راتبك المحفوظ في الإعدادات.</span></div>
+      <div class="ledger-row"><span><b>2.</b> اكتب مبلغ كل بند: أساسيات، رغبات، ادخار، وتسديد فواتير / أقساط (اختياري). وإذا تركتها فارغة يُستخدم التقسيم الافتراضي ٥٠ و٣٠ و٢٠٪. يظهر لك «المتبقي بدون إنفاق» أو «الزايد عن الراتب».</span></div>
+      <div class="ledger-row"><span><b>3.</b> في جداول الأساسيات والرغبات والفواتير أدرج بنودك ومبالغها يدوياً، أو فعّل «🔗 ربط مع الدورة» واختر فئاتك ليحسب المصروف الفعلي من عملياتك في دورة الراتب الحالية. والمتبقي من كل جدول يُحسب تلقائياً ولا يُعدَّل.</span></div>
+      <div class="ledger-row"><span><b>4.</b> «4️⃣ الادخار والمستقبل»: حدّد هدف الادخار (وهو نفس هدف حساب الادخار في الإعدادات)، وتابع المتبقي لبلوغه وما ادخرته في الدورة الحالية والدورات السابقة.</span></div>
+      <div class="ledger-row"><span><b>5.</b> مفتاح «💾 تذكّر التقسيم» يحفظ ما كتبته. وإذا أطفأته يُمسح ويرجع فارغاً.</span></div>
+    </div>
+    <div class="settings-section" style="margin-bottom:22px">
+        <div class="card-title">1️⃣ نسبة الـ 50% — الاحتياجات الأساسية والالتزامات</div>
+        <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">هذه النسبة مخصصة للإنفاق على أمور المعيشة الضرورية التي لا يمكنك الاستغناء عنها.</p>
+        <div style="font-size:12px;font-weight:800;margin-bottom:6px">كيف تتصرف فيها؟</div>
+        <div class="ledger-row"><span>تسدد منها الإيجار أو أقساطك الثابتة فوراً</span></div>
+        <div class="ledger-row"><span>تغطي منها فواتير (الكهرباء، الماء، الإنترنت، الجوال)</span></div>
+        <div class="ledger-row"><span>تشتري منها مقاضي البيت والأغذية الأساسية للأسبوع أو الشهر</span></div>
+        <div class="ledger-row"><span>تدفع منها رسوم البنزين وصيانة السيارة الضرورية</span></div>
+        <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">🔑 <b>قاعدة ذهبية:</b> إذا انتهى المبلغ المخصص لهذه النسبة قبل نهاية الشهر، لا تسحب من الادخار؛ بل قلل من مصاريف الترفيه فوراً.</div>
+        <div style="margin-top:10px;font-size:11.5px;color:var(--ink-soft);line-height:1.8">📋 في الصفحة: جدول «1️⃣ الاحتياجات الأساسية» لكتابة بنودك، أو اربطه بالدورة ليحسب مصروفك الفعلي من الفئات التي تختارها.</div>
+      </div>
+
+      <div class="settings-section" style="margin-bottom:22px">
+        <div class="card-title">2️⃣ نسبة الـ 30% — الرغبات والأسلوب المعيشي</div>
+        <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">هذا المبلغ مخصص لمتعتك الشخصية ورفاهيتك خلال الشهر لتستمتع براتبك دون أن تشعر بالحرمان.</p>
+        <div style="font-size:12px;font-weight:800;margin-bottom:6px">كيف تتصرف فيها؟</div>
+        <div class="ledger-row"><span>الطلعات مع الأصحاب والجمعات</span></div>
+        <div class="ledger-row"><span>الأكل في المطاعم وشراء القهوة من المقاهي</span></div>
+        <div class="ledger-row"><span>التسوق (ملابس، أجهزة غير ضرورية، كماليات)</span></div>
+        <div class="ledger-row"><span>الاشتراكات الترفيهية (ألعاب، منصات مشاهدة، نادي)</span></div>
+        <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">🔑 <b>قاعدة ذهبية:</b> إذا خلص مبلغ هذه النسبة قبل نهاية الشهر، تتوقف تماماً عن الطلعات والمصاريف الزائدة حتى ينزل الراتب القادم.</div>
+        <div style="margin-top:10px;font-size:11.5px;color:var(--ink-soft);line-height:1.8">📋 في الصفحة: جدول «2️⃣ الرغبات والأسلوب المعيشي»، وفيه المتبقي من مبلغ الرغبات حتى تعرف متى توقف.</div>
+      </div>
+    <div class="settings-section" style="margin-bottom:6px">
+      <div class="card-title">3️⃣ نسبة الـ 20% — الادخار والمستقبل</div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">هذه النسبة لمستقبلك، لذلك تعامل معها كأنها التزام ثابت وليست مبلغاً يبقى آخر الشهر إن بقي.</p>
+      <div style="font-size:12px;font-weight:800;margin-bottom:6px">كيف تتصرف فيها؟</div>
+      <div class="ledger-row"><span>حوّلها للادخار أول ما ينزل الراتب، قبل أي صرف (زر «🔀 تحويل» في لوحة التحكم)</span></div>
+      <div class="ledger-row"><span>ابدأ بصندوق طوارئ يغطي أساسيات ٣ إلى ٦ أشهر</span></div>
+      <div class="ledger-row"><span>بعده وجّهها لأهدافك الكبيرة: سفر، سيارة، زواج، أو تأسيس مشروع</span></div>
+      <div class="ledger-row"><span>حدّد «🎯 هدف الادخار» في قسم «4️⃣ الادخار والمستقبل» لتتابع تقدمك والمتبقي لبلوغه</span></div>
+      <div class="ledger-row"><span>تابع جدول الدورات السابقة لتعرف كم ادخرت في كل دورة راتب مقارنة بنسبتك المستهدفة</span></div>
+      <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">🔑 <b>قاعدة ذهبية:</b> ادخر أولاً ثم أنفق. ما تحتاج تسحب من الادخار لتغطية الرغبات؛ وإذا ضاق الشهر قلل الرغبات قبل أن تمس هذه النسبة.</div>
+      <div style="margin-top:10px;font-size:11.5px;color:var(--ink-soft);line-height:1.8">📋 تعدّ القاعدة ثلاثة بنود، وصفحة التخطيط فيها جدول رابع لتسديد الفواتير والأقساط، لأنها التزامات ثابتة تخصمها قبل غيرها.</div>
     </div>
   </div>
 </div>
@@ -1093,6 +1474,38 @@
 
 // ---------- الثيمات: 21 ثيم فقط (3 من كل فئة × 7 فئات) ----------
 const THEMES = [
+  { cat:'🎈 جريء', id:'pop', name:'جريء', vars:{bg:'#f6f1e6',card:'#ffffff',ink:'#14110f',inkSoft:'#5d5750',line:'rgba(20,17,15,0.18)',accent:'#5b3df5',accent2:'#ffd23f',income:'#00945f',expense:'#e5294e'} },
+  { cat:'🎈 جريء', id:'pop-night', name:'جريء ليلي', vars:{bg:'#15131c',card:'#201d2b',ink:'#f5f2ff',inkSoft:'#a59fbd',line:'rgba(245,242,255,0.2)',accent:'#8b73ff',accent2:'#ffd23f',income:'#3ddc97',expense:'#ff5c7a'} },
+  { cat:'🎈 جريء', id:'pop-mint', name:'جريء نعناعي', vars:{bg:'#dff5ea',card:'#ffffff',ink:'#0f1a15',inkSoft:'#4f6a5d',line:'rgba(15,26,21,0.18)',accent:'#00a37a',accent2:'#ff9ecb',income:'#008a5e',expense:'#e5294e'} },
+
+  { cat:'📰 جريدة', id:'paperink', name:'ورق وحبر', vars:{bg:'#f4efe3',card:'#fffdf6',ink:'#1b1a17',inkSoft:'#6b665b',line:'rgba(27,26,23,0.16)',accent:'#1f5c46',accent2:'#b8892b',income:'#1f6b4a',expense:'#a63a2c'} },
+  { cat:'📰 جريدة', id:'paperink-night', name:'ورق وحبر ليلي', vars:{bg:'#14130f',card:'#1d1b16',ink:'#efe8d6',inkSoft:'#a39b87',line:'rgba(239,232,214,0.16)',accent:'#5fb391',accent2:'#d6a84a',income:'#6fcf9f',expense:'#ee7a67'} },
+  { cat:'📰 جريدة', id:'paperink-navy', name:'ورق وحبر كحلي', vars:{bg:'#eceff3',card:'#ffffff',ink:'#14181f',inkSoft:'#5f6a78',line:'rgba(20,24,31,0.15)',accent:'#1d3557',accent2:'#b8892b',income:'#1f6b4a',expense:'#a63a2c'} },
+
+  { cat:'🧰 مركز', id:'center', name:'مركز', vars:{bg:'#12161c',card:'#1a2029',ink:'#e9eef4',inkSoft:'#8b98a8',line:'rgba(233,238,244,0.11)',accent:'#f2a93b',accent2:'#4cc9c0',income:'#4fd69c',expense:'#ff7a6b'} },
+  { cat:'🧰 مركز', id:'center-light', name:'مركز فاتح', vars:{bg:'#eceff3',card:'#ffffff',ink:'#151a21',inkSoft:'#5f6b7a',line:'rgba(21,26,33,0.12)',accent:'#b4610a',accent2:'#0f8f87',income:'#12805a',expense:'#d63e2a'} },
+  { cat:'🧰 مركز', id:'center-cyan', name:'مركز سماوي', vars:{bg:'#0f1720',card:'#18232f',ink:'#e8f1f8',inkSoft:'#88a0b3',line:'rgba(232,241,248,0.11)',accent:'#38bdf8',accent2:'#f2a93b',income:'#4fd69c',expense:'#ff7a6b'} },
+
+  { cat:'📱 قوائم', id:'lists', name:'قوائم', vars:{bg:'#f2f2f7',card:'#ffffff',ink:'#111114',inkSoft:'#6e6e78',line:'rgba(60,60,67,0.14)',accent:'#0a7cff',accent2:'#ff9500',income:'#1f9d4a',expense:'#e5362b'} },
+  { cat:'📱 قوائم', id:'lists-dark', name:'قوائم ليلي', vars:{bg:'#000000',card:'#1c1c1e',ink:'#f5f5f7',inkSoft:'#98989f',line:'rgba(235,235,245,0.14)',accent:'#2f8cff',accent2:'#ff9f0a',income:'#30d158',expense:'#ff5a4f'} },
+  { cat:'📱 قوائم', id:'lists-green', name:'قوائم أخضر', vars:{bg:'#eff3f0',card:'#ffffff',ink:'#101712',inkSoft:'#66736a',line:'rgba(16,23,18,0.14)',accent:'#13935a',accent2:'#f08a00',income:'#13935a',expense:'#e5362b'} },
+
+  { cat:'🔮 زجاج', id:'glass', name:'زجاج ليلي', vars:{bg:'#090d1d',card:'rgba(255,255,255,0.075)',ink:'#eef1ff',inkSoft:'#9aa4c7',line:'rgba(255,255,255,0.14)',accent:'#6f8dff',accent2:'#ff8f6b',income:'#4fe0a8',expense:'#ff7a6a'} },
+  { cat:'🔮 زجاج', id:'glass-light', name:'زجاج فاتح', vars:{bg:'#e9edf8',card:'rgba(255,255,255,0.62)',ink:'#141a33',inkSoft:'#5b6488',line:'rgba(20,26,51,0.12)',accent:'#4f6df0',accent2:'#ff8a5c',income:'#0f8a5f',expense:'#d63e2a'} },
+  { cat:'🔮 زجاج', id:'glass-rose', name:'زجاج وردي', vars:{bg:'#190a16',card:'rgba(255,255,255,0.075)',ink:'#fff0f7',inkSoft:'#c79bb6',line:'rgba(255,255,255,0.14)',accent:'#e8509a',accent2:'#ffb454',income:'#4fe0a8',expense:'#ff7a6a'} },
+
+  { cat:'🌈 منحنى', id:'curve', name:'منحنى', vars:{bg:'#f1eff7',card:'#ffffff',ink:'#1b1530',inkSoft:'#6a6485',line:'rgba(27,21,48,0.10)',accent:'#6a35d8',accent2:'#f0a020',income:'#12805a',expense:'#d63e2a'} },
+  { cat:'🌈 منحنى', id:'curve-night', name:'منحنى ليلي', vars:{bg:'#110e1b',card:'#1b1729',ink:'#efeaff',inkSoft:'#9b93b8',line:'rgba(239,234,255,0.11)',accent:'#8c63f0',accent2:'#f3b24a',income:'#4fd6a2',expense:'#ff7660'} },
+  { cat:'🌈 منحنى', id:'curve-sea', name:'منحنى بحري', vars:{bg:'#e9f1f6',card:'#ffffff',ink:'#0f2230',inkSoft:'#58707f',line:'rgba(15,34,48,0.10)',accent:'#0a6fa8',accent2:'#f0a020',income:'#12805a',expense:'#d63e2a'} },
+
+  { cat:'🧩 بلاطات', id:'bento', name:'بلاطات', vars:{bg:'#e6f1ec',card:'#ffffff',ink:'#12251e',inkSoft:'#5a7268',line:'rgba(18,37,30,0.12)',accent:'#0b7a5a',accent2:'#f0a22e',income:'#0b8a5b',expense:'#e0523a'} },
+  { cat:'🧩 بلاطات', id:'bento-night', name:'بلاطات ليلي', vars:{bg:'#0e1a16',card:'#17261f',ink:'#eaf5ef',inkSoft:'#8fa89c',line:'rgba(234,245,239,0.12)',accent:'#2fc596',accent2:'#f3b24a',income:'#4fd6a2',expense:'#ff7660'} },
+  { cat:'🧩 بلاطات', id:'bento-coral', name:'بلاطات مرجاني', vars:{bg:'#f6e9e4',card:'#ffffff',ink:'#2a1713',inkSoft:'#7a5b53',line:'rgba(42,23,19,0.12)',accent:'#d6452d',accent2:'#2a8f8a',income:'#0b8a5b',expense:'#c4301c'} },
+
+  { cat:'◐ حبر', id:'hibr', name:'حبر', vars:{bg:'#fbfbf9',card:'#ffffff',ink:'#0d0d12',inkSoft:'#6a6a75',line:'rgba(13,13,18,0.13)',accent:'#2d3cf0',accent2:'#e08a00',income:'#0b8a5b',expense:'#d6341f'} },
+  { cat:'◐ حبر', id:'hibr-night', name:'حبر ليلي', vars:{bg:'#0b0b0f',card:'#15151b',ink:'#f4f4f6',inkSoft:'#8b8b97',line:'rgba(244,244,246,0.14)',accent:'#6f7bff',accent2:'#f0a830',income:'#3ccf91',expense:'#ff6a55'} },
+  { cat:'◐ حبر', id:'hibr-sand', name:'حبر رمادي', vars:{bg:'#ececee',card:'#f6f6f8',ink:'#14141a',inkSoft:'#62626d',line:'rgba(20,20,26,0.14)',accent:'#c2255c',accent2:'#e08a00',income:'#0b8a5b',expense:'#d6341f'} },
+
   { cat:'🌑 داكن', id:'ink',    name:'دفتر داكن', vars:{bg:'#1b1912',card:'#241f16',ink:'#f3ead9',inkSoft:'#b9ac93',line:'rgba(243,234,217,0.14)',accent:'#c9812f',accent2:'#e2a262',income:'#7ab98a',expense:'#e2685a'} },
   { cat:'🌑 داكن', id:'ocean',  name:'المحيط',     vars:{bg:'#0a1626',card:'#0f2038',ink:'#e7f1fa',inkSoft:'#9fb4cc',line:'rgba(231,241,250,0.12)',accent:'#2f8fc4',accent2:'#63b8e6',income:'#7ab98a',expense:'#e2685a'} },
   { cat:'🌑 داكن', id:'forest', name:'الغابة',     vars:{bg:'#0e1a12',card:'#132518',ink:'#e8f3ea',inkSoft:'#a3bcac',line:'rgba(232,243,234,0.12)',accent:'#4c8c5a',accent2:'#7ab98a',income:'#9fd4ac',expense:'#e2685a'} },
@@ -1164,7 +1577,7 @@ function ensureCoreCategories(){
 let state = {
   transactions: [],
   categories: DEFAULT_CATEGORIES.slice(),
-  settings: { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'paper', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, linkSavingsToReserve:false, fontChoice:'Tajawal', numberStyle:'arabic', autoSortCategoriesByUsage:false, categoriesDedupedV2:true, deletedDefaultCats:[] },
+  settings: { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'pop', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, lastBackupAt:null, backupReminderSince:null, linkSavingsToReserve:false, fontChoice:'IBM Plex Sans Arabic', numberStyle:'arabic', autoSortCategoriesByUsage:false, categoriesDedupedV2:true, deletedDefaultCats:[] },
   currentDate: new Date(),
   weekViewYear: new Date().getFullYear(),
   weekViewMonth: new Date().getMonth(),
@@ -1745,16 +2158,10 @@ function renderCycleTable(info){
   const plain = n => (n<0?'-':'') + fmtNum(Math.abs(n));
   const round2 = n => Math.round(n*100)/100;
   const diffStr = d => d===0 ? fmtNum(0) : fmtNum(Math.abs(d));
-  const diffCell = d => d===0
-    ? `<span style="color:var(--ink-soft)">${fmtNum(0)}</span>`
-    : `<span style="color:${d>0?'var(--income)':'var(--expense)'};font-weight:800">${d>0?'▲':'▼'} ${fmtNum(Math.abs(d))}</span>`;
-  // نسبة التغيّر = الفرق ÷ |قبل|: صفر → "٠٪" باهت، وقبل = صفر مع فرق → "—" (ما فيه أساس للنسبة)، وأقل من ١٪ بخانة عشرية، وفوق ٩٩٩٪ تُختصر
-  const pctCell = (d, before) => {
-    if (d===0) return `<span style="color:var(--ink-soft)">${fmtNum(0)}٪</span>`;
-    if (round2(before)===0) return `<span style="color:var(--ink-soft)">—</span>`;
-    const pct = Math.abs(d)/Math.abs(before)*100;
-    const txt = pct>999 ? fmtNum(999)+'٪+' : (pct>=1 ? fmtNum(Math.round(pct)) : fmtNum(Math.max(0.1, Math.round(pct*10)/10))) + '٪';
-    return `<span style="color:${d>0?'var(--income)':'var(--expense)'};font-weight:800">${d>0?'▲':'▼'} ${txt}</span>`;
+  const diffCell = (d,b) => {
+    if (d===0) return `<span style="color:var(--ink-soft)">${fmtNum(0)}</span>`;
+    const pct = b ? `<br><span style="font-size:9.5px;font-weight:700">${fmtNum(Math.min(999, Math.round(Math.abs(d/b)*1000)/10))}٪</span>` : '';
+    return `<span style="color:${d>0?'var(--income)':'var(--expense)'};font-weight:800">${d>0?'▲':'▼'} ${fmtNum(Math.abs(d))}${pct}</span>`;
   };
   const rows = [
     { label:'🏦 المخزون', before:rBefore, now:rNow, color:rNow>=0?'var(--income)':'var(--expense)' },
@@ -1768,21 +2175,20 @@ function renderCycleTable(info){
       <td style="white-space:nowrap">${r.label}</td>
       <td style="color:var(--ink-soft)">${plain(r.before)}</td>
       <td class="cy-ba-num" style="color:${r.color}">${plain(r.now)}</td>
-      <td>${diffCell(r.diff)}</td>
-      <td style="white-space:nowrap">${pctCell(r.diff, r.before)}</td>
+      <td>${diffCell(r.diff,info.totalIncome)}</td>
     </tr>`;
   el.innerHTML = `<table class="a-table cy-ba" style="font-size:${fs}px">
-    <colgroup><col style="width:21%"><col style="width:20%"><col style="width:21%"><col style="width:23%"><col style="width:15%"></colgroup>
-    <thead><tr><th>الحساب (${esc(state.settings.currency)})</th><th>قبل</th><th>الآن</th><th>الفرق</th><th title="نسبة التغيّر عن بداية الدورة">٪</th></tr></thead>
+    <colgroup><col style="width:25%"><col style="width:24%"><col style="width:24%"><col style="width:27%"></colgroup>
+    <thead><tr><th>الحساب (${esc(state.settings.currency)})</th><th>قبل</th><th>الآن</th><th>الفرق</th></tr></thead>
     <tbody>${rows.map(line).join('')}</tbody>
     <tfoot><tr>
       <td>الإجمالي</td>
       <td style="color:var(--ink-soft)">${plain(tot.before)}</td>
       <td class="cy-ba-num" style="color:${tot.now>=0?'var(--ink)':'var(--expense)'}">${plain(tot.now)}</td>
-      <td>${diffCell(tot.diff)}</td>
-      <td style="white-space:nowrap">${pctCell(tot.diff, tot.before)}</td>
+      <td>${diffCell(tot.diff,info.totalIncome)}</td>
     </tr></tfoot>
-  </table>`;
+  </table>
+  <div style="font-size:9.5px;color:var(--ink-soft);margin-top:4px">النسبة تحت الفرق = الفرق ÷ إجمالي الراتب (${fmt(info.totalIncome)})</div>`;
 }
 
 let dbTrendChart = null;
@@ -2019,6 +2425,49 @@ function renderDashboard(){
   const dayLbl = (dt, withYear) => `${dt.getDate()} ${MONTH_NAMES[dt.getMonth()]}${withYear ? ' '+dt.getFullYear() : ''}`;
   const crossYear = info.start.getFullYear() !== info.end.getFullYear();
   document.getElementById('db-stamp-sub').textContent = `${dayLbl(info.start, crossYear)} ← ${dayLbl(info.end, crossYear)}`;
+  // ── الدورات السابقة: كل دورة بنفس عرض بطاقة الدورة الحالية (الفترة + جدول قبل · النهاية · الفرق) ──
+  (function(){
+    const el = document.getElementById('db-prev-cycle'); if(!el) return;
+    const all = getCycleReserve().filter(r=>!r.isCurrent).slice(-36).reverse();
+    if (!all.length){ el.innerHTML=''; return; }
+    const plain = n => (n<0?'-':'') + fmtNum(Math.abs(n));
+    const round2 = n => Math.round(n*100)/100;
+    const diffCell = (d,b) => {
+    if (d===0) return `<span style="color:var(--ink-soft)">${fmtNum(0)}</span>`;
+    const pct = b ? `<br><span style="font-size:9.5px;font-weight:700">${fmtNum(Math.min(999, Math.round(Math.abs(d/b)*1000)/10))}٪</span>` : '';
+    return `<span style="color:${d>0?'var(--income)':'var(--expense)'};font-weight:800">${d>0?'▲':'▼'} ${fmtNum(Math.abs(d))}${pct}</span>`;
+  };
+    const blocks = all.map(r=>{
+      const dayBefore = new Date(r.start.getFullYear(), r.start.getMonth(), r.start.getDate()-1);
+      const sBefore = getSavingsBalanceAsOf(dayBefore), sEnd = getSavingsBalanceAsOf(r.end);
+      const lines = [
+        { label:'🏦 المخزون', before:r.carryIn, now:r.reserve, color:r.reserve>=0?'var(--income)':'var(--expense)' },
+        { label:'🏦 الادخار', before:sBefore, now:sEnd, color:sEnd>=0?'var(--savings-in)':'var(--expense)' },
+      ].map(x=>({ ...x, diff:round2(x.now-x.before) }));
+      const tot = { before:r.carryIn+sBefore, now:r.reserve+sEnd }; tot.diff = round2(tot.now-tot.before);
+      const cross = r.start.getFullYear() !== r.end.getFullYear();
+      const hj = hijriRangeStr(r.start, r.end);
+      const pct = r.income>0 ? (r.expense/r.income)*100 : (r.expense>0?100:0);
+      const stCol = pct>90 ? 'expense' : pct>70 ? 'yellow' : 'green';
+      const row = x => `<tr><td style="white-space:nowrap">${x.label}</td><td style="color:var(--ink-soft)">${plain(x.before)}</td><td class="cy-ba-num" style="color:${x.color}">${plain(x.now)}</td><td>${diffCell(x.diff,r.income)}</td></tr>`;
+      return `<div style="padding:12px 0;border-bottom:1px solid var(--line);text-align:center">
+        <div style="font-size:13px;font-weight:800">${dayLbl(r.start, cross)} ← ${dayLbl(r.end, cross)}</div>
+        ${hj?`<div style="font-size:10px;color:var(--ink-soft)">${hj}</div>`:''}
+        <div style="font-size:11px;color:var(--ink-soft);margin:5px 0 8px">دخل <b style="color:var(--income)">${fmt(r.income)}</b> · صرف <b style="color:var(--expense)">${fmt(r.expense)}</b> <span class="chip chip-${stCol==='expense'?'red':stCol}">${fmtNum(Math.round(pct))}٪</span></div>
+        <table class="a-table cy-ba" style="font-size:11.5px">
+          <colgroup><col style="width:25%"><col style="width:24%"><col style="width:24%"><col style="width:27%"></colgroup>
+          <thead><tr><th>الحساب (${esc(state.settings.currency)})</th><th>قبل</th><th>النهاية</th><th>الفرق</th></tr></thead>
+          <tbody>${lines.map(row).join('')}</tbody>
+          <tfoot><tr><td>الإجمالي</td><td style="color:var(--ink-soft)">${plain(tot.before)}</td><td class="cy-ba-num" style="color:${tot.now>=0?'var(--ink)':'var(--expense)'}">${plain(tot.now)}</td><td>${diffCell(tot.diff,r.income)}</td></tr></tfoot>
+        </table>
+        <div style="font-size:9.5px;color:var(--ink-soft);margin-top:4px">النسبة = الفرق ÷ إجمالي الراتب (${fmt(r.income)})</div>
+      </div>`;
+    });
+    el.innerHTML = `<details style="background:color-mix(in srgb,var(--ink) 5%,transparent);border-radius:12px;padding:9px 12px">
+      <summary style="cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-weight:800"><span>↩️ الأشهر الماضية <span style="font-weight:500;color:var(--ink-soft)">(${fmtNum(blocks.length)} دورة)</span></span><span style="color:var(--ink-soft);font-size:11px">▾</span></summary>
+      <div style="margin-top:4px">${blocks.join('')}</div>
+    </details>`;
+  })();
   document.getElementById('db-inc').textContent = fmt(info.totalIncome);
   document.getElementById('db-exp').textContent = fmt(info.expense);
   const dbTotalRemaining = info.remaining + dbSavingsBal;
@@ -2441,6 +2890,25 @@ function getCycleBoundsByOffset(offset){
   }
   return { start, end };
 }
+// ---------- الرصيد الجاري (إجمالي أموالك: المخزون + الادخار) بعد كل يوم — نفس منطق جدول الأسبوع ----------
+function dayBalDelta(d){
+  const txs = getTxForDate(dateKey(d));
+  const b = excludeSavingsAndTransfers(txs);
+  const inc = b.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const exp = b.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  const s1 = txs.filter(t=>t.category==='s1').reduce((s,t)=>s+t.amount,0);
+  const s2 = txs.filter(t=>t.category==='s2').reduce((s,t)=>s+t.amount,0);
+  return inc - exp + s1 - s2;
+}
+function runningBalanceStart(first){
+  const y = first.getFullYear(), m = first.getMonth();
+  let bal = getMonthCarryRemaining(m===0 ? y-1 : y, m===0 ? 11 : m-1) + getSavingsBalanceAsOf(new Date(y, m, 0));
+  if (first.getDate() > 1){
+    bal += monthSalary(y, m, getSalaryMonthRange());
+    for (let i=1; i<first.getDate(); i++) bal += dayBalDelta(new Date(y, m, i));
+  }
+  return bal;
+}
 function renderCycleDailyTable(bodyId, footId, titleId, offset, explicitBounds){
   const bodyEl = document.getElementById(bodyId);
   const footEl = document.getElementById(footId);
@@ -2460,7 +2928,15 @@ function renderCycleDailyTable(bodyId, footId, titleId, offset, explicitBounds){
   }
   let totExp=0, totInc=0, totNet=0, totSv=0, totGrand=0;
   const todayStrCycle = dateKey(localToday());
-  bodyEl.innerHTML = allDays.map(day=>{
+  let runBal = allDays.length ? runningBalanceStart(allDays[0].d) : 0;
+  const salRange = getSalaryMonthRange();
+  const balList = allDays.map(day=>{
+    if (day.d.getDate()===1) runBal += monthSalary(day.d.getFullYear(), day.d.getMonth(), salRange);
+    runBal += dayBalDelta(day.d);
+    return runBal;
+  });
+  const endBal = balList.length ? balList[balList.length-1] : 0;
+  bodyEl.innerHTML = allDays.map((day,idx)=>{
     const sv = getSavingsActivity(day.txs);
     const svNet = sv.deposits - sv.withdrawals;
     const grand = day.net + svNet;
@@ -2474,6 +2950,7 @@ function renderCycleDailyTable(bodyId, footId, titleId, offset, explicitBounds){
       <td style="color:${day.net>=0?'var(--income)':'var(--expense)'}">${(day.inc||day.exp)?fmt(day.net):'—'}</td>
       <td style="color:${svNet===0?'var(--ink-soft)':svNet>0?'var(--savings-in)':'var(--savings-out)'}">${svNet!==0?fmt(svNet):'—'}</td>
       <td style="color:${grand>=0?'var(--income)':'var(--expense)'};font-weight:700">${(day.inc||day.exp||svNet)?fmt(grand):'—'}</td>
+      <td style="color:${balList[idx]>=0?'var(--ink)':'var(--expense)'};font-weight:800">${fmt(balList[idx])}</td>
     </tr>`;
   }).join('');
   footEl.innerHTML = `<tr style="font-weight:800;border-top:1.5px solid var(--line)">
@@ -2484,11 +2961,58 @@ function renderCycleDailyTable(bodyId, footId, titleId, offset, explicitBounds){
     <td style="color:${totNet>=0?'var(--income)':'var(--expense)'}">${fmt(totNet)}</td>
     <td style="color:${totSv>=0?'var(--savings-in)':'var(--savings-out)'}">${fmt(totSv)}</td>
     <td style="color:${totGrand>=0?'var(--income)':'var(--expense)'}">${fmt(totGrand)}</td>
+    <td style="color:${endBal>=0?'var(--ink)':'var(--expense)'}">${fmt(endBal)}</td>
   </tr>`;
+}
+// ---------- مفتاح تبديل عرض «تفصيل الأيام»: دورة الراتب ⇄ شهر ميلادي ----------
+function cycleBoundsContaining(date){
+  const y = date.getFullYear(), m = date.getMonth();
+  const pThis = getPaydayForMonth(y,m);
+  let start, end;
+  if (date.getDate() >= pThis){
+    start = new Date(y,m,pThis);
+    let ny=y, nm=m+1; if (nm>11){ nm=0; ny++; }
+    end = new Date(ny,nm,getPaydayForMonth(ny,nm)-1);
+  } else {
+    let py=y, pm=m-1; if (pm<0){ pm=11; py--; }
+    start = new Date(py,pm,getPaydayForMonth(py,pm));
+    end = new Date(y,m,pThis-1);
+  }
+  return { start, end };
+}
+function syncDailySwitch(page){
+  const on = page==='month' ? state.settings.dailyViewMonthPage==='cycle' : state.settings.dailyViewAnPage!=='month';
+  const tg = document.getElementById(page+'-daily-toggle'); if (tg) tg.classList.toggle('on', on);
+  const sub = document.getElementById(page+'-daily-sub'); if (!sub) return;
+  sub.textContent = page==='month'
+    ? (on ? 'مفعّل — يعرض دورة الراتب التي تغطي منتصف هذا الشهر، من يوم نزول الراتب.' : 'معطّل — يعرض أيام الشهر من أوله إلى آخره.')
+    : (on ? 'مفعّل — يعرض دورة الراتب، والأسهم تنقلك بين الدورات.' : 'معطّل — يعرض شهراً ميلادياً كاملاً، والأسهم تنقلك بين الأشهر.');
+}
+function toggleDailyCycle(page){
+  if (page==='month'){
+    state.settings.dailyViewMonthPage = state.settings.dailyViewMonthPage==='cycle' ? 'month' : 'cycle';
+    save(); renderMonth();
+  } else {
+    state.settings.dailyViewAnPage = state.settings.dailyViewAnPage==='month' ? 'cycle' : 'month';
+    state.anDailyOffset = 0;
+    save(); renderAnDaily();
+  }
+}
+function renderAnDaily(){
+  syncDailySwitch('an');
+  if (state.settings.dailyViewAnPage === 'month'){
+    const t = localToday();
+    const d = new Date(t.getFullYear(), t.getMonth()-state.anDailyOffset, 1);
+    renderCycleDailyTable('an-daily-table-body','an-daily-table-foot','an-daily-title', 0, { start:d, end:new Date(d.getFullYear(), d.getMonth()+1, 0) });
+    const te = document.getElementById('an-daily-title');
+    if (te) te.innerHTML = `${state.anDailyOffset===0?'<span class="accent">الشهر الحالي</span> · ':''}${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+  } else {
+    renderCycleDailyTable('an-daily-table-body','an-daily-table-foot','an-daily-title', state.anDailyOffset);
+  }
 }
 function changeAnDailyOffset(dir){
   state.anDailyOffset = Math.max(0, state.anDailyOffset + dir);
-  renderCycleDailyTable('an-daily-table-body','an-daily-table-foot','an-daily-title', state.anDailyOffset);
+  renderAnDaily();
 }
 function changeWeek(dir){
   let m = state.weekViewMonth+dir, y = state.weekViewYear;
@@ -2683,7 +3207,12 @@ function renderMonth(){
         </div>`;
       })();
 
-  renderCycleDailyTable('month-daily-table-body','month-daily-table-foot', null, 0, { start: new Date(y,m,1), end: new Date(y,m+1,0) });
+  syncDailySwitch('month');
+  const cycView = state.settings.dailyViewMonthPage==='cycle';
+  const dBounds = cycView ? cycleBoundsContaining(new Date(y,m,15)) : { start: new Date(y,m,1), end: new Date(y,m+1,0) };
+  renderCycleDailyTable('month-daily-table-body','month-daily-table-foot','month-daily-title', 0, dBounds);
+  const mdt = document.getElementById('month-daily-title');
+  if (mdt){ mdt.style.display = cycView ? '' : 'none'; if (cycView) mdt.innerHTML = '<span class="accent">دورة الراتب</span> · ' + mdt.innerHTML; }
 }
 // المتبقي التراكمي حتى نهاية شهر معيّن (يشمل ترحيل كل الأشهر السابقة + راتب ودخل هذا الشهر - مصروفه)
 // ---------- نطاق الأشهر اللي يُحسب فيها الراتب بالحسابات الشهرية (التقويمية) ----------
@@ -2973,7 +3502,7 @@ function initAnalysisYear(){
 }
 function renderAnalysis(){
   initAnalysisYear();
-  renderCycleDailyTable('an-daily-table-body','an-daily-table-foot','an-daily-title', state.anDailyOffset);
+  renderAnDaily();
   const year = parseInt(document.getElementById('an-year').value) || new Date().getFullYear();
   const salaryRange = getSalaryMonthRange();
   const svIdsChart = getSavingsLinkedCatIds();
@@ -4154,17 +4683,389 @@ function askResetAll(){
   });
 }
 
+// ---------- صفحة التخطيط (٥٠/٣٠/٢٠): عرض فقط ----------
+function round2p(n){ return Math.round(n*100)/100; }
+function getPlanAmounts(){
+  const a = _plan.amounts;
+  if (a && typeof a==='object'){
+    const n = v => (typeof v==='number' && v>=0) ? v : 0;
+    return { custom:true, need:n(a.need), want:n(a.want), save:n(a.save), bills:n(a.bills) };
+  }
+  return { custom:false };
+}
+// ---------- ذاكرة صفحة التخطيط (اختيارية بمفتاح تذكّر) ----------
+let _plan = { amounts:null, extras:[{ name:'', amount:0 }], tryVal:'', link:{ need:{on:false,cats:[]}, want:{on:false,cats:[]}, bills:{on:false,cats:[]} }, lists:{ need:[{name:'',amount:0}], want:[{name:'',amount:0}], bills:[{name:'',amount:0}] } };
+let _plListsDirty = true;
+let _plLoaded = false, _plRowsDirty = true;
+function loadPlanOnce(){
+  if (_plLoaded) return;
+  _plLoaded = true;
+  // ترحيل: تقسيم محفوظ سابقاً بالطريقة القديمة
+  if (state.settings.planAmounts && typeof state.settings.planRemember === 'undefined'){
+    state.settings.planRemember = true;
+    state.settings.planData = { tryVal:'', extras:[], amounts:state.settings.planAmounts };
+  }
+  delete state.settings.planAmounts;
+  const d = state.settings.planData;
+  if (state.settings.planRemember && d && typeof d==='object'){
+    _plan.amounts = d.amounts || null;
+    _plan.tryVal = d.tryVal || '';
+    const ex = Array.isArray(d.extras) ? d.extras.filter(e=>e && e.amount>0).map(e=>({ name:String(e.name||'').slice(0,40), amount:Number(e.amount) })) : [];
+    _plan.extras = ex.length ? ex : [{ name:'', amount:0 }];
+    const L = d.lists || {};
+    ['need','want','bills'].forEach(k=>{
+      const arr = Array.isArray(L[k]) ? L[k].filter(e=>e && (e.amount>0 || e.name)).map(e=>({ name:String(e.name||'').slice(0,40), amount:e.amount>0 ? Number(e.amount) : 0 })) : [];
+      _plan.lists[k] = arr.length ? arr : [{ name:'', amount:0 }];
+    });
+    const LK = d.link || {};
+    ['need','want','bills'].forEach(k=>{
+      const o = LK[k] || {};
+      _plan.link[k] = { on:!!o.on, cats:Array.isArray(o.cats) ? o.cats.filter(x=>typeof x==='string').slice(0,60) : [] };
+    });
+    _plListsDirty = true;
+  }
+  const t = document.getElementById('pl-try'); if (t) t.value = _plan.tryVal || '';
+  _plRowsDirty = true;
+}
+function persistPlan(){
+  if (!state.settings.planRemember) return;
+  const t = document.getElementById('pl-try');
+  state.settings.planData = {
+    tryVal: t ? t.value : '',
+    extras: _plan.extras.filter(e=>e.amount>0).map(e=>({ name:e.name, amount:e.amount })),
+    amounts: _plan.amounts,
+    link: _plan.link,
+    lists: Object.fromEntries(['need','want','bills'].map(k=>[k, _plan.lists[k].filter(e=>e.amount>0 || e.name).map(e=>({ name:e.name, amount:e.amount }))])),
+  };
+  save();
+}
+function togglePlanRemember(){
+  state.settings.planRemember = !state.settings.planRemember;
+  if (state.settings.planRemember){ persistPlan(); save(); showToast('💾 تم تفعيل تذكّر التقسيم'); }
+  else { delete state.settings.planData; save(); showToast('تم إيقاف التذكّر — ما راح يُحفظ التقسيم'); }
+  syncPlanUI();
+}
+function onPlanTry(){ persistPlan(); renderPlan(); }
+function onPlanExtraName(i,v){ if (_plan.extras[i]) _plan.extras[i].name = v.slice(0,40); persistPlan(); }
+function onPlanExtraAmt(i,v){ const n = parseFloat(v); if (_plan.extras[i]) _plan.extras[i].amount = n>0 ? n : 0; persistPlan(); renderPlan(); }
+function addPlanExtra(){ _plan.extras.push({ name:'', amount:0 }); _plRowsDirty = true; renderPlan(); const ins=document.querySelectorAll('#pl-extras .pl-ex-name'); if (ins.length) ins[ins.length-1].focus(); }
+function removePlanExtra(i){ _plan.extras.splice(i,1); if (!_plan.extras.length) _plan.extras.push({ name:'', amount:0 }); _plRowsDirty = true; persistPlan(); renderPlan(); }
+function syncPlanUI(){
+  renderPlanLists(); renderPlanSvGoal();
+  const on = !!state.settings.planRemember;
+  const tg = document.getElementById('pl-remember-toggle'); if (tg) tg.classList.toggle('on', on);
+  const sub = document.getElementById('pl-remember-sub');
+  if (sub) sub.textContent = on ? 'مفعّل — الراتب للتجربة والدخل الإضافي والمبالغ محفوظة وتظهر لك كل مرة.' : 'فعّله لحفظ الراتب للتجربة والدخل الإضافي والمبالغ، فلا تكتبها كل مرة.';
+  const box = document.getElementById('pl-extras');
+  if (box && (_plRowsDirty || !box.children.length)){
+    _plRowsDirty = false;
+    box.innerHTML = _plan.extras.map((e,i)=>`<div class="row-gap" style="margin-bottom:8px;align-items:center">
+      <input type="text" class="pl-ex-name" placeholder="الاسم (اختياري)" value="${esc(e.name)}" oninput="onPlanExtraName(${i},this.value)" style="flex:1.3;min-width:0">
+      <input type="number" inputmode="decimal" min="0" placeholder="المبلغ" value="${e.amount>0?e.amount:''}" oninput="onPlanExtraAmt(${i},this.value)" style="flex:1;min-width:0">
+      <button class="btn btn-ghost btn-sm" onclick="removePlanExtra(${i})" aria-label="حذف">🗑️</button>
+    </div>`).join('');
+  }
+  const tot = document.getElementById('pl-extra-total'); const x = planExtra();
+  if (tot) tot.textContent = x>0 ? `مجموع الدخل الإضافي: ${fmt(x)}${_plan.extras.filter(e=>e.amount>0).length>1?' ('+fmtNum(_plan.extras.filter(e=>e.amount>0).length)+' مصادر)':''}` : '';
+}
+// ---------- جداول التخطيط القابلة للتحرير (أساسيات / رغبات / فواتير) + هدف الادخار ----------
+function planAlloc(){
+  const base = planBase(), a = getPlanAmounts();
+  return { base, has: base>0 || a.custom,
+    need: a.custom ? a.need : base*0.5, want: a.custom ? a.want : base*0.3,
+    save: a.custom ? a.save : base*0.2, bills: a.custom ? a.bills : 0 };
+}
+function renderPlanLists(){
+  ['need','want','bills'].forEach(k=>{
+    const box = document.getElementById('pl-rows-'+k); if(!box) return;
+    if (_plListsDirty || !box.children.length){
+      box.innerHTML = _plan.lists[k].map((e,i)=>`<div class="row-gap" style="margin-bottom:8px;align-items:center">
+        <input type="text" class="pl-ex-name" placeholder="اسم البند" value="${esc(e.name)}" oninput="onPlanListName('${k}',${i},this.value)" style="flex:1.3;min-width:0">
+        <input type="number" inputmode="decimal" min="0" placeholder="المبلغ" value="${e.amount>0?e.amount:''}" oninput="onPlanListAmt('${k}',${i},this.value)" style="flex:1;min-width:0">
+        <button class="btn btn-ghost btn-sm" onclick="removePlanListRow('${k}',${i})" aria-label="حذف">🗑️</button>
+      </div>`).join('');
+    }
+  });
+  _plListsDirty = false;
+  ['need','want','bills'].forEach(k=>{
+    renderPlanLinkUI(k);
+    const man = document.getElementById('pl-manual-'+k); if (man) man.style.display = _plan.link[k].on ? 'none' : '';
+  });
+  updatePlanListSums();
+}
+function updatePlanListSums(){
+  const al = planAlloc();
+  ['need','want','bills'].forEach(k=>{
+    const el = document.getElementById('pl-sum-'+k); if(!el) return;
+    const spent = planSpent(k);
+    const alloc = al[k];
+    const rem = round2p(alloc - spent);
+    const showRem = al.has;
+    const col = rem<0 ? 'var(--expense)' : 'var(--income)';
+    el.innerHTML = `<div class="strip-box"><div class="strip-lbl">المخصص</div><div class="strip-val">${al.has?fmt(alloc):'—'}</div></div>
+      <div class="strip-box"><div class="strip-lbl">${_plan.link[k].on?'الفعلي':'المدرج'}</div><div class="strip-val">${fmt(spent)}</div></div>
+      <div class="strip-box"><div class="strip-lbl">${rem<0?'تجاوز':'المتبقي'}</div><div class="strip-val" style="color:${showRem?col:'var(--ink-soft)'}">${showRem?fmt(Math.abs(rem)):'—'}</div></div>`;
+  });
+}
+// ---------- ربط الجدول بدورة الراتب: المصروف الفعلي حسب الفئات المختارة ----------
+function planEligibleCats(){
+  const sv = getSavingsLinkedCatIds();
+  return state.categories.filter(c=> c.type==='expense' && !sv.includes(c.id));
+}
+function planLinkedActual(k){
+  const info = getPayCycleInfo();
+  const ids = new Set(_plan.link[k].cats);
+  const by = {};
+  state.transactions.forEach(t=>{
+    if (t.type==='expense' && t.date>=info.sStr && t.date<=info.eStr && ids.has(t.category)) by[t.category] = (by[t.category]||0) + t.amount;
+  });
+  const rows = Object.entries(by).sort((a,b)=>b[1]-a[1]);
+  return { total: rows.reduce((t,[,v])=>t+v,0), rows, info };
+}
+function planSpent(k){
+  return _plan.link[k].on ? planLinkedActual(k).total : _plan.lists[k].reduce((t,e)=> t + (e.amount>0 ? e.amount : 0), 0);
+}
+function renderPlanLinkUI(k){
+  const box = document.getElementById('pl-link-ui-'+k); if(!box) return;
+  const L = _plan.link[k];
+  const info = getPayCycleInfo();
+  const rng = `${info.start.getDate()} ${MONTH_NAMES[info.start.getMonth()]} ← ${info.end.getDate()} ${MONTH_NAMES[info.end.getMonth()]}`;
+  let html = `<div class="switch-row" style="margin-bottom:10px">
+    <div class="switch-row-text">
+      <div class="switch-row-title">🔗 ربط مع الدورة</div>
+      <div class="switch-row-sub">${L.on ? `مفعّل — المصروف الفعلي من عملياتك في الدورة الحالية (${rng}) حسب الفئات المختارة.` : 'يحسب المصروف الفعلي من عملياتك في دورة الراتب الحالية حسب الفئات التي تختارها.'}</div>
+    </div>
+    <button class="switch-toggle ${L.on?'on':''}" onclick="togglePlanLink('${k}')"><div class="knob"></div></button>
+  </div>`;
+  if (L.on){
+    const names = { need:'الأساسيات', want:'الرغبات', bills:'الفواتير' };
+    const cats = planEligibleCats();
+    html += `<div style="font-size:12px;font-weight:800;margin-bottom:6px">اختر الفئات التابعة لهذا الجدول</div><div style="margin-bottom:6px">` +
+      cats.map(c=>{
+        const mine = L.cats.includes(c.id);
+        const other = !mine && ['need','want','bills'].find(o=>o!==k && _plan.link[o].on && _plan.link[o].cats.includes(c.id));
+        return `<button class="pl-chip${mine?' on':''}${other?' other':''}" onclick="togglePlanCat('${k}','${c.id}')">${esc(c.emoji)} ${esc(c.name)}${other?` <small>(في ${names[other]})</small>`:''}</button>`;
+      }).join('') + `</div>`;
+    const act = planLinkedActual(k);
+    if (!L.cats.length) html += `<div style="font-size:11px;color:var(--ink-soft);margin-bottom:6px">اختر فئة واحدة على الأقل ليظهر المصروف.</div>`;
+    else if (!act.rows.length) html += `<div style="font-size:11px;color:var(--ink-soft);margin-bottom:6px">لا توجد مصاريف فعلية بعد في هذه الفئات خلال الدورة الحالية.</div>`;
+    else html += act.rows.map(([id,v])=>{ const c=getCat(id); return `<div class="ledger-row"><span>${esc(c.emoji)} ${esc(c.name)}</span><span class="ledger-fill"></span><span class="ledger-val" style="color:var(--expense)">${fmt(v)}</span></div>`; }).join('');
+  }
+  box.innerHTML = html;
+}
+function togglePlanLink(k){
+  _plan.link[k].on = !_plan.link[k].on;
+  persistPlan(); renderPlanLists();
+}
+function togglePlanCat(k,id){
+  const L = _plan.link[k];
+  const i = L.cats.indexOf(id);
+  if (i>=0) L.cats.splice(i,1);
+  else {
+    ['need','want','bills'].forEach(o=>{ if (o!==k){ const j=_plan.link[o].cats.indexOf(id); if (j>=0) _plan.link[o].cats.splice(j,1); } });
+    L.cats.push(id);
+  }
+  persistPlan(); renderPlanLists();
+}
+function onPlanListName(k,i,v){ if (_plan.lists[k][i]) _plan.lists[k][i].name = v.slice(0,40); persistPlan(); }
+function onPlanListAmt(k,i,v){ const n = parseFloat(v); if (_plan.lists[k][i]) _plan.lists[k][i].amount = n>0 ? n : 0; persistPlan(); updatePlanListSums(); }
+function addPlanListRow(k){
+  _plan.lists[k].push({ name:'', amount:0 }); _plListsDirty = true; renderPlanLists();
+  const ins = document.querySelectorAll('#pl-rows-'+k+' .pl-ex-name'); if (ins.length) ins[ins.length-1].focus();
+}
+function removePlanListRow(k,i){
+  _plan.lists[k].splice(i,1);
+  if (!_plan.lists[k].length) _plan.lists[k].push({ name:'', amount:0 });
+  _plListsDirty = true; persistPlan(); renderPlanLists();
+}
+function onPlanSvGoal(){
+  const v = parseFloat(document.getElementById('pl-sv-goal').value);
+  state.settings.savingsAccountGoal = v>0 ? v : 0;
+  save(); renderPlanSvGoal();
+}
+function renderPlanSvGoal(){
+  const inp = document.getElementById('pl-sv-goal'), box = document.getElementById('pl-sv-goal-box');
+  if (!inp || !box) return;
+  const goal = state.settings.savingsAccountGoal || 0;
+  if (document.activeElement!==inp) inp.value = goal || '';
+  const bal = getSavingsBalance().balance;
+  const al = planAlloc();
+  const info = getPayCycleInfo();
+  const act = getSavingsActivity(getFullCycleTxs(info));
+  const monthNet = act.deposits - act.withdrawals;
+  const monthRem = round2p(al.save - monthNet);
+  const cycRng = `${info.start.getDate()} ${MONTH_NAMES[info.start.getMonth()]} ← ${info.end.getDate()} ${MONTH_NAMES[info.end.getMonth()]}`;
+  const row = (label, val, color) => `<div class="ledger-row"><span>${label}</span><span class="ledger-fill"></span><span class="ledger-val"${color?` style="color:${color}"`:''}>${val}</span></div>`;
+  let html = '';
+  if (goal>0){
+    const pct = Math.max(0, Math.min(100, (bal/goal)*100));
+    const left = round2p(goal - bal);
+    html += `<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--ink-soft)">${fmt(bal)} من ${fmt(goal)}</span><span style="font-weight:800;color:${left<=0?'var(--income)':'var(--accent)'}">${fmtNum(Math.round(pct))}٪</span></div>
+      <div style="height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin-bottom:8px"><div style="width:${pct}%;height:100%;background:${left<=0?'var(--income)':'var(--accent)'};border-radius:5px"></div></div>`;
+    html += row('🎯 المتبقي لبلوغ الهدف', left<=0 ? '🎉 تم بلوغ الهدف' : fmt(left), left<=0 ? 'var(--income)' : 'var(--ink)');
+  }
+  html += row('🏦 رصيد الادخار الحالي', fmt(bal), bal>=0 ? 'var(--savings-in)' : 'var(--expense)');
+  html += row('➕ ما ادخرته هذه الدورة', (monthNet>=0?'+':'')+fmt(monthNet), monthNet>=0 ? 'var(--savings-in)' : 'var(--expense)');
+  html += row('📅 المتبقي من مبلغ الادخار هذه الدورة', al.has ? (monthRem<=0 ? '✅ تم' : fmt(monthRem)) : '—', al.has && monthRem<=0 ? 'var(--income)' : 'var(--ink)');
+  box.innerHTML = `<div style="font-size:11px;color:var(--ink-soft);margin-bottom:8px">📖 الدورة الحالية: ${cycRng}</div>` + html;
+}
+function planExtra(){
+  return _plan.extras.reduce((t,e)=> t + (e.amount>0 ? e.amount : 0), 0);
+}
+function planBase(){
+  const t = parseFloat((document.getElementById('pl-try')||{}).value);
+  return (t>0 ? t : (state.settings.salary || 0)) + planExtra();
+}
+// نسب التقسيم (٪ من الراتب) مشتقة من المبالغ المكتوبة، وإلا الافتراضي ٥٠/٣٠/٢٠
+function getPlanSplit(){
+  const base = planBase(), a = getPlanAmounts();
+  if (!a.custom || !(base>0)) return { need:50, want:30, save:20 };
+  return { need:a.need/base*100, want:a.want/base*100, save:a.save/base*100 };
+}
+function fillPlanInputs(){
+  const base = planBase(), a = getPlanAmounts();
+  const def = { need:base*0.5, want:base*0.3, save:base*0.2, bills:0 };
+  ['need','want','save','bills'].forEach(k=>{
+    const e = document.getElementById('pl-p-'+k); if(!e) return;
+    if (k==='bills') e.placeholder = 'اختياري';
+    else if (a.custom && base>0) e.placeholder = String(Math.max(0, round2p(base - (a.need + a.want + a.save + a.bills)))); // المتبقي غير الموزّع
+    else e.placeholder = base>0 ? String(round2p(def[k])) : 'المبلغ';
+    if (document.activeElement!==e) e.value = a.custom ? (a[k] || '') : '';
+  });
+}
+function onPlanAmt(){
+  const g = k => { const v = parseFloat(document.getElementById('pl-p-'+k).value); return v>0 ? v : 0; };
+  const need=g('need'), want=g('want'), sv=g('save'), bills=g('bills');
+  _plan.amounts = (!need && !want && !sv && !bills) ? null : { need, want, save:sv, bills };
+  persistPlan(); renderPlan();
+}
+function resetPlanSplit(){
+  _plan.amounts = null;
+  ['need','want','save','bills'].forEach(k=>{ const e=document.getElementById('pl-p-'+k); if (e) e.value=''; });
+  persistPlan(); renderPlan();
+}
+function renderPlanSplit(){
+  const setT = (id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
+  const tryVal = parseFloat((document.getElementById('pl-try')||{}).value);
+  const real = state.settings.salary || 0;
+  const base = planBase(), a = getPlanAmounts();
+  const need = a.custom ? a.need : base*0.5, want = a.custom ? a.want : base*0.3, sv = a.custom ? a.save : base*0.2, bills = a.custom ? a.bills : 0;
+  const total = need + want + sv + bills;
+  const has = base>0 || a.custom;
+  const pctOf = v => base>0 ? Math.round(v/base*1000)/10 : null;
+  const lbl = (name,v) => { const p = pctOf(v); return p===null ? name : `${fmtNum(p)}٪ ${name}`; };
+  setT('pl-bills', has?fmt(bills):'—'); setT('pl-need', has?fmt(need):'—'); setT('pl-want', has?fmt(want):'—'); setT('pl-save', has?fmt(sv):'—');
+  setT('pl-lbl-need', lbl('أساسيات',need)); setT('pl-lbl-want', lbl('رغبات',want)); setT('pl-lbl-save', lbl('ادخار',sv)); setT('pl-lbl-bills', lbl('فواتير وأقساط',bills));
+  const extra = planExtra();
+  const mainSal = tryVal>0 ? tryVal : real;
+  let baseTxt;
+  if (!mainSal && !extra) baseTxt = 'اكتب راتباً بالأعلى أو حدّده من الإعدادات';
+  else {
+    baseTxt = (tryVal>0 ? 'تجربة على راتب ' : 'محسوبة من راتبك الشهري ') + (mainSal ? fmt(mainSal) : '—');
+    if (extra) baseTxt += ` + دخل إضافي ${fmt(extra)} = ${fmt(mainSal+extra)}`;
+  }
+  setT('pl-base', baseTxt);
+  // الشريط: عرض كل بند نسبةً إلى الراتب (أو إلى المجموع لو تجاوزه)
+  const S = Math.max(total, base, 1);
+  [['need',need],['want',want],['save',sv],['bills',bills]].forEach(([k,v])=>{
+    const e = document.getElementById('pl-bar-'+k); if(!e) return;
+    e.style.width = (v/S*100)+'%';
+    const p = pctOf(v);
+    e.textContent = (v/S*100) >= 8 ? (p===null ? fmtNum(round2p(v)) : fmtNum(p)+'٪') : '';
+  });
+  // المتبقي بدون إنفاق / الزايد عن الراتب
+  const restEl = document.getElementById('pl-rest');
+  const totEl = document.getElementById('pl-total-pct');
+  if (!(base>0)){
+    if (restEl) restEl.innerHTML = '';
+    if (totEl){ totEl.textContent = a.custom ? `المجموع ${fmt(total)}` : ''; totEl.style.color='var(--ink-soft)'; }
+    return;
+  }
+  const rest = round2p(base - total);
+  if (totEl){
+    if (Math.abs(rest) < 0.005){ totEl.textContent = '✅ وزّعت الراتب كله'; totEl.style.color='var(--income)'; }
+    else { totEl.textContent = `الموزّع ${fmt(total)} من ${fmt(base)}`; totEl.style.color='var(--ink-soft)'; }
+  }
+  if (restEl){
+    if (Math.abs(rest) < 0.005) restEl.innerHTML = '';
+    else {
+      const over = rest < 0;
+      const col = over ? 'var(--expense)' : 'var(--income)';
+      restEl.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1.5px dashed ${col};background:color-mix(in srgb,${col} 10%,transparent)">
+        <div>
+          <div style="font-size:12.5px;font-weight:800;color:${col}">${over ? '🔴 الزايد عن الراتب' : '🟢 المتبقي بدون إنفاق'}</div>
+          <div style="font-size:10.5px;color:var(--ink-soft);margin-top:2px">${fmtNum(Math.round(Math.abs(rest)/base*1000)/10)}٪ من راتبك ${over ? '— خفّض أحد المبالغ' : '— غير موزّع على أي بند'}</div>
+        </div>
+        <div style="font-size:15px;font-weight:900;color:${col}">${over ? '+' : ''}${fmt(Math.abs(rest))}</div>
+      </div>`;
+    }
+  }
+}
+function renderPlan(){
+  const setT = (id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=v; };
+  loadPlanOnce();
+  syncPlanUI();
+  fillPlanInputs();
+  renderPlanSplit();
+  const sp = Math.round(getPlanSplit().save*10)/10;
+  setT('pl-th-target', `المستهدف ${fmtNum(sp)}٪`); setT('pl-lbl-hit', `دورات حققت ${fmtNum(sp)}٪`);
+  const bodyEl = document.getElementById('pl-body');
+  const svIds = getSavingsLinkedCatIds();
+  const svTxs = state.transactions.filter(t=>svIds.includes(t.category));
+  if (!svTxs.length){
+    bodyEl.innerHTML = `<tr><td colspan="5" style="white-space:normal;color:var(--ink-soft);padding:14px 4px">ما فيه أي إيداع أو سحب ادخار مسجّل بعد</td></tr>`;
+    ['pl-total','pl-avg','pl-hit'].forEach(i=>setT(i,'—')); return;
+  }
+  const first = svTxs.map(t=>t.date).sort()[0];
+  const rows = getCycleReserve().filter(r=>r.eStr>=first).map(r=>{
+    const a = getSavingsActivity(state.transactions.filter(t=>t.date>=r.sStr && t.date<=r.eStr));
+    const saved = a.deposits - a.withdrawals;
+    return { start:r.start, end:r.end, income:r.income, saved, pct: r.income>0 ? (saved/r.income)*100 : 0, cur:r.isCurrent };
+  });
+  const past = rows.filter(r=>!r.cur);
+  const total = rows.reduce((s,r)=>s+r.saved,0);
+  const hit = past.filter(r=>r.pct>=sp).length;
+  setT('pl-total', fmt(total));
+  setT('pl-avg', fmt(rows.length ? total/rows.length : 0));
+  setT('pl-hit', `${fmtNum(hit)} من ${fmtNum(past.length)}`);
+  bodyEl.innerHTML = rows.slice().reverse().map(r=>{
+    const chip = r.income<=0 ? 'gray' : r.pct>=sp ? 'green' : r.pct>0 ? 'yellow' : 'red';
+    return `<tr>
+      <td><b>${r.start.getDate()} ${MONTH_NAMES[r.start.getMonth()].slice(0,3)} ← ${r.end.getDate()} ${MONTH_NAMES[r.end.getMonth()].slice(0,3)}</b><div style="font-size:9px;color:var(--ink-soft)">${r.end.getFullYear()}${r.cur?' · جارية':''}</div></td>
+      <td>${r.income?fmt(r.income):'—'}</td>
+      <td style="color:var(--ink-soft)">${r.income?fmt(r.income*sp/100):'—'}</td>
+      <td style="font-weight:800;color:${r.saved>=0?'var(--savings-in)':'var(--expense)'}">${r.saved?fmt(r.saved):'—'}</td>
+      <td>${r.income>0?`<span class="chip chip-${chip}">${fmtNum(Math.round(r.pct))}٪</span>`:'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ---------- قائمة التبويبات المنسدلة ----------
+function toggleNav(e){ if(e) e.stopPropagation(); document.getElementById('nav-wrap').classList.toggle('open'); }
+function updateNavCurrent(){
+  const w = document.getElementById('nav-wrap'); if(!w) return;
+  w.classList.remove('open');
+  const b = document.querySelector('.tab-btn.active');
+  const t = document.getElementById('nav-cur-text');
+  if (b){ const ic = b.querySelector('.tab-icon').textContent; t.textContent = ic+' '+b.textContent.replace(ic,'').trim(); }
+  else t.textContent = '⚙️ الإعدادات';
+}
+document.addEventListener('click', e=>{ const w=document.getElementById('nav-wrap'); if (w && (!e.target.closest('#nav-wrap') || e.target===w)) w.classList.remove('open'); });
+
 // ---------- تنقل الصفحات والنوافذ ----------
 function showPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
+  document.body.dataset.page = name;
   document.querySelectorAll('.tab-btn').forEach(b=> b.classList.toggle('active', b.dataset.p===name));
   if (name==='dashboard') renderDashboard();
   if (name==='day') renderDay();
   if (name==='week') renderWeek();
   if (name==='month') renderMonth();
   if (name==='analysis') renderAnalysis();
+  if (name==='plan') renderPlan();
   if (name==='settings' || name.startsWith('settings-')) fillSettingsForm();
+  updateNavCurrent();
 }
 function openSheet(id){
   document.getElementById(id).classList.remove('hidden');
@@ -4232,7 +5133,35 @@ function applyNumberStyle(styleId){
   showToast('✅ تم تغيير نمط الأرقام');
 }
 
+// ---------- سحب خطوط التقسيم على شريط التخطيط ----------
+let _plDrag = null;
+function initPlanHandles(){
+  document.addEventListener('pointerdown', e=>{
+    const h = e.target.closest && e.target.closest('.pl-handle'); if(!h) return;
+    e.preventDefault();
+    _plDrag = { which:h.dataset.h };
+    try { h.setPointerCapture(e.pointerId); } catch(_){}
+  });
+  document.addEventListener('pointermove', e=>{
+    if (!_plDrag) return;
+    const bar = document.getElementById('pl-bar'); if(!bar) return;
+    const r = bar.getBoundingClientRect(); if(!r.width) return;
+    const p = getPlanSplit();
+    const T = p.need + p.want + p.save, S = Math.max(T,100);
+    let x = Math.round((r.right - e.clientX)/r.width*S);
+    x = Math.max(0, Math.min(T, x));
+    let need=p.need, want=p.want, sv=p.save;
+    if (_plDrag.which==='1'){ x = Math.min(x, p.need+p.want); need = x; want = round2p(p.need+p.want-x); }
+    else { x = Math.max(x, p.need); want = round2p(x-p.need); sv = round2p(T-x); }
+    state.settings.planSplit = { need, want, save:sv };
+    fillPlanInputs(); renderPlanSplit();
+  });
+  const end = ()=>{ if(_plDrag){ _plDrag=null; save(); renderPlan(); } };
+  document.addEventListener('pointerup', end);
+  document.addEventListener('pointercancel', end);
+}
 // ---------- بدء التشغيل ----------
+initPlanHandles();
 load();
 applyTheme(state.settings.theme);
 applyFontAndNumberSettings();
