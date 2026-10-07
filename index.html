@@ -796,6 +796,41 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
 .pl-inc-h{ font-size:13.5px; font-weight:900; margin-bottom:12px; }
 .pl-inc-h small{ display:block; font-size:10.5px; font-weight:600; color:var(--ink-soft); margin-top:2px; }
 .pl-remember{ margin:16px 0 0; text-align:right; }
+
+.pl-inc{ margin:0 0 18px; padding:0; border:none; text-align:right; }
+.pl-try-note{ display:block; margin-top:2px; font-size:10.5px; font-weight:600; color:var(--ink-soft); }
+.pl-remember{ margin:0 0 18px; }
+
+.month-pick{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:8px 16px; border:var(--bd); border-radius:14px; background:var(--card); box-shadow:var(--sh-s); cursor:pointer; user-select:none; }
+.month-pick::before{ content:"📆"; font-size:15px; }
+.month-pick::after{ content:"▾"; font-size:12px; color:var(--accent); }
+.month-pick:active{ transform:translate(2px,2px); box-shadow:none; }
+
+.day-pick::before{ content:"📅"; }
+.day-pick{ flex:1; min-width:0; margin:0 10px; }
+.day-pick .dp-txt{ font-size:14px; line-height:1.6; text-align:center; }
+.wk-dn{ font-weight:800; }
+.wk-day-table td:first-child{ line-height:1.5; }
+.mp-month-btn.has-tx{ border:2.5px solid var(--income); }
+.mp-month-btn.has-tx.today-month{ box-shadow:0 0 0 2px var(--accent); }
+.mp-legend{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; font-size:11px; font-weight:700; color:var(--ink-soft); }
+.mp-legend-box{ width:16px; height:16px; border:2.5px solid var(--income); border-radius:5px; display:inline-block; }
+/* ساعة العد التنازلي */
+.cd2{ margin:0 0 6px; padding:12px 12px 10px; border:var(--bd); border-radius:16px; background:var(--clock-bg,var(--ink)); color:var(--clock-num,var(--bg)); box-shadow:var(--sh-s); text-align:center; }
+.cd2-h{ font-size:12px; font-weight:800; opacity:.85; margin-bottom:10px; }
+.cd2-row{ display:flex; align-items:flex-start; justify-content:center; gap:5px; direction:rtl; }
+.cd2-seg{ flex:1; max-width:72px; padding:8px 0 6px; border-radius:10px; background:color-mix(in srgb,var(--clock-num,var(--bg)) 14%,transparent); }
+.cd2-num{ font-size:28px; font-weight:900; line-height:1.1; font-variant-numeric:tabular-nums; font-family:var(--font-body),sans-serif; }
+.cd2-lbl{ font-size:10px; font-weight:700; opacity:.75; margin-top:3px; }
+.cd2-sep{ align-self:center; font-size:22px; font-weight:900; color:var(--accent2); padding-bottom:14px; }
+.cd2-bar{ height:8px; margin-top:12px; border-radius:5px; background:color-mix(in srgb,var(--clock-num,var(--bg)) 22%,transparent); overflow:hidden; }
+.cd2-bar i{ display:block; height:100%; border-radius:5px; background:var(--accent2); }
+.cd2-f{ font-size:10.5px; font-weight:700; opacity:.75; margin-top:6px; }
+.an-seg{ display:flex; gap:6px; margin-bottom:12px; }
+.an-seg button{ flex:1; padding:8px 4px; border:2px solid var(--ink); border-radius:11px; background:var(--card); color:var(--ink); font-family:var(--font-body),sans-serif; font-size:12px; font-weight:800; cursor:pointer; }
+.an-seg button.on{ background:var(--accent); color:#fff; box-shadow:2px 2px 0 var(--ink); }
+.an-opts{ display:flex; flex-wrap:wrap; margin:-2px 0 8px; }
+.an-opts:empty{ display:none; }
 </style>
 </head>
 <body>
@@ -853,7 +888,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
         <div id="db-compare" style="font-size:11.5px;font-weight:700;margin-bottom:8px"></div>
         <div id="db-ba"></div>
         <div style="margin:2px 0 14px"><button class="cy-transfer" style="margin-top:6px" onclick="openTransferModal()">🔀 تحويل</button></div>
-        <div id="db-countdown" style="display:flex;justify-content:center;gap:6px"></div>
+        <div id="db-countdown"></div>
         <div id="db-stamp-sub" style="font-size:11px;color:var(--ink-soft);margin-top:8px"></div>
         <div id="db-prev-cycle" style="margin-top:10px"></div>
       </div>
@@ -927,7 +962,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
     <section class="page" id="page-day">
       <div class="day-nav">
         <button class="arrow" onclick="changeDay(-1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-        <div class="day-title" id="day-title" onclick="openSheet('sheet-datepick')"></div>
+        <div class="day-title month-pick day-pick" id="day-title" role="button" tabindex="0" aria-label="اختيار تاريخ" onclick="openSheet('sheet-datepick')"></div>
         <button class="arrow" onclick="changeDay(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
       </div>
       <div class="nav-dots" id="day-nav-dots"></div>
@@ -961,6 +996,13 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
         <button class="arrow" onclick="changeWeek(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
       </div>
       <div class="nav-dots" id="week-nav-dots"></div>
+      <div class="switch-row" style="padding:10px 12px;margin-bottom:12px">
+        <div class="switch-row-text">
+          <div class="switch-row-title" style="font-size:12.5px">🔄 عرض دورة الراتب</div>
+          <div class="switch-row-sub" id="week-cycle-sub"></div>
+        </div>
+        <button class="switch-toggle" id="week-cycle-toggle" onclick="toggleWeekCycle()"><div class="knob"></div></button>
+      </div>
       <div class="card">
         <div class="card-title">⚡ ملخص سريع</div>
         <div class="qs-grid">
@@ -1008,7 +1050,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <div class="card">
         <div class="month-nav" style="margin-top:0">
           <button class="arrow" onclick="changeMonth(-1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-          <div class="day-title" id="month-title" onclick="openSheet('sheet-month-picker')"></div>
+          <div class="day-title month-pick" id="month-title" role="button" tabindex="0" aria-label="انتقال سريع لشهر آخر" onclick="openSheet('sheet-month-picker')"></div>
           <button class="arrow" onclick="changeMonth(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
         </div>
         <div class="nav-dots" id="month-nav-dots"></div>
@@ -1111,6 +1153,19 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
         <div class="chart-box"><canvas id="an-reserve-chart"></canvas></div>
         <div class="an-sub-title">💸 الصرف في كل دورة <small>بنفس محور الدورات أعلاه</small></div>
         <div class="chart-box"><canvas id="an-reserve-exp-chart"></canvas></div>
+        <div class="an-sub-title">📅 الإجمالي يوماً بيوم <small>المخزون + الادخار</small></div>
+        <div class="an-seg" id="an-total-seg">
+          <button data-m="week" onclick="setAnTotalMode('week')">أسبوع</button>
+          <button data-m="cycle" onclick="setAnTotalMode('cycle')">دورة الراتب</button>
+          <button data-m="year" onclick="setAnTotalMode('year')">السنة</button>
+        </div>
+        <div class="an-opts" id="an-total-opts"></div>
+        <div class="day-nav" id="an-total-nav" style="margin:0 0 10px">
+          <button class="arrow" id="an-total-prev" onclick="changeAnTotalPage(-1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+          <div class="day-title" id="an-total-title" style="font-size:12.5px"></div>
+          <button class="arrow" id="an-total-next" onclick="changeAnTotalPage(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        </div>
+        <div class="chart-box"><canvas id="an-total-day-chart"></canvas></div>
       </div>
       <div class="card">
         <div class="card-title">📋 تفصيل الأيام</div>
@@ -1249,30 +1304,21 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
           <span class="pl-cyc-line" id="pl-cyc-line"></span>
         </div>
 
+        <div class="switch-row pl-remember">
+          <div class="switch-row-text">
+            <div class="switch-row-title">💾 تذكّر التقسيم</div>
+            <div class="switch-row-sub" id="pl-remember-sub">فعّله لحفظ الراتب للتجربة والدخل الإضافي والمبالغ، فلا تكتبها كل مرة.</div>
+          </div>
+          <button class="switch-toggle" id="pl-remember-toggle" onclick="togglePlanRemember()"><div class="knob"></div></button>
+        </div>
+
         <div class="pl-hero-label" id="pl-hero-label">💰 الدخل المعتمد للتخطيط</div>
         <div class="pl-hero-num" id="pl-hero-base">—</div>
         <div class="pl-hero-cap" id="pl-base"></div>
 
-        <div id="pl-bar-wrap" style="position:relative;margin:16px 0 18px">
-          <div id="pl-bar" style="display:flex;height:54px;border-radius:14px;overflow:hidden;background:var(--line)">
-            <div class="pl-seg" id="pl-bar-need" style="width:50%;background:var(--accent)"></div><div class="pl-seg" id="pl-bar-want" style="width:30%;background:var(--accent2)"></div><div class="pl-seg" id="pl-bar-save" style="width:20%;background:var(--income)"></div><div class="pl-seg" id="pl-bar-bills" style="width:0%;background:var(--expense)"></div>
-          </div>
-        </div>
-
-        <div class="pl-tiles-h">✏️ مبلغ كل بند <small>اضغط الرقم لتعديله، وإذا تركته فاضياً يُستخدم الافتراضي</small></div>
-        <div class="pl-tiles" id="pl-strip">
-          <label class="pl-tile" style="--c:var(--accent)"><span class="pl-tile-l" data-ic="🏠" id="pl-lbl-need">أساسيات</span><input type="number" inputmode="decimal" min="0" id="pl-p-need" oninput="onPlanAmt()"><span id="pl-need" hidden></span></label>
-          <label class="pl-tile" style="--c:var(--accent2)"><span class="pl-tile-l" data-ic="🎉" id="pl-lbl-want">رغبات</span><input type="number" inputmode="decimal" min="0" id="pl-p-want" oninput="onPlanAmt()"><span id="pl-want" hidden></span></label>
-          <label class="pl-tile" style="--c:var(--income)"><span class="pl-tile-l" data-ic="🏦" id="pl-lbl-save">ادخار</span><input type="number" inputmode="decimal" min="0" id="pl-p-save" oninput="onPlanAmt()"><span id="pl-save" hidden></span></label>
-          <label class="pl-tile" style="--c:var(--expense)"><span class="pl-tile-l" data-ic="🧾" id="pl-lbl-bills">فواتير وأقساط</span><input type="number" inputmode="decimal" min="0" id="pl-p-bills" oninput="onPlanAmt()" placeholder="اختياري"><span id="pl-bills" hidden></span></label>
-        </div>
-        <div id="pl-total-pct" style="font-size:11.5px;font-weight:800;text-align:center;margin-top:12px"></div>
-        <div id="pl-rest" style="margin-top:10px"></div>
-        <button class="btn btn-ghost btn-block btn-sm" style="margin-top:12px" onclick="resetPlanSplit()">↺ التقسيم الافتراضي ٥٠ / ٣٠ / ٢٠</button>
 
         <div class="pl-inc">
-          <div class="pl-inc-h">🧪 جرّب دخلاً مختلفاً <small>للتجربة فقط، ما يتغير راتبك</small></div>
-          <div class="fgroup"><label>الراتب للتجربة</label><input type="number" inputmode="decimal" id="pl-try" placeholder="اكتب أي راتب وشوف التقسيم" oninput="onPlanTry()"></div>
+          <div class="fgroup"><label>الراتب للتجربة <small class="pl-try-note">للتجربة فقط، ما يتغير راتبك</small></label><input type="text" data-num="1" inputmode="decimal" id="pl-try" placeholder="اكتب أي راتب وشوف التقسيم" oninput="onPlanTry()"></div>
           <div class="fgroup" style="margin-bottom:0">
               <label>➕ دخل إضافي (اختياري)</label>
               <div id="pl-extras"></div>
@@ -1281,13 +1327,24 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
             </div>
         </div>
 
-        <div class="switch-row pl-remember">
-          <div class="switch-row-text">
-            <div class="switch-row-title">💾 تذكّر التقسيم</div>
-            <div class="switch-row-sub" id="pl-remember-sub">فعّله لحفظ الراتب للتجربة والدخل الإضافي والمبالغ، فلا تكتبها كل مرة.</div>
+        <div id="pl-bar-wrap" style="position:relative;margin:0 0 18px">
+          <div id="pl-bar" style="display:flex;height:54px;border-radius:14px;overflow:hidden;background:var(--line)">
+            <div class="pl-seg" id="pl-bar-need" style="width:50%;background:var(--accent)"></div><div class="pl-seg" id="pl-bar-want" style="width:30%;background:var(--accent2)"></div><div class="pl-seg" id="pl-bar-save" style="width:20%;background:var(--income)"></div><div class="pl-seg" id="pl-bar-bills" style="width:0%;background:var(--expense)"></div>
           </div>
-          <button class="switch-toggle" id="pl-remember-toggle" onclick="togglePlanRemember()"><div class="knob"></div></button>
         </div>
+
+        <div class="pl-tiles-h">✏️ مبلغ كل بند <small>اضغط الرقم لتعديله، وإذا تركته فاضياً يُستخدم الافتراضي</small></div>
+        <div class="pl-tiles" id="pl-strip">
+          <label class="pl-tile" style="--c:var(--accent)"><span class="pl-tile-l" data-ic="🏠" id="pl-lbl-need">أساسيات</span><input type="text" data-num="1" inputmode="decimal" min="0" id="pl-p-need" oninput="onPlanAmt()"><span id="pl-need" hidden></span></label>
+          <label class="pl-tile" style="--c:var(--accent2)"><span class="pl-tile-l" data-ic="🎉" id="pl-lbl-want">رغبات</span><input type="text" data-num="1" inputmode="decimal" min="0" id="pl-p-want" oninput="onPlanAmt()"><span id="pl-want" hidden></span></label>
+          <label class="pl-tile" style="--c:var(--income)"><span class="pl-tile-l" data-ic="🏦" id="pl-lbl-save">ادخار</span><input type="text" data-num="1" inputmode="decimal" min="0" id="pl-p-save" oninput="onPlanAmt()"><span id="pl-save" hidden></span></label>
+          <label class="pl-tile" style="--c:var(--expense)"><span class="pl-tile-l" data-ic="🧾" id="pl-lbl-bills">فواتير وأقساط</span><input type="text" data-num="1" inputmode="decimal" min="0" id="pl-p-bills" oninput="onPlanAmt()" placeholder="اختياري"><span id="pl-bills" hidden></span></label>
+        </div>
+        <div id="pl-total-pct" style="font-size:11.5px;font-weight:800;text-align:center;margin-top:12px"></div>
+        <div id="pl-rest" style="margin-top:10px"></div>
+        <button class="btn btn-ghost btn-block btn-sm" style="margin-top:12px" onclick="resetPlanSplit()">↺ التقسيم الافتراضي ٥٠ / ٣٠ / ٢٠</button>
+
+
       </div>
 
       <div class="pl-sec-title">📊 بنود الدورة <small>اضغط على أي بند لتعديله أو ربطه بعملياتك</small></div>
@@ -1354,7 +1411,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
 
       <div class="card pl-save-card">
         <div class="card-title">🏦 الادخار والمستقبل <small>الدورات السابقة</small></div>
-        <div class="fgroup"><label>🎯 هدف الادخار (نفس هدف حساب الادخار في الإعدادات)</label><input type="number" inputmode="decimal" min="0" id="pl-sv-goal" placeholder="اختياري" oninput="onPlanSvGoal()"></div>
+        <div class="fgroup"><label>🎯 هدف الادخار (نفس هدف حساب الادخار في الإعدادات)</label><input type="text" data-num="1" inputmode="decimal" min="0" id="pl-sv-goal" placeholder="اختياري" oninput="onPlanSvGoal()"></div>
         <div id="pl-sv-goal-box" style="margin-bottom:16px"></div>
         <div class="strip" style="margin-bottom:10px">
           <div class="strip-box"><div class="strip-lbl">مجموع صافي الادخار</div><div class="strip-val" id="pl-total">—</div></div>
@@ -1431,7 +1488,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
         <div class="card">
           <div class="card-title">💰 الراتب</div>
           <div class="sal-grid2">
-            <div class="fgroup" style="margin:0"><label>الراتب الشهري</label><input type="number" inputmode="decimal" id="st-salary" placeholder="0"></div>
+            <div class="fgroup" style="margin:0"><label>الراتب الشهري</label><input type="text" data-num="1" inputmode="decimal" id="st-salary" placeholder="0"></div>
             <div class="fgroup" style="margin:0">
               <label>العملة</label>
               <select id="st-currency">
@@ -1450,7 +1507,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
         <div class="card">
           <div class="card-title">📅 موعد نزول الراتب</div>
           <div class="sal-grid2">
-            <div class="fgroup" style="margin:0"><label>اليوم الافتراضي</label><input type="number" inputmode="numeric" id="st-payday" min="1" max="31" placeholder="مثال: 27"></div>
+            <div class="fgroup" style="margin:0"><label>اليوم الافتراضي</label><input type="text" data-num="1" inputmode="numeric" id="st-payday" min="1" max="31" placeholder="مثال: 27"></div>
             <div class="fgroup" style="margin:0"><label>⏰ الساعة المتوقعة</label><input type="time" id="st-payday-time"></div>
           </div>
           <div class="sal-note">منه تبدأ دورتك وتنتهي في اليوم الذي قبل النزول القادم. ولو اختلف يوم النزول في شهر ما، اضبطه من «يوم النزول لكل شهر» أدناه.</div>
@@ -1469,7 +1526,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
             <div class="sal-goal-body">
               <div class="sal-goal-title">هدف المخزون</div>
               <div class="sal-goal-hint">يظهر شريط تقدمه في لوحة التحكم</div>
-              <input type="number" inputmode="decimal" id="st-goal" placeholder="مثال: 5000">
+              <input type="text" data-num="1" inputmode="decimal" id="st-goal" placeholder="مثال: 5000">
             </div>
           </div>
           <div class="sal-goal">
@@ -1477,7 +1534,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
             <div class="sal-goal-body">
               <div class="sal-goal-title">هدف حساب الادخار</div>
               <div class="sal-goal-hint">مستقل تماماً عن هدف المخزون، ويظهر أيضاً في صفحة التخطيط</div>
-              <input type="number" inputmode="decimal" id="st-savings-goal" placeholder="مثال: 3000">
+              <input type="text" data-num="1" inputmode="decimal" id="st-savings-goal" placeholder="مثال: 3000">
             </div>
           </div>
           <div class="sal-goal">
@@ -1485,7 +1542,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
             <div class="sal-goal-body">
               <div class="sal-goal-title">هدف السنة (سقف الصرف)</div>
               <div class="sal-goal-hint">يظهر في صفحة «تحليل»</div>
-              <input type="number" inputmode="decimal" id="st-annual-cap" placeholder="مثال: 40000">
+              <input type="text" data-num="1" inputmode="decimal" id="st-annual-cap" placeholder="مثال: 40000">
             </div>
           </div>
         </div>
@@ -1639,7 +1696,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <button id="tx-btn-exp" class="on-exp" onclick="setTxType('expense')">💸 صرف</button>
       <button id="tx-btn-inc" onclick="setTxType('income')">💰 دخل</button>
     </div>
-    <div class="fgroup"><label>المبلغ</label><input type="number" id="tx-amount" placeholder="0.00"></div>
+    <div class="fgroup"><label>المبلغ</label><input type="text" data-num="1" inputmode="decimal" id="tx-amount" placeholder="0.00"></div>
     <div class="fgroup"><label>الفئة</label><select id="tx-cat"></select></div>
     <div class="fgroup"><label>ملاحظة (اختياري)</label><input type="text" id="tx-note" placeholder="مثال: قهوة، بنزين..."></div>
     <div class="fgroup"><label>التاريخ</label><input type="date" id="tx-date"></div>
@@ -1658,7 +1715,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <button id="trf-btn-to-savings" class="on-exp" onclick="setTransferDirection('toSavings')">➡️ من المخزون للادخار</button>
       <button id="trf-btn-to-reserve" onclick="setTransferDirection('toReserve')">⬅️ من الادخار للمخزون</button>
     </div>
-    <div class="fgroup"><label>المبلغ</label><input type="number" id="trf-amount" placeholder="0.00"></div>
+    <div class="fgroup"><label>المبلغ</label><input type="text" data-num="1" inputmode="decimal" id="trf-amount" placeholder="0.00"></div>
     <div class="fgroup"><label>ملاحظة (اختياري)</label><input type="text" id="trf-note" placeholder="مثال: تجميع للادخار"></div>
     <div class="fgroup"><label>التاريخ</label><input type="date" id="trf-date"></div>
     <div class="row-gap">
@@ -1697,6 +1754,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <button class="arrow" onclick="changeMonthPickerYear(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
     </div>
     <div id="mp-month-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"></div>
+    <div class="mp-legend"><span class="mp-legend-box"></span> الأشهر المؤطّرة باللون الأخضر فيها عمليات</div>
   </div>
 </div>
 <div class="sheet-overlay hidden" id="sheet-backup-view">
@@ -2192,9 +2250,16 @@ const COLOR_ROLES = [
   { k:'bg',      name:'الخلفية',       use:'خلف كل الصفحات والنوافذ.' },
   { k:'card',    name:'البطاقات',      use:'سطح البطاقات والخانات وحقول الإدخال.' },
   { k:'ink',     name:'النص والحدود',  use:'النصوص الأساسية والحدود والظلال الصلبة.' },
+  { k:'clockBg',  name:'خلفية الساعة',  use:'خلفية ساعة العد التنازلي لنزول الراتب في لوحة التحكم.' },
+  { k:'clockNum', name:'أرقام الساعة',  use:'أرقام ساعة العد التنازلي وعناوينها وأسماء الوحدات.' },
 ];
 let _themeEditing = false;
-function themeEffVars(t){ const c = (state.settings.customColors||{})[t.id] || {}; return { ...t.vars, ...c }; }
+function themeEffVars(t){
+  const c = (state.settings.customColors||{})[t.id] || {};
+  const m = { ...t.vars, ...c };
+  // ألوان الساعة: افتراضياً عكس الخلفية (نص الثيم للخلفية، وخلفيته للأرقام) ما لم تُخصَّص
+  return { ...m, clockBg: c.clockBg || m.ink, clockNum: c.clockNum || m.bg };
+}
 function themeIsCustomized(id){ const c = (state.settings.customColors||{})[id]; return !!c && Object.keys(c).length>0; }
 function parseCol(str){
   str = String(str).trim();
@@ -2305,7 +2370,7 @@ function renderPaydayMonthGrid(){
     const hint = auto ? `<div style="font-size:9px;color:var(--accent);margin-top:2px">🔎 من عملية راتب</div>` : '';
     return `<div>
       <label>${name}</label>
-      <input type="number" min="1" max="31" id="pdm-${i}" placeholder="${placeholder}" value="${manual ?? ''}" title="افتراضياً: يوم ${fallback}">
+      <input type="text" data-num="1" inputmode="decimal" min="1" max="31" id="pdm-${i}" placeholder="${placeholder}" value="${manual ?? ''}" title="افتراضياً: يوم ${fallback}">
       ${hint}
     </div>`;
   }).join('');
@@ -2398,10 +2463,23 @@ function getBridgeTransferAmounts(year, m){
   return { toReserve, toSavings, net: toReserve - toSavings };
 }
 // ---------- عرض مشترك لثلاثية المخزون / حساب الادخار / المجموع (تُستخدم بصفحات اليوم والأسبوع والشهر) ----------
-function renderBalanceTriad(prefix){
-  const resRows = getCycleReserve();
-  const reserve = resRows.length ? resRows[resRows.length-1].reserve : 0;
-  const savings = getSavingsBalance().balance;
+// المخزون حتى نهاية يوم معيّن: ترحيل الدورات السابقة + راتب ودخل وصرف دورة ذلك اليوم حتى ذلك اليوم
+function getReserveAsOf(date){
+  const rows = getCycleReserve();
+  if (!rows.length) return 0;
+  const ds = dateKey(date);
+  if (ds < rows[0].sStr) return 0;
+  const row = rows.find(r=> ds>=r.sStr && ds<=r.eStr);
+  if (!row) return rows[rows.length-1].reserve; // بعد الدورة الحالية: لا توجد دورات مسجّلة بعد، فيبقى آخر رصيد
+  const txs = excludeSavings(state.transactions.filter(t=> t.date>=row.sStr && t.date<=ds));
+  const inc = txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const exp = txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amount,0);
+  return row.carryIn + cycleSalary(row.sStr, row.eStr) + inc - exp;
+}
+function renderBalanceTriad(prefix, asOf){
+  const when = asOf || localToday();
+  const reserve = getReserveAsOf(when);
+  const savings = getSavingsBalanceAsOf(when);
   const total = reserve + savings;
   const setBox = (id, val) => {
     const el = document.getElementById(id); if(!el) return;
@@ -2883,10 +2961,11 @@ let dbCatPie = null;
 // ---------- عرض: لوحة التحكم ----------
 // ---------- عد تنازلي حي (يوم:ساعة:دقيقة) لموعد نزول الراتب المتوقع ----------
 let stampCountdownTimer = null;
-let stampCountdownTarget = null;
+let stampCountdownTarget = null, stampCountdownStart = null;
 function renderStampCountdown(info){
   const [hh, mm] = (state.settings.paydayTime||'09:00').split(':').map(v=>parseInt(v)||0);
   stampCountdownTarget = new Date(info.end.getFullYear(), info.end.getMonth(), info.end.getDate()+1, hh, mm, 0);
+  stampCountdownStart = new Date(info.start.getFullYear(), info.start.getMonth(), info.start.getDate(), hh, mm, 0);
   updateStampCountdownTick();
   if (stampCountdownTimer) clearInterval(stampCountdownTimer);
   stampCountdownTimer = setInterval(updateStampCountdownTick, 1000);
@@ -2894,17 +2973,25 @@ function renderStampCountdown(info){
 function updateStampCountdownTick(){
   const el = document.getElementById('db-countdown');
   if (!el || !stampCountdownTarget) return;
-  const cdBox = (num, lbl) => `<div class="cd-box"><div class="cd-num">${String(Math.max(0,num)).padStart(2,'0')}</div><div class="cd-lbl">${lbl}</div></div>`;
-  const diffMs = stampCountdownTarget - new Date();
-  if (diffMs <= 0){
-    el.innerHTML = cdBox(0,'يوم') + `<div class="cd-sep">:</div>` + cdBox(0,'ساعة') + `<div class="cd-sep">:</div>` + cdBox(0,'دقيقة');
-    return;
-  }
-  const totalMinutes = Math.floor(diffMs/60000);
-  const days = Math.floor(totalMinutes/1440);
-  const hours = Math.floor((totalMinutes%1440)/60);
-  const minutes = totalMinutes%60;
-  el.innerHTML = cdBox(days,'يوم') + `<div class="cd-sep">:</div>` + cdBox(hours,'ساعة') + `<div class="cd-sep">:</div>` + cdBox(minutes,'دقيقة');
+  const now = new Date();
+  const diffMs = Math.max(0, stampCountdownTarget - now);
+  const totalSec = Math.floor(diffMs/1000);
+  const parts = [
+    [Math.floor(totalSec/86400), 'يوم'],
+    [Math.floor((totalSec%86400)/3600), 'ساعة'],
+    [Math.floor((totalSec%3600)/60), 'دقيقة'],
+    [totalSec%60, 'ثانية'],
+  ];
+  const span = stampCountdownTarget - stampCountdownStart;
+  const pct = span>0 ? Math.max(0, Math.min(100, ((now - stampCountdownStart)/span)*100)) : 100;
+  const seg = ([n,l]) => `<div class="cd2-seg"><div class="cd2-num">${String(n).padStart(2,'0')}</div><div class="cd2-lbl">${l}</div></div>`;
+  const done = diffMs<=0;
+  el.innerHTML = `<div class="cd2">
+    <div class="cd2-h">${done ? '🎉 حان موعد نزول الراتب' : '⏳ باقي على نزول الراتب'}</div>
+    <div class="cd2-row">${parts.map(seg).join('<div class="cd2-sep">:</div>')}</div>
+    <div class="cd2-bar"><i style="width:${pct.toFixed(1)}%"></i></div>
+    <div class="cd2-f">مرّ ${fmtNum(Math.floor(pct))}٪ من الدورة</div>
+  </div>`;
 }
 function renderDashboard(){
   const info = getPayCycleInfo();
@@ -3091,6 +3178,7 @@ function renderDay(){
   document.getElementById('day-title').innerHTML = isToday
     ? `<span class="accent">اليوم</span> · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}${hijriToday?` <span style="color:var(--ink-soft);font-weight:400">${hijriToday}</span>`:''}`
     : `${DAY_NAMES[d.getDay()]} · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}${hijriToday?` <span style="color:var(--ink-soft);font-weight:400">${hijriToday}</span>`:''}`;
+  const _dtEl = document.getElementById('day-title'); _dtEl.innerHTML = '<span class="dp-txt">'+_dtEl.innerHTML+'</span>';
   renderNavDots('day-nav-dots', 7, d.getDay());
 
   const txs = getTxForDate(ds);
@@ -3103,7 +3191,7 @@ function renderDay(){
   netEl.textContent = budgetTxs.length? fmt(inc-exp):'—';
   netEl.style.color = (inc-exp)>=0 ? 'var(--income)':'var(--expense)';
 
-  renderBalanceTriad('dv');
+  renderBalanceTriad('dv', d);
 
   const dayActivity = getSavingsActivity(txs);
   document.getElementById('dv-withdrawals').textContent = fmt(dayActivity.withdrawals);
@@ -3160,11 +3248,40 @@ function getMonthWeekStarts(year, month){
   }
   return starts;
 }
-function buildWeekDataFromStart(start, year, month){
+function getRangeWeekStarts(from, to){
+  const starts = [];
+  let cursor = new Date(from.getFullYear(), from.getMonth(), from.getDate()-from.getDay());
+  while (cursor <= to && starts.length < 8){
+    starts.push(new Date(cursor));
+    cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate()+7);
+  }
+  return starts;
+}
+function syncWeekSwitch(){
+  const on = !!state.settings.weekViewCycle;
+  const tg = document.getElementById('week-cycle-toggle'); if (tg) tg.classList.toggle('on', on);
+  const sub = document.getElementById('week-cycle-sub');
+  if (sub) sub.textContent = on ? 'مفعّل — يعرض أيام دورة الراتب كاملة من يوم نزول الراتب، والأسهم تنقلك بين الدورات.' : 'معطّل — يعرض أيام الشهر الميلادي من أوله إلى آخره.';
+}
+function toggleWeekCycle(){
+  state.settings.weekViewCycle = !state.settings.weekViewCycle;
+  if (state.settings.weekViewCycle){
+    // ابدأ بالدورة التي فيها اليوم الحالي
+    const t = localToday();
+    for (const off of [0,-1,1]){
+      const d = new Date(t.getFullYear(), t.getMonth()+off, 15);
+      const b = cycleBoundsContaining(d);
+      if (t>=b.start && t<=b.end){ state.weekViewYear = d.getFullYear(); state.weekViewMonth = d.getMonth(); break; }
+    }
+  }
+  save(); renderWeek();
+}
+function buildWeekDataFromStart(start, year, month, bounds){
   const days = []; let inc=0, exp=0;
   for (let i=0;i<7;i++){
     const d = new Date(start.getFullYear(), start.getMonth(), start.getDate()+i);
-    if (year!==undefined && (d.getFullYear()!==year || d.getMonth()!==month)) continue; // أيام الشهر اللي قبله/بعده ما تُعرض
+    if (bounds){ if (d<bounds.start || d>bounds.end) continue; }
+    else if (year!==undefined && (d.getFullYear()!==year || d.getMonth()!==month)) continue; // أيام الشهر اللي قبله/بعده ما تُعرض
     const ds = dateKey(d);
     const txs = getTxForDate(ds);
     const budgetTxs = excludeSavingsAndTransfers(txs);
@@ -3200,14 +3317,19 @@ function renderWeek(){
   const today = localToday();
   const todayStr = dateKey(today);
   const y = state.weekViewYear, m = state.weekViewMonth;
-  const allStarts = getMonthWeekStarts(y,m);
+  syncWeekSwitch();
+  const cycMode = !!state.settings.weekViewCycle;
+  const bounds = cycMode ? cycleBoundsContaining(new Date(y,m,15)) : null;
+  const allStarts = bounds ? getRangeWeekStarts(bounds.start, bounds.end) : getMonthWeekStarts(y,m);
   const starts = allStarts; // كل أسابيع الشهر لين آخر يوم (٤ إلى ٦)
-  const weeks = starts.map(s => ({ start:s, ...buildWeekDataFromStart(s, y, m) }));
+  const weeks = starts.map(s => ({ start:s, ...buildWeekDataFromStart(s, y, m, bounds) }));
   const totalInc = weeks.reduce((s,w)=>s+w.inc,0);
   const totalExp = weeks.reduce((s,w)=>s+w.exp,0);
 
   const hijriLabelWk = hijriMonthYearStr(new Date(y, m, 1));
-  document.getElementById('week-title').innerHTML = `${MONTH_NAMES[m]} ${y} <span style="color:var(--ink-soft);font-weight:400">${hijriLabelWk?'— '+hijriLabelWk+' · ':'· '}${allStarts.length} أسابيع</span>`;
+  document.getElementById('week-title').innerHTML = cycMode
+    ? `<span class="accent">دورة الراتب</span> · ${bounds.start.getDate()} ${MONTH_NAMES[bounds.start.getMonth()].slice(0,3)} ← ${bounds.end.getDate()} ${MONTH_NAMES[bounds.end.getMonth()].slice(0,3)} <span style="color:var(--ink-soft);font-weight:400">· ${allStarts.length} أسابيع</span>`
+    : `${MONTH_NAMES[m]} ${y} <span style="color:var(--ink-soft);font-weight:400">${hijriLabelWk?'— '+hijriLabelWk+' · ':'· '}${allStarts.length} أسابيع</span>`;
   renderNavDots('week-nav-dots', 12, m);
 
   document.getElementById('wk-inc').textContent = totalInc?fmt(totalInc):'—';
@@ -3216,7 +3338,7 @@ function renderWeek(){
   netEl.textContent = (totalInc||totalExp)?fmt(totalInc-totalExp):'—';
   netEl.style.color = (totalInc-totalExp)>=0?'var(--income)':'var(--expense)';
 
-  renderBalanceTriad('wk');
+  renderBalanceTriad('wk', weeks[weeks.length-1].days[weeks[weeks.length-1].days.length-1].d);
 
   const weekActivity = getSavingsActivity(weeks.flatMap(w=>w.days.flatMap(d=>d.txs)));
   document.getElementById('wk-withdrawals').textContent = fmt(weekActivity.withdrawals);
@@ -3254,15 +3376,16 @@ function renderWeek(){
   const weekRange = w => { const a=w.days[0].d, b=w.days[w.days.length-1].d; const mn=MONTH_NAMES[a.getMonth()].slice(0,3); return a.getTime()===b.getTime() ? `${a.getDate()} ${mn}` : `${a.getDate()} – ${b.getDate()} ${mn}`; };
   // ── الرصيد الجاري: إجمالي أموالك (المخزون + حساب الادخار) بنهاية كل يوم، بنفس نظام الترحيل الشهري بصفحة الشهر ──
   // تغيّر الرصيد باليوم = دخل - صرف (بدون ادخار وتحويلات) + إيداع ادخار مباشر - سحب ادخار مباشر. التحويل بين المخزون والادخار يلغي نفسه فما يغيّر الرصيد.
-  const monthSal = monthSalary(y, m, getSalaryMonthRange());
-  const openingBal = getMonthCarryRemaining(m===0 ? y-1 : y, m===0 ? 11 : m-1) + getSavingsBalanceAsOf(new Date(y, m, 0));
+  const monthSal = cycMode ? 0 : monthSalary(y, m, getSalaryMonthRange());
+  const openingBal = cycMode ? runningBalanceStart(weeks[0].days[0].d) : getMonthCarryRemaining(m===0 ? y-1 : y, m===0 ? 11 : m-1) + getSavingsBalanceAsOf(new Date(y, m, 0));
+  const salRangeWk = getSalaryMonthRange();
   const dayDelta = day => {
     const s1 = day.txs.filter(t=>t.category==='s1').reduce((s,t)=>s+t.amount,0);
     const s2 = day.txs.filter(t=>t.category==='s2').reduce((s,t)=>s+t.amount,0);
     return day.inc - day.exp + s1 - s2;
   };
   const balByDs = {}; let runBal = openingBal + monthSal;
-  weeks.forEach(w=>w.days.forEach(day=>{ runBal += dayDelta(day); balByDs[day.ds] = runBal; }));
+  weeks.forEach(w=>w.days.forEach(day=>{ if (cycMode && day.d.getDate()===1) runBal += monthSalary(day.d.getFullYear(), day.d.getMonth(), salRangeWk); runBal += dayDelta(day); balByDs[day.ds] = runBal; }));
   const trfIds = getTransferCatIds();
   const lastDsOf = ws => { const dd = ws[ws.length-1].days; return dd[dd.length-1].ds; };
   // جدولان فقط: النصف الأول من أسابيع الشهر بالجدول الأول والباقي بالثاني (أيام الشهر الحالي فقط، من أول يوم لآخر يوم)
@@ -3287,7 +3410,7 @@ function renderWeek(){
     const warnHtml = group.filter(g=>weeklyAvg && g.w.exp > weeklyAvg*1.3)
       .map(g=>`<div class="wk-warn">⚠️ الأسبوع ${WEEK_ORDINALS[g.idx]||(g.idx+1)} (${weekRange(g.w)}) أعلى من معدلك المعتاد (${fmt(weeklyAvg)})</div>`).join('');
     const openRows = from===0
-      ? `<tr class="wk-open"><td colspan="4">رصيد مرحّل من الشهر السابق</td><td class="wk-bal">${fmt(openingBal)}</td><td></td></tr>`
+      ? `<tr class="wk-open"><td colspan="4">${cycMode ? 'رصيد مرحّل قبل الدورة' : 'رصيد مرحّل من الشهر السابق'}</td><td class="wk-bal">${fmt(openingBal)}</td><td></td></tr>`
         + (monthSal>0 ? `<tr class="wk-open"><td colspan="2">راتب الشهر</td><td style="color:var(--income)">+${fmt(monthSal)}</td><td></td><td class="wk-bal">${fmt(openingBal+monthSal)}</td><td></td></tr>` : '')
       : `<tr class="wk-open"><td colspan="4">مرحّل من الجدول الأول</td><td class="wk-bal">${fmt(balByDs[lastDsOf(weeks.slice(0,from))])}</td><td></td></tr>`;
     const bodyRows = rowsDays.map((day,ri) => {
@@ -3302,7 +3425,7 @@ function renderWeek(){
       const hasTransfer = txs.some(t=>trfIds.includes(t.category));
       const tag = day.wkFirst ? `<div class="wk-tag">أسبوع ${fmtNum(day.wkIdx+1)}</div>` : '';
       return `<tr class="${(day.wkFirst && ri>0)?'wk-first':''}${ds===todayStr?' wk-r-today':''}">
-        <td>${tag}${d.getDate()}${ds===topSpendDs && topSpendVal>0?' 🔥':''}</td>
+        <td>${tag}<span class="wk-dn">${DAY_NAMES[d.getDay()]}</span> <b>${d.getDate()}</b>${ds===topSpendDs && topSpendVal>0?' 🔥':''}${(cycMode && (ri===0 || d.getDate()===1))?`<div class="wk-note">${MONTH_NAMES[d.getMonth()]}</div>`:''}</td>
         <td style="color:var(--expense)">${exp>0?fmt(exp):'—'}</td>
         <td style="color:var(--income)">${inc>0?fmt(inc):'—'}</td>
         <td>${svCell}</td>
@@ -3336,13 +3459,13 @@ function renderWeek(){
       </tr>`;
     })();
     pairsHtml.push(`<div class="wk-card">
-      <div class="wk-card-range">${firstD.getDate()} – ${lastD.getDate()} ${MONTH_NAMES[m]}</div>
+      <div class="wk-card-range">${firstD.getMonth()===lastD.getMonth() ? `${firstD.getDate()} – ${lastD.getDate()} ${MONTH_NAMES[m===firstD.getMonth()?m:firstD.getMonth()]}` : `${firstD.getDate()} ${MONTH_NAMES[firstD.getMonth()]} ← ${lastD.getDate()} ${MONTH_NAMES[lastD.getMonth()]}`}</div>
       ${warnHtml}
       ${todayStrip}
       <div style="overflow-x:auto">
         <table class="a-table wk-day-table">
-          <colgroup><col style="width:17%"><col style="width:16%"><col style="width:16%"><col style="width:16%"><col style="width:26%"><col style="width:9%"></colgroup>
-          <thead><tr><th>تاريخ</th><th>صرف</th><th>دخل</th><th>ادخار</th><th>الرصيد الجاري</th><th></th></tr></thead>
+          <colgroup><col style="width:25%"><col style="width:15%"><col style="width:14%"><col style="width:14%"><col style="width:24%"><col style="width:8%"></colgroup>
+          <thead><tr><th>اليوم</th><th>صرف</th><th>دخل</th><th>ادخار</th><th>الرصيد الجاري</th><th></th></tr></thead>
           <tbody>${openRows}${bodyRows}</tbody>
           <tfoot>${footRow}</tfoot>
         </table>
@@ -3661,7 +3784,7 @@ function renderMonth(){
   netEl.textContent = txs.length?fmt(inc-exp):'—';
   netEl.style.color = (inc-exp)>=0?'var(--income)':'var(--expense)';
 
-  renderBalanceTriad('mo');
+  renderBalanceTriad('mo', new Date(y, m+1, 0));
 
   const monthActivity = getSavingsActivity(getMonthTxs(y,m));
   document.getElementById('mo-withdrawals').textContent = fmt(monthActivity.withdrawals);
@@ -3829,7 +3952,8 @@ function renderMonthPicker(){
     const isActive = state.mpYear===state.curYear && i===state.curMonth;
     const isToday = state.mpYear===today.getFullYear() && i===today.getMonth();
     const hijriLabel = hijriMonthYearStr(new Date(state.mpYear, i, 1));
-    return `<button class="mp-month-btn ${isActive?'active':''} ${isToday&&!isActive?'today-month':''}" onclick="selectPickerMonth(${i})">
+    const hasTx = getMonthTxs(state.mpYear, i).length>0;
+    return `<button class="mp-month-btn ${isActive?'active':''} ${isToday&&!isActive?'today-month':''} ${hasTx?'has-tx':''}" onclick="selectPickerMonth(${i})">
       <div>${name}</div>
       ${hijriLabel?`<div style="font-size:9.5px;font-weight:500;opacity:0.75;margin-top:2px">${hijriLabel}</div>`:''}
     </button>`;
@@ -3940,7 +4064,7 @@ function renderAnnualGoal(totalExp, year){
 }
 
 // ---------- مسار المخزون منذ البداية ----------
-let anReserveChart = null, anReserveExpChart = null;
+let anReserveChart = null, anReserveExpChart = null, anTotalChart = null;
 // ---------- رصيد حساب الادخار التراكمي حتى تاريخ معيّن (لمحاذاته مع محور مسار المخزون) ----------
 function getSavingsBalanceAsOf(date){
   const ds = dateKey(date);
@@ -3978,9 +4102,131 @@ function renderReserveExpense(rows){
     }
   });
 }
+// الإجمالي (المخزون + الادخار) يوماً بيوم، بحساب دورات الراتب: أسبوعان بأسبوعين، أو شهر بشهر، أو السنة كاملة
+let _anTotalMode = 'week', _anTotalPage = null, _anTotalYear = null, _anTotalWeeks = 2, _anTotalMonths = 12;
+const AN_WEEK_OPTS = [[1,'أسبوع'],[2,'أسبوعان'],[3,'٣ أسابيع'],[4,'٤ أسابيع']];
+const AN_MONTH_OPTS = [3,6,7,8,9,10,11,12].map(n=>[n, `${fmtNumStatic(n)} ${n<=10?'أشهر':'شهراً'}`]);
+function fmtNumStatic(n){ return String(n).replace(/\d/g, d=>'٠١٢٣٤٥٦٧٨٩'[d]); }
+function setAnTotalMode(m){ _anTotalMode = m; _anTotalPage = null; renderTotalDayChart(); }
+function setAnTotalOpt(n){ if (_anTotalMode==='week') _anTotalWeeks = n; else _anTotalMonths = n; _anTotalPage = null; renderTotalDayChart(); }
+function changeAnTotalPage(dir){ if (_anTotalPage===null) return; _anTotalPage += dir; renderTotalDayChart(); }
+function yearCycleBounds(year){
+  const list = []; let d = new Date(year,0,1); const yEnd = new Date(year,11,31);
+  while (d <= yEnd && list.length < 20){
+    const b = cycleBoundsContaining(d);
+    list.push(b);
+    d = new Date(b.end.getFullYear(), b.end.getMonth(), b.end.getDate()+1);
+  }
+  return list;
+}
+function buildYearTotalSeries(year){
+  const today = localToday();
+  const rows = getCycleReserve();
+  const yStart = new Date(year,0,1), yEnd = new Date(year,11,31);
+  const yStartStr = dateKey(yStart);
+  let ri = rows.findIndex(r=>r.eStr>=yStartStr);
+  if (ri<0) ri = rows.length;
+  let iterStart = yStart;
+  if (ri<rows.length && rows[ri].sStr<yStartStr) iterStart = parseLocalDate(rows[ri].sStr); // نبدأ من أول دورة تغطي 1 يناير
+  let sv = getSavingsBalanceAsOf(new Date(iterStart.getFullYear(), iterStart.getMonth(), iterStart.getDate()-1));
+  let cumInc = 0, cumExp = 0;
+  const out = [];
+  for (let d = new Date(iterStart); d <= yEnd; d = new Date(d.getFullYear(), d.getMonth(), d.getDate()+1)){
+    const ds = dateKey(d);
+    while (ri<rows.length && ds>rows[ri].eStr){ ri++; cumInc=0; cumExp=0; }
+    const row = (ri<rows.length && ds>=rows[ri].sStr) ? rows[ri] : null;
+    const txs = getTxForDate(ds);
+    if (row){
+      const b = excludeSavings(txs);
+      cumInc += b.filter(t=>t.type==='income').reduce((a,t)=>a+t.amount,0);
+      cumExp += b.filter(t=>t.type==='expense').reduce((a,t)=>a+t.amount,0);
+    }
+    sv += txs.filter(isSavingsDeposit).reduce((a,t)=>a+t.amount,0) - txs.filter(isSavingsWithdraw).reduce((a,t)=>a+t.amount,0);
+    if (d < yStart) continue;
+    out.push({ d:new Date(d), val:(d>today || !row) ? null : Math.round((row.carryIn + cycleSalary(row.sStr,row.eStr) + cumInc - cumExp + sv)*100)/100 });
+  }
+  return out;
+}
+function renderTotalDayChart(){
+  if (anTotalChart){ anTotalChart.destroy(); anTotalChart=null; }
+  const canvas = document.getElementById('an-total-day-chart'); if(!canvas) return;
+  const today = localToday(), todayStr = dateKey(today);
+  const year = parseInt((document.getElementById('an-year')||{}).value) || today.getFullYear();
+  if (_anTotalYear !== year){ _anTotalYear = year; _anTotalPage = null; }
+  const all = buildYearTotalSeries(year);
+  const thisYear = year===today.getFullYear();
+  const mode = _anTotalMode;
+  const fmtD = d => `${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`;
+  let pages = 1, slice = all, title = String(year);
+  if (mode==='week'){
+    const span = 7*_anTotalWeeks, off = new Date(year,0,1).getDay();   // النوافذ تبدأ من الأحد
+    pages = Math.ceil((all.length+off)/span);
+    if (_anTotalPage===null) _anTotalPage = thisYear ? Math.floor((Math.round((today-new Date(year,0,1))/86400000)+off)/span) : 0;
+    _anTotalPage = Math.max(0, Math.min(pages-1, _anTotalPage));
+    slice = all.slice(Math.max(0,_anTotalPage*span-off), Math.min(all.length,(_anTotalPage+1)*span-off));
+    title = `${fmtD(slice[0].d)} ← ${fmtD(slice[slice.length-1].d)}`;
+  } else if (mode==='cycle'){
+    const cycles = yearCycleBounds(year);
+    pages = cycles.length;
+    if (_anTotalPage===null){ const i = cycles.findIndex(c=>todayStr>=dateKey(c.start) && todayStr<=dateKey(c.end)); _anTotalPage = (thisYear && i>=0) ? i : 0; }
+    _anTotalPage = Math.max(0, Math.min(pages-1, _anTotalPage));
+    const c = cycles[_anTotalPage], cs = dateKey(c.start), ce = dateKey(c.end);
+    slice = all.filter(x=>{ const k = dateKey(x.d); return k>=cs && k<=ce; });
+    const cross = c.start.getFullYear()!==c.end.getFullYear();
+    title = `${fmtD(c.start)}${cross?' '+c.start.getFullYear():''} ← ${fmtD(c.end)}${cross?' '+c.end.getFullYear():''}${(todayStr>=cs && todayStr<=ce)?' · الحالية':''}`;
+  } else {
+    const n = _anTotalMonths;
+    pages = Math.ceil(12/n);
+    if (_anTotalPage===null) _anTotalPage = thisYear ? Math.floor(today.getMonth()/n) : 0;
+    _anTotalPage = Math.max(0, Math.min(pages-1, _anTotalPage));
+    const m0 = _anTotalPage*n, m1 = Math.min(11, m0+n-1);
+    slice = all.filter(x=>x.d.getMonth()>=m0 && x.d.getMonth()<=m1);
+    title = n===12 ? String(year) : `${MONTH_NAMES[m0]} ← ${MONTH_NAMES[m1]} ${year}`;
+  }
+  if (!slice.length) slice = all.slice(0,1);
+  // واجهة التحكم
+  document.querySelectorAll('#an-total-seg button').forEach(b=>b.classList.toggle('on', b.dataset.m===mode));
+  const opts = document.getElementById('an-total-opts');
+  if (opts){
+    const list = mode==='week' ? AN_WEEK_OPTS : mode==='year' ? AN_MONTH_OPTS : [];
+    const cur = mode==='week' ? _anTotalWeeks : _anTotalMonths;
+    opts.innerHTML = list.map(([n,l])=>`<button class="pl-chip${n===cur?' on':''}" onclick="setAnTotalOpt(${n})">${l}</button>`).join('');
+  }
+  const tEl = document.getElementById('an-total-title'); if (tEl) tEl.textContent = title;
+  const prev = document.getElementById('an-total-prev'), next = document.getElementById('an-total-next');
+  if (prev) prev.style.visibility = (pages>1 && _anTotalPage>0) ? 'visible' : 'hidden';
+  if (next) next.style.visibility = (pages>1 && _anTotalPage<pages-1) ? 'visible' : 'hidden';
+  const labels = slice.map(x=>`${x.d.getDate()}/${x.d.getMonth()+1}`);
+  const vals = slice.map(x=>x.val);
+  const meta = slice.map(x=>({ d:x.d.getDate(), m:x.d.getMonth() }));
+  const rootStyle = getComputedStyle(document.documentElement);
+  const soft = rootStyle.getPropertyValue('--ink-soft').trim();
+  const dense = slice.length > 62;
+  const xTicks = dense
+    ? { color:soft, font:{size:8}, autoSkip:false, maxRotation:0, callback:(v,i)=> (meta[i] && meta[i].d===1) ? MONTH_NAMES[meta[i].m].slice(0,3) : '' }
+    : { color:soft, font:{size:8}, autoSkip:true, maxRotation:0 };
+  anTotalChart = makeChart(canvas, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        { label:'الإجمالي', data: vals, borderColor: rootStyle.getPropertyValue('--income').trim()||'#4c8c5a', backgroundColor:'transparent', borderWidth:2.5, tension:0.25, pointRadius: slice.length<=14 ? 3 : slice.length<=35 ? 2 : 0, pointHoverRadius:5, pointHitRadius:8, spanGaps:false },
+      ]
+    },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:true, labels:{ color:soft, font:{size:9}, boxWidth:10, padding:8 } } },
+      scales:{
+        x:{ ticks:xTicks, grid:{display:false} },
+        y:{ ticks:{color:soft,font:{size:9}}, grid:{color:rootStyle.getPropertyValue('--line').trim()} }
+      }
+    }
+  });
+  canvas.__vals = vals; canvas.__title = title;
+}
 function renderReserveTimeline(){
   if (anReserveChart){ anReserveChart.destroy(); anReserveChart=null; }
   renderReserveExpense(getCycleReserve());
+  renderTotalDayChart();
   const canvas = document.getElementById('an-reserve-chart'); if(!canvas) return;
   const rows = getCycleReserve();
   const rootStyle = getComputedStyle(document.documentElement);
@@ -4771,7 +5017,7 @@ function renderCatSettings(){
       </div>
       <span class="em">${esc(c.emoji)}</span>
       <div class="nm"><div>${esc(c.name)}${isBasic?' <span class="cat-badge">أساسية</span>':''}</div><small class="cat-meta">${usageCountText(u)}</small></div>
-      ${c.type==='expense' ? `<input type="number" inputmode="decimal" class="cat-limit-input" placeholder="حد شهري" value="${c.limit||''}" onchange="setCategoryLimit('${c.id}', this.value)" title="حد إنفاق شهري (اتركه فاضي لتجاهله)">` : ''}
+      ${c.type==='expense' ? `<input type="text" data-num="1" inputmode="decimal" class="cat-limit-input" placeholder="حد شهري" value="${c.limit||''}" onchange="setCategoryLimit('${c.id}', this.value)" title="حد إنفاق شهري (اتركه فاضي لتجاهله)">` : ''}
       <div class="acts">
         <button class="btn btn-ghost btn-sm" onclick="editCategory('${c.id}')">✏️</button>
         <button class="btn btn-ghost btn-sm" onclick="deleteCategory('${c.id}')" ${CORE_CATEGORY_IDS.includes(c.id)?'disabled title="فئة أساسية محمية"':''}>🗑️</button>
@@ -5263,6 +5509,38 @@ function isValidDateStr(v){
   const dt = new Date(y, m-1, dd);
   return dt.getFullYear()===y && dt.getMonth()===m-1 && dt.getDate()===dd;
 }
+// تعقيم خطط التخطيط المحفوظة لكل دورة (مفتاح كل خطة = تاريخ بداية الدورة)
+function cleanPlanCycles(src){
+  const out = {};
+  if (!src || typeof src!=='object' || Array.isArray(src)) return out;
+  const num = x => { const n = Number(x); return (Number.isFinite(n) && n>0 && n<=1e12) ? n : 0; };
+  const txt = x => typeof x==='string' ? x.slice(0,40) : '';
+  const KS = ['need','want','bills'];
+  Object.keys(src).sort().reverse().slice(0,60).forEach(key=>{
+    const v = src[key];
+    if (!isValidDateStr(key) || !v || typeof v!=='object') return;
+    const o = { tryVal: num(v.tryVal)>0 ? String(num(v.tryVal)) : '' };
+    o.extras = Array.isArray(v.extras) ? v.extras.slice(0,20).map(e=>({ name:txt(e&&e.name), amount:num(e&&e.amount) })).filter(e=>e.amount>0) : [];
+    o.amounts = null;
+    if (v.amounts && typeof v.amounts==='object'){
+      const a = { need:num(v.amounts.need), want:num(v.amounts.want), save:num(v.amounts.save), bills:num(v.amounts.bills) };
+      if (a.need || a.want || a.save || a.bills) o.amounts = a;
+    }
+    o.link = {}; o.lists = {};
+    KS.forEach(k=>{
+      const L = v.link && v.link[k];
+      o.link[k] = { on:!!(L && L.on), cats:(L && Array.isArray(L.cats)) ? L.cats.filter(x=>typeof x==='string' && SAFE_ID_RE.test(x)).slice(0,60) : [] };
+      const arr = (v.lists && Array.isArray(v.lists[k])) ? v.lists[k] : [];
+      o.lists[k] = arr.slice(0,50).map(e=>({ name:txt(e&&e.name), amount:num(e&&e.amount) })).filter(e=>e.name || e.amount>0);
+    });
+    out[key] = o;
+  });
+  return out;
+}
+function resetPlanMemory(){
+  _plLoaded = false; _planStore = {}; _planSel = null; _planList = null;
+  _plan = newPlanData(); _plRowsDirty = true; _plListsDirty = true;
+}
 function sanitizeBackup(d){
   const skipped = { tx:0, cat:0 };
   const idOf = v => (typeof v==='string' || typeof v==='number') ? String(v) : '';
@@ -5318,7 +5596,9 @@ function sanitizeBackup(d){
   }
   if (FONT_OPTIONS.some(f=>f.id===src.fontChoice)) st.fontChoice = src.fontChoice;
   if (NUMBER_OPTIONS.some(n=>n.id===src.numberStyle)) st.numberStyle = src.numberStyle;
-  ['linkSavingsToReserve','autoSortCategoriesByUsage','categoriesDedupedV2'].forEach(k=>{ if (typeof src[k]==='boolean') st[k] = src[k]; });
+  ['linkSavingsToReserve','autoSortCategoriesByUsage','categoriesDedupedV2','catsMigratedV3','weekViewCycle','detailedViewCycle','planRemember'].forEach(k=>{ if (typeof src[k]==='boolean') st[k] = src[k]; });
+  ['dailyViewMonthPage','dailyViewAnPage'].forEach(k=>{ if (src[k]==='cycle' || src[k]==='month') st[k] = src[k]; });
+  if (src.planCycles && typeof src.planCycles==='object') st.planCycles = cleanPlanCycles(src.planCycles);
   ['lastBackupAt','backupReminderSince'].forEach(k=>{ if (src[k]===null) st[k] = null; else { const n = numOf(src[k]); if (Number.isFinite(n) && n>=0) st[k] = n; } });
   if (Array.isArray(src.deletedDefaultCats)) st.deletedDefaultCats = src.deletedDefaultCats.filter(x=>typeof x==='string' && SAFE_ID_RE.test(x)).slice(0,100);
 
@@ -5339,6 +5619,7 @@ function processRestoreData(d, mode, onDone){
       state.settings      = { ...state.settings, ...(d.settings||{}) };
       state.settings.backupReminderSince = Date.now(); // نبدأ مهلة التذكير من جديد بعد الاستعادة، ما يظهر التنبيه فوراً
       save();
+      resetPlanMemory();
       applyTheme(state.settings.theme);
       refreshAll();
       showToast('♻️ تم استبدال البيانات بالكامل'+skipNote, skipNote?5500:undefined);
@@ -5352,9 +5633,12 @@ function processRestoreData(d, mode, onDone){
       ensureCoreCategories(); migrateCategoriesV3(); // نفس الضمان أثناء الدمج
       // الإعدادات (الراتب، يوم النزول...) مو قائمة تتراكم — نستوردها من الملف دائماً
       // عشان حسابات الدورة (المتبقي، المخزون...) تكون متطابقة سواء دمجت أو استبدلت
+      const oldPlanCycles = state.settings.planCycles;
       state.settings = { ...state.settings, ...(d.settings||{}) };
+      if (d.settings && d.settings.planCycles) state.settings.planCycles = { ...(oldPlanCycles||{}), ...d.settings.planCycles }; // خطط الدورات تُدمج، وعند التعارض يُعتمد الملف
       state.settings.backupReminderSince = Date.now(); // نبدأ مهلة التذكير من جديد بعد الاستعادة، ما يظهر التنبيه فوراً
       save();
+      resetPlanMemory();
       applyTheme(state.settings.theme);
       refreshAll();
       showToast(`🔗 تم دمج ${incoming.length} عملية جديدة + استيراد الإعدادات`+skipNote, skipNote?5500:undefined);
@@ -5555,7 +5839,7 @@ function syncPlanUI(){
     _plRowsDirty = false;
     box.innerHTML = _plan.extras.map((e,i)=>`<div class="row-gap" style="margin-bottom:8px;align-items:center">
       <input type="text" class="pl-ex-name" placeholder="الاسم (اختياري)" value="${esc(e.name)}" oninput="onPlanExtraName(${i},this.value)" style="flex:1.3;min-width:0">
-      <input type="number" inputmode="decimal" min="0" placeholder="المبلغ" value="${e.amount>0?e.amount:''}" oninput="onPlanExtraAmt(${i},this.value)" style="flex:1;min-width:0">
+      <input type="text" data-num="1" inputmode="decimal" min="0" placeholder="المبلغ" value="${e.amount>0?e.amount:''}" oninput="onPlanExtraAmt(${i},this.value)" style="flex:1;min-width:0">
       <button class="btn btn-ghost btn-sm" onclick="removePlanExtra(${i})" aria-label="حذف">🗑️</button>
     </div>`).join('');
   }
@@ -5575,7 +5859,7 @@ function renderPlanLists(){
     if (_plListsDirty || !box.children.length){
       box.innerHTML = _plan.lists[k].map((e,i)=>`<div class="row-gap" style="margin-bottom:8px;align-items:center">
         <input type="text" class="pl-ex-name" placeholder="اسم البند" value="${esc(e.name)}" oninput="onPlanListName('${k}',${i},this.value)" style="flex:1.3;min-width:0">
-        <input type="number" inputmode="decimal" min="0" placeholder="المبلغ" value="${e.amount>0?e.amount:''}" oninput="onPlanListAmt('${k}',${i},this.value)" style="flex:1;min-width:0">
+        <input type="text" data-num="1" inputmode="decimal" min="0" placeholder="المبلغ" value="${e.amount>0?e.amount:''}" oninput="onPlanListAmt('${k}',${i},this.value)" style="flex:1;min-width:0">
         <button class="btn btn-ghost btn-sm" onclick="removePlanListRow('${k}',${i})" aria-label="حذف">🗑️</button>
       </div>`).join('');
     }
@@ -6008,6 +6292,25 @@ function initPlanHandles(){
   document.addEventListener('pointerup', end);
   document.addEventListener('pointercancel', end);
 }
+// ---------- قبول الأرقام العربية/الفارسية في كل خانات المبالغ (١٢٣ ← 123) ----------
+function normDigits(str){
+  let t = String(str)
+    .replace(/[٠-٩]/g, d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d))
+    .replace(/[۰-۹]/g, d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+    .replace(/[٬\s]/g,'')
+    .replace(/٫/g,'.');
+  while (/(\d),(\d{3})(?!\d)/.test(t)) t = t.replace(/(\d),(\d{3})(?!\d)/g,'$1$2');
+  t = t.replace(/[,،]/g,'.').replace(/[^0-9.]/g,'');
+  const i = t.indexOf('.');
+  if (i>=0) t = t.slice(0,i+1) + t.slice(i+1).replace(/\./g,'');
+  return t;
+}
+document.addEventListener('input', e=>{
+  const t = e.target;
+  if (!t || e.isComposing || !t.matches || !t.matches('input[data-num]')) return;
+  const v = normDigits(t.value);
+  if (v !== t.value) t.value = v;
+}, true);
 // ---------- بدء التشغيل ----------
 initPlanHandles();
 load();
