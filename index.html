@@ -787,7 +787,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
 .pl-tile{ display:block; padding:10px 12px 8px; border:2px solid var(--ink); border-top:8px solid var(--c); border-radius:13px; background:color-mix(in srgb,var(--c) 7%,var(--card)); cursor:text; min-width:0; }
 .pl-tile:focus-within{ box-shadow:var(--sh-s); }
 .pl-tile-l{ display:block; font-size:11.5px; font-weight:800; color:var(--ink-soft); margin-bottom:2px; }
-.pl-tile-l::before{ content:attr(data-ic) " "; }
+.pl-tile-l::before{ content:""; display:inline-block; width:1.05em; height:1.05em; vertical-align:-.15em; margin-inline-end:5px; background:currentColor; -webkit-mask:var(--m) center/contain no-repeat; mask:var(--m) center/contain no-repeat; }
 .pl-tile input{ display:block; width:100%; padding:2px 0; border:none; border-radius:0; background:transparent; box-shadow:none; font-size:22px; font-weight:900; color:var(--ink); }
 .pl-tile input:focus{ background:transparent; box-shadow:none; }
 .pl-tile input::placeholder{ color:var(--ink); opacity:.5; font-size:22px; }
@@ -802,11 +802,11 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
 .pl-remember{ margin:0 0 18px; }
 
 .month-pick{ display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:8px 16px; border:var(--bd); border-radius:14px; background:var(--card); box-shadow:var(--sh-s); cursor:pointer; user-select:none; }
-.month-pick::before{ content:"📆"; font-size:15px; }
+.month-pick::before,.day-pick::before{ content:""; display:inline-block; width:1.15em; height:1.15em; background:currentColor; -webkit-mask:var(--m-cal) center/contain no-repeat; mask:var(--m-cal) center/contain no-repeat; }
 .month-pick::after{ content:"▾"; font-size:12px; color:var(--accent); }
 .month-pick:active{ transform:translate(2px,2px); box-shadow:none; }
 
-.day-pick::before{ content:"📅"; }
+
 .day-pick{ flex:1; min-width:0; margin:0 10px; }
 .day-pick .dp-txt{ font-size:14px; line-height:1.6; text-align:center; }
 .wk-dn{ font-weight:800; }
@@ -1475,6 +1475,57 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
 .is-off small{ display:block; margin-bottom:5px; font-size:10px; font-weight:800; color:var(--ink-soft); }
 .is-off div{ display:flex; flex-wrap:wrap; gap:5px; }
 .is-off span{ padding:2px 10px; border:1.5px dashed var(--ink-soft); border-radius:20px; font-size:10.5px; font-weight:700; color:var(--ink-soft); }
+/* ===== «الفئات»: سحابة فقاعات، الحجم = كثرة الاستخدام ===== */
+.cb-lbl{ margin:14px 2px 6px; font-size:12px; font-weight:900; color:var(--ink-soft); }
+.cb-cloud{ display:flex; flex-wrap:wrap; justify-content:center; align-items:center; gap:14px 10px; padding:14px 6px 10px; border:2px dashed color-mix(in srgb,var(--ink) 28%,transparent); border-radius:22px; background-image:radial-gradient(color-mix(in srgb,var(--ink) 9%,transparent) 1px,transparent 1.2px); background-size:14px 14px; }
+.cb{ position:relative; flex:none; width:var(--s); height:var(--s); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; padding:0 5px; border:2.5px solid var(--ink); border-radius:50%; background:color-mix(in srgb,var(--c) 30%,var(--card)); color:var(--ink); font-family:var(--font-body),sans-serif; box-shadow:var(--sh-s); cursor:pointer; transition:transform .15s; }
+.cb:nth-child(3n+1){ transform:translateY(-7px) rotate(-3deg); }
+.cb:nth-child(3n){ transform:translateY(7px) rotate(3deg); }
+.cb:active{ transform:scale(.92); }
+.cb-e{ font-size:var(--e); line-height:1.1; }
+.cb-n{ max-width:calc(var(--s) - 16px); font-size:10.5px; font-weight:900; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cb-c{ position:absolute; top:-5px; inset-inline-end:-3px; min-width:22px; height:22px; padding:0 5px; display:flex; align-items:center; justify-content:center; border:2px solid var(--ink); border-radius:11px; background:var(--card); font-style:normal; font-size:10px; font-weight:900; }
+.cb-l{ position:absolute; bottom:-3px; inset-inline-end:4px; font-style:normal; font-size:14px; }
+.cb.custom::before{ content:"✦"; position:absolute; top:2px; inset-inline-start:7px; font-size:13px; color:var(--accent); }
+.cb-leg{ margin-top:12px; font-size:10px; font-weight:700; color:var(--ink-soft); text-align:center; line-height:1.8; }
+.ce-hero{ display:flex; align-items:center; gap:12px; padding:12px; border:2.5px solid var(--ink); border-radius:18px; background:color-mix(in srgb,var(--accent2) 26%,var(--card)); box-shadow:var(--sh-s); margin-bottom:12px; }
+.ce-big{ flex:none; width:64px; height:64px; display:flex; align-items:center; justify-content:center; border:2.5px solid var(--ink); border-radius:50%; background:var(--card); font-size:32px; }
+.ce-ht b{ display:block; font-size:16px; font-weight:900; }
+.ce-ht small{ display:block; font-size:10.5px; font-weight:700; color:var(--ink-soft); line-height:1.6; }
+.ce-grid{ display:grid; grid-template-columns:64px 1fr; gap:8px; }
+.ce-grid input:first-child{ text-align:center; }
+/* ===== أيقونات SVG بدل الإيموجي ===== */
+.ic{ width:1.2em; height:1.2em; vertical-align:-0.22em; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:none; overflow:visible; }
+.ic .f{ fill:currentColor; fill-opacity:.18; stroke:none; }
+.ip{ display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin:8px 0; }
+.ip-b{ aspect-ratio:1; display:flex; align-items:center; justify-content:center; padding:0; border:2px solid var(--ink); border-radius:11px; background:var(--card); color:var(--ink); font-size:19px; cursor:pointer; }
+.ip-b:active{ transform:translate(2px,2px); }
+.ip-b.on{ background:var(--accent); color:#fff; box-shadow:2px 2px 0 var(--ink); }
+.cat-add-grid{ grid-template-columns:1fr; }
+/* ===== إعادة الضبط والحذف ===== */
+.rs-note{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; padding:9px 12px; border:2px dashed var(--ink); border-radius:13px; background:color-mix(in srgb,var(--accent2) 20%,var(--card)); font-size:12px; font-weight:800; }
+.rs-g{ margin:16px 2px 8px; font-size:12.5px; font-weight:900; color:var(--ink-soft); }
+.rs-i{ display:flex; align-items:center; gap:10px; margin-bottom:8px; padding:10px 11px; border:2px solid var(--ink); border-radius:14px; background:var(--card); }
+.rs-ic{ flex:none; width:40px; height:40px; display:flex; align-items:center; justify-content:center; border:2px solid var(--ink); border-radius:12px; background:var(--accent2); font-size:19px; }
+.rs-t{ flex:1; min-width:0; }
+.rs-t b{ display:block; font-size:13px; font-weight:900; }
+.rs-t small{ display:block; margin-top:1px; font-size:10.5px; font-weight:600; color:var(--ink-soft); line-height:1.6; }
+.rs-i.danger{ border-color:var(--expense); background:color-mix(in srgb,var(--expense) 6%,var(--card)); }
+.rs-i.danger .rs-ic{ border-color:var(--expense); background:color-mix(in srgb,var(--expense) 18%,var(--card)); color:var(--expense); }
+.rs-i.big{ border-width:2.5px; border-style:dashed; }
+.rs-i .btn{ flex:none; }
+/* ===== أزرار التعديل والحذف: لون عكس الخلفية (لون النص في الثيم) ===== */
+.tx-acts{ gap:6px; }
+.tx-acts button{ color:var(--ink); opacity:1; background:color-mix(in srgb,var(--ink) 8%,transparent); border:2px solid var(--ink); border-radius:9px; padding:4px 7px; font-size:14px; line-height:1; cursor:pointer; }
+.tx-acts button:active{ transform:translate(1px,1px); }
+/* ===== الألوان المفضلة ===== */
+.th-btns{ display:flex; gap:6px; flex:none; }
+.th-fav-btn{ background:var(--card); color:var(--ink); }
+.th-fav-btn.on, .th-star-cur.on{ background:var(--accent2); color:#111; }
+.th-star-cur{ margin-top:10px; }
+.th-sw-star{ position:absolute; top:-9px; inset-inline-start:-9px; width:26px; height:26px; display:flex; align-items:center; justify-content:center; padding:0; border:2px solid var(--ink); border-radius:50%; background:var(--card); color:var(--ink); font-size:13px; cursor:pointer; z-index:2; }
+.th-sw-star.on{ background:var(--accent2); color:#111; }
+.th-sw-star.on .ic .f, .th-fav-btn.on .ic .f, .th-star-cur.on .ic .f{ fill-opacity:.95; }
 </style>
 </head>
 <body>
@@ -1523,7 +1574,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
             <circle id="db-ring-arc" cx="75" cy="75" r="62" fill="none" stroke-width="10" stroke-linecap="round" transform="rotate(-90 75 75)"/>
           </svg>
           <div class="cy-ring-in">
-            <div class="cy-ring-lbl">💰 إجمالي أموالك</div>
+            <div class="cy-ring-lbl">إجمالي أموالك</div>
             <div class="cy-ring-num" id="db-ring-total">—</div>
             <div class="cy-ring-cur" id="db-ring-cur"></div>
             <div class="cy-ring-sub" id="db-ring-sub"></div>
@@ -2198,7 +2249,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       </div>
       <div class="settings-menu-item" style="border-color:var(--expense)" onclick="showPage('settings-delete')">
         <div class="smi-icon">🗑️</div>
-        <div class="smi-text"><div class="smi-title" style="color:var(--expense)">حذف كل البيانات</div><div class="smi-sub">إجراء لا يمكن التراجع عنه</div></div>
+        <div class="smi-text"><div class="smi-title" style="color:var(--expense)">إعادة الضبط والحذف</div><div class="smi-sub">الألوان، الأهداف، العمليات، أو كل شيء</div></div>
         <div class="smi-arrow" style="color:var(--expense)">‹</div>
       </div>
     </section>
@@ -2255,12 +2306,12 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
 
         <!-- الأهداف -->
         <div class="card">
-          <div class="card-title">🎯 الأهداف <small>اتركها ٠ لإخفائها</small></div>
+          <div class="card-title">🎯 الأهداف <small>اتركها فاضية لإخفائها من «تحليل»</small></div>
           <div class="sal-goal">
             <div class="sal-ic">🏦</div>
             <div class="sal-goal-body">
               <div class="sal-goal-title">هدف المخزون</div>
-              <div class="sal-goal-hint">يظهر شريط تقدمه في لوحة التحكم</div>
+              <div class="sal-goal-hint">يظهر شريط تقدمه في صفحة «تحليل»</div>
               <input type="text" data-num="1" inputmode="decimal" id="st-goal" placeholder="مثال: 5000">
             </div>
           </div>
@@ -2268,7 +2319,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
             <div class="sal-ic">💎</div>
             <div class="sal-goal-body">
               <div class="sal-goal-title">هدف حساب الادخار</div>
-              <div class="sal-goal-hint">مستقل تماماً عن هدف المخزون، ويظهر أيضاً في صفحة التخطيط</div>
+              <div class="sal-goal-hint">مستقل تماماً عن هدف المخزون، ويظهر في «تحليل» وفي صفحة «تخطيط» ضمن «الادخار والمستقبل»</div>
               <input type="text" data-num="1" inputmode="decimal" id="st-savings-goal" placeholder="مثال: 3000">
             </div>
           </div>
@@ -2276,7 +2327,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
             <div class="sal-ic">📆</div>
             <div class="sal-goal-body">
               <div class="sal-goal-title">هدف السنة (سقف الصرف)</div>
-              <div class="sal-goal-hint">يظهر في صفحة «تحليل»</div>
+              <div class="sal-goal-hint">يظهر شريطه في صفحة «تحليل»، ويتحول للأحمر إذا تجاوز صرفك السنوي هذا السقف</div>
               <input type="text" data-num="1" inputmode="decimal" id="st-annual-cap" placeholder="مثال: 40000">
             </div>
           </div>
@@ -2308,7 +2359,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <div class="settings-section" id="set-sec-cats" style="margin-top:4px">
         <div class="card cat-hero">
           <div class="cat-stats" id="cat-counter"></div>
-          <p id="cat-hint-normal" class="sal-note" style="margin:12px 0 0">اضغط ⋮⋮ لترتيب الفئة، وحدّد حد إنفاق شهري لأي فئة صرف (اتركه فاضياً لتجاهله).</p>
+          <p id="cat-hint-normal" class="sal-note" style="margin:12px 0 0">اضغط على أي فقاعة لتعديل الفئة أو ضبط حدّها الشهري أو تحريكها أو حذفها. للترتيب العام استخدم تبويب «ترتيب».</p>
         </div>
         <div class="cat-tabs" id="cat-tabs"></div>
         <div id="cat-order-controls" style="display:none">
@@ -2325,8 +2376,9 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
         <div id="cats-order-list" style="display:none"></div>
         <div id="cat-add-form" class="card cat-add">
           <div class="card-title">➕ إضافة أو تعديل فئة</div>
+          <div class="ip" id="new-cat-picker"></div>
           <div class="cat-add-grid">
-            <input type="text" id="new-cat-emoji" placeholder="🙂" aria-label="الإيموجي">
+            <input type="hidden" id="new-cat-emoji">
             <input type="text" id="new-cat-name" placeholder="اسم الفئة">
             <select id="new-cat-type" style="grid-column:1 / -1">
               <option value="expense">💸 صرف</option>
@@ -2410,12 +2462,25 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
     <section class="page" id="page-settings-delete">
       <div class="day-nav">
         <button class="arrow" onclick="showPage('settings')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
-        <div class="day-title">🗑️ حذف كل البيانات</div>
+        <div class="day-title">🗑️ إعادة الضبط والحذف</div>
         <div style="width:34px"></div>
       </div>
-      <div class="settings-section" id="set-sec-delete" style="background:color-mix(in srgb, var(--expense) 8%, var(--card));border:1px solid var(--expense);border-radius:16px;padding:16px">
-        <p style="font-size:11px;color:var(--ink-soft);margin-bottom:10px">يمسح كل عملياتك وفئاتك وإعداداتك نهائياً من هذا الجهاز. لا يمكن التراجع عن هذا الإجراء — تأكد من أخذ نسخة احتياطية أولاً.</p>
-        <button class="btn btn-danger btn-block" onclick="askResetAll()">🗑️ حذف كل البيانات</button>
+      <div class="settings-section" id="set-sec-delete">
+        <div class="rs-note">💡 خذ نسخة احتياطية قبل أي حذف. <button class="btn btn-ghost btn-sm" onclick="exportBackup()">⇩ نسخة الآن</button></div>
+        <div class="rs-g">🎨 المظهر</div>
+        <div class="rs-i"><span class="rs-ic">🎨</span><div class="rs-t"><b>إعادة تعيين الألوان</b><small>يرجع الثيم «جريء» الافتراضي ويمسح كل تخصيصاتك للألوان.</small></div><button class="btn btn-ghost btn-sm" onclick="resetAct('colors')">تنفيذ</button></div>
+        <div class="rs-i"><span class="rs-ic">🔤</span><div class="rs-t"><b>إعادة الخط والأرقام</b><small>يرجع الخط الافتراضي والأرقام الهندية.</small></div><button class="btn btn-ghost btn-sm" onclick="resetAct('font')">تنفيذ</button></div>
+        <div class="rs-g">⚙️ الإعدادات</div>
+        <div class="rs-i"><span class="rs-ic">🎯</span><div class="rs-t"><b>مسح الأهداف</b><small>يصفّر هدف المخزون وهدف الادخار وسقف السنة.</small></div><button class="btn btn-ghost btn-sm" onclick="resetAct('goals')">تنفيذ</button></div>
+        <div class="rs-i"><span class="rs-ic">📅</span><div class="rs-t"><b>مسح أيام النزول لكل شهر</b><small>يمسح التحديد اليدوي ويرجع الاكتشاف التلقائي واليوم الافتراضي.</small></div><button class="btn btn-ghost btn-sm" onclick="resetAct('paydays')">تنفيذ</button></div>
+        <div class="rs-i"><span class="rs-ic">🏷️</span><div class="rs-t"><b>إلغاء حدود الفئات</b><small>يمسح الحد الشهري لكل فئات الصرف.</small></div><button class="btn btn-ghost btn-sm" onclick="resetAct('limits')">تنفيذ</button></div>
+        <div class="rs-i"><span class="rs-ic">🏷️</span><div class="rs-t"><b>استعادة الفئات الافتراضية</b><small>يضيف أي فئة أساسية ناقصة بدون حذف شيء.</small></div><button class="btn btn-ghost btn-sm" onclick="resetAct('cats')">تنفيذ</button></div>
+        <div class="rs-i"><span class="rs-ic">🧭</span><div class="rs-t"><b>مسح خطط التخطيط</b><small>يمسح تقسيمات الرواتب المحفوظة لكل الدورات.</small></div><button class="btn btn-ghost btn-sm" onclick="resetAct('plans')">تنفيذ</button></div>
+        <div class="rs-i danger"><span class="rs-ic">⚙️</span><div class="rs-t"><b>إعادة ضبط كل الإعدادات</b><small>الراتب ويوم النزول والعملة والأهداف والمظهر ترجع افتراضية، وتبقى العمليات والفئات.</small></div><button class="btn btn-danger btn-sm" onclick="resetAct('settings')">تنفيذ</button></div>
+        <div class="rs-g">🗄️ البيانات</div>
+        <div class="rs-i danger"><span class="rs-ic">🧾</span><div class="rs-t"><b>حذف العمليات فقط</b><small>يمسح كل العمليات المسجّلة، وتبقى الفئات والإعدادات.</small></div><button class="btn btn-danger btn-sm" onclick="resetAct('tx')">حذف</button></div>
+        <div class="rs-g" style="color:var(--expense)">⚠️ منطقة الخطر</div>
+        <div class="rs-i danger big"><span class="rs-ic">🗑️</span><div class="rs-t"><b>حذف كل البيانات</b><small>يمسح العمليات والفئات والإعدادات نهائياً من هذا الجهاز، ولا يمكن التراجع.</small></div><button class="btn btn-danger btn-sm" onclick="askResetAll()">حذف الكل</button></div>
       </div>
     </section>
 
@@ -2534,14 +2599,14 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <div class="card-title">1️⃣ 📖 لوحة التحكم</div>
       <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">الصفحة الرئيسية: تعطيك صورة سريعة عن دورة راتبك الحالية وأموالك كلها.</p>
       <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
-      <div class="ledger-row"><span>حلقة «💰 إجمالي أموالك» (المخزون + الادخار)، وقوسها يبيّن نسبة ما صُرف من دخل الدورة: أخضر، ثم أصفر فوق ٧٠٪، ثم أحمر فوق ٩٠٪</span></div><div class="ledger-row"><span>جدول «قبل · الآن · الفرق» للمخزون والادخار والإجمالي، وتحته العد التنازلي لنزول الراتب وتواريخ الدورة</span></div><div class="ledger-row"><span>قائمة «↩️ الأشهر الماضية» تعرض كل دورة سابقة بنفس الجدول</span></div><div class="ledger-row"><span>زر «🔀 تحويل» بين المخزون وحساب الادخار</span></div><div class="ledger-row"><span>ملخص سريع ومصادر الدخل ونمو المخزون والادخار وتوزيع المصاريف</span></div><div class="ledger-row"><span>تنبيه أحمر في الأعلى لو معدل صرفك اليومي زاد عن المسموح</span></div>
+      <div class="ledger-row"><span>حلقة «إجمالي أموالك» (المخزون + الادخار)، وقوسها يبيّن نسبة ما صُرف من دخل الدورة: أخضر، ثم أصفر فوق ٧٠٪، ثم أحمر فوق ٩٠٪</span></div><div class="ledger-row"><span>جدول «قبل · الآن · الفرق» للمخزون والادخار والإجمالي، وتحته العد التنازلي لنزول الراتب وتواريخ الدورة</span></div><div class="ledger-row"><span>قائمة «↩️ الأشهر الماضية» تعرض كل دورة سابقة بنفس الجدول</span></div><div class="ledger-row"><span>زر «🔀 تحويل» بين المخزون وحساب الادخار</span></div><div class="ledger-row"><span>«⚡ ملخص سريع» بثلاث بلاطات (الدخل والادخار والصرف)، و«💰 مصادر الدخل» بشريط يوزّع الدخل على مصادره، ونمو المخزون والادخار، وتوزيع المصاريف. أما الأهداف فتجدها في صفحة «تحليل»</span></div><div class="ledger-row"><span>تنبيه أحمر في الأعلى لو معدل صرفك اليومي زاد عن المسموح</span></div>
       <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> المخزون هو رصيدك المتراكم من دورات الراتب الماضية، وحساب الادخار رصيد مستقل عنه.</div>
     </div>
     <div class="settings-section" style="margin-bottom:22px">
       <div class="card-title">2️⃣ 📅 اليوم</div>
       <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">تفاصيل يوم واحد، وهنا تسجّل عملياتك.</p>
       <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
-      <div class="ledger-row"><span>تنقّل بين الأيام بالأسهم، أو من شريط الأسبوع (الأحد ← السبت) وفيه عمود صغير لصرف كل يوم</span></div><div class="ledger-row"><span>اضغط مربع التاريخ لاختيار يوم: تحدّد الشهر أولاً (والأشهر ذات الإطار الأخضر فيها عمليات) ثم اليوم من التقويم</span></div><div class="ledger-row"><span>⚡ ملخص سريع بشكل دفتر حساب: الدخل والصرف والصافي، ثم المخزون والادخار والمجموع بنهاية ذلك اليوم، وسحوبات الادخار وإيداعاته</span></div><div class="ledger-row"><span>سطر «📊 عادةً تصرف حوالي...» يقارن اليوم بمعدلك المعتاد في نفس يوم الأسبوع</span></div><div class="ledger-row"><span>زر «🧾 تسجيل عملية جديدة»: اختر النوع (صرف/دخل)، ثم الفئة من أزرار عليها عدد عملياتها، وخانة المبلغ بين الفئات الأساسية والادخار، والملاحظة تحتها. زر «✏️ ترتيب وتحرير» يغيّر ترتيب الفئات واسمها وإيموجيها. وتُسجَّل العملية في اليوم المعروض</span></div><div class="ledger-row"><span>العمليات في بطاقات حسب النوع (مصاريف، إيرادات، تحويلات)، وتقدر تعدّل ✏️ أو تحذف 🗑️ أي عملية</span></div>
+      <div class="ledger-row"><span>تنقّل بين الأيام بالأسهم، أو من شريط الأسبوع (الأحد ← السبت) وفيه عمود صغير لصرف كل يوم</span></div><div class="ledger-row"><span>اضغط مربع التاريخ لاختيار يوم: تحدّد الشهر أولاً (والأشهر ذات الإطار الأخضر فيها عمليات) ثم اليوم من التقويم</span></div><div class="ledger-row"><span>⚡ ملخص سريع بشكل دفتر حساب: الدخل والصرف والصافي، ثم المخزون والادخار والمجموع بنهاية ذلك اليوم، وسحوبات الادخار وإيداعاته</span></div><div class="ledger-row"><span>سطر «📊 عادةً تصرف حوالي...» يقارن اليوم بمعدلك المعتاد في نفس يوم الأسبوع</span></div><div class="ledger-row"><span>زر «🧾 تسجيل عملية جديدة»: اختر النوع (صرف/دخل)، ثم الفئة من أزرار عليها عدد عملياتها، وخانة المبلغ بين الفئات الأساسية والادخار، والملاحظة تحتها. زر «✏️ ترتيب وتحرير» يغيّر ترتيب الفئات واسمها وأيقونتها. وتُسجَّل العملية في اليوم المعروض</span></div><div class="ledger-row"><span>العمليات في بطاقات حسب النوع (مصاريف، إيرادات، تحويلات)، وتقدر تعدّل ✏️ أو تحذف 🗑️ أي عملية</span></div>
       <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> سجّل العملية في يومها، فتبقى أرقام الأسبوع والشهر دقيقة. ولتسجيل عملية بتاريخ آخر انتقل لذلك اليوم أولاً.</div>
     </div>
     <div class="settings-section" style="margin-bottom:22px">
@@ -2555,14 +2620,14 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <div class="card-title">4️⃣ 📆 الشهر</div>
       <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">الصورة الكاملة للشهر الميلادي.</p>
       <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
-      <div class="ledger-row"><span>اضغط اسم الشهر لفتح «انتقال سريع» (شهر وسنة، أو زر «🏠 الشهر الحالي»)</span></div><div class="ledger-row"><span>التقويم يلوّن كل يوم حسب شدة الصرف، ويضع 💰 على يوم الراتب</span></div><div class="ledger-row"><span>مقارنة بنفس الشهر في السنة الماضية إن توفرت بيانات</span></div><div class="ledger-row"><span>جدول تفصيل الأيام، وتوزيع المصاريف بالفئات مع شارات 🟡🔴 لو قربت أو تجاوزت حد فئة</span></div><div class="ledger-row"><span>آخر سطر «💰 الإجمالي المتبقي من الراتب» بنظام الترحيل من الأشهر السابقة</span></div>
+      <div class="ledger-row"><span>اضغط اسم الشهر لفتح «انتقال سريع» (شهر وسنة، أو زر «🏠 الشهر الحالي»)</span></div><div class="ledger-row"><span>التقويم يلوّن كل يوم حسب شدة الصرف، ويضع 💰 على يوم الراتب. ومفتاح «🔄 عرض دورة الراتب» فوقه يعرض أيام الدورة كاملة، ويغيّر معه الملخص وتوزيع المصاريف والأسهم</span></div><div class="ledger-row"><span>مقارنة بنفس الشهر في السنة الماضية إن توفرت بيانات (للشهر الميلادي فقط)</span></div><div class="ledger-row"><span>جدول تفصيل الأيام، وتوزيع المصاريف بالفئات مع شارات 🟡🔴 لو قربت أو تجاوزت حد فئة</span></div><div class="ledger-row"><span>آخر سطر «💰 الإجمالي المتبقي من الراتب» بنظام الترحيل من الأشهر السابقة</span></div>
       <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> حدّد حد إنفاق شهري لفئاتك من الإعدادات لتظهر لك شارات التنبيه.</div>
     </div>
     <div class="settings-section" style="margin-bottom:22px">
       <div class="card-title">5️⃣ 📈 تحليل</div>
       <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">تقرير سنوي كامل لمساعدتك على فهم صرفك.</p>
       <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
-      <div class="ledger-row"><span>ملخص السنة للدخل والصرف والادخار، وأهداف المخزون والادخار والسنة (سقف الصرف) لو حددتها</span></div><div class="ledger-row"><span>شبكة «📅 أداء الأشهر» (ومعها مفتاح لعرضها بدورات الراتب)، ثم رسم الدخل والصرف وحركة الادخار (وله مفتاح دورة الراتب أيضاً)، وتوقّع دورة الراتب القادمة، و«🏅 أرقام قياسية»</span></div><div class="ledger-row"><span>مسار المخزون والادخار منذ البداية، ورسم الصرف في كل دورة، ورسم «📅 الإجمالي يوماً بيوم» بثلاثة أوضاع: أسبوع (١–٤ أسابيع) أو دورة الراتب أو السنة (٣–١٢ شهراً) مع أسهم للتنقل</span></div><div class="ledger-row"><span>جداول تتبع الصرف بتبويبات: تفصيل الأيام (يومياً، مع مفتاح لعرض دورة الراتب)، سجل الادخار، مقارنة سنتين، الترحيل، التفصيلي (وفيه مفتاح لعرض دورات الراتب)، التحويلات، وتوزيع المصاريف (اضغط على أي فئة لعرض عملياتها والانتقال إليها)، وأفكار الرسم (٧ أشكال للرسم الشهري)</span></div><div class="ledger-row"><span>تنبيه بقفزات الفئات عن الشهر الذي قبله</span></div>
+      <div class="ledger-row"><span>«📅 أشهر السنة» بتبويبين: أداء الأشهر (شبكة اثني عشر مربعاً) والدخل والصرف وحركة الادخار (رسم شهري)، ولكل منهما مفتاح لعرضه بدورات الراتب. وتحتها بطاقات الأهداف (المخزون والادخار وسقف السنة) إن حددتها</span></div><div class="ledger-row"><span>«📊 مركز التحليل» بأربعة تبويبات: 📈 السنة (حلقة الصرف وصافي السنة ومفتاح الادخار)، 🔮 التوقّع (دورة الراتب القادمة)، 🏅 الأرقام (أرقام قياسية للمخزون والادخار)، 🏦 المسار</span></div><div class="ledger-row"><span>تبويب «المسار»: إجمالي أموالك الآن وأعلى وأدنى نقطة، ثم رسم المسار منذ البداية، والصرف في كل دورة، ورسم «الإجمالي يوماً بيوم» بمدد من ٣ أشهر إلى ٥ سنوات مع أسهم للتنقل وإحصاءات الفترة</span></div><div class="ledger-row"><span>جداول تتبع الصرف بتبويبات: تفصيل الأيام (بطاقة لكل يوم)، سجل الادخار، مقارنة سنتين، الترحيل، التفصيلي، عمليات التحويل (ملخص وتوزيع وتفاصيل)، توزيع المصاريف (الضغط على فئة يفتح نافذة بعملياتها)، وأفكار الرسم</span></div><div class="ledger-row"><span>تنبيه بقفزات الفئات عن الشهر الذي قبله</span></div>
       <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> جدول الترحيل يبيّن لك إذا صرفت من رصيد سابق، فلا يظهر الشهر وكأنه ناقص من فراغ.</div>
     </div>
     <div class="settings-section" style="margin-bottom:22px">
@@ -2576,7 +2641,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <div class="card-title">7️⃣ ⚙️ الإعدادات</div>
       <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:10px">من الترس في الأعلى.</p>
       <div style="font-size:12px;font-weight:800;margin-bottom:6px">ماذا تجد فيها؟</div>
-      <div class="ledger-row"><span>💵 الراتب والدورة: المبلغ والعملة ويوم النزول وأهداف المخزون والادخار وسقف السنة. وإذا سجّلت عملية دخل «راتب» في دورة، يُعتمد المسجّل ولا يُحسب راتب الإعدادات معه، ويوم نزول الراتب لكل شهر</span></div><div class="ledger-row"><span>🏷️ الفئات: أضف وعدّل ورتّب، وحدّد حد إنفاق شهري لفئات الصرف</span></div><div class="ledger-row"><span>🎨 الألوان و🔤 الخط والأرقام لتغيير مظهر التطبيق</span></div><div class="ledger-row"><span>🗄️ البيانات: نسخة احتياطية JSON، وتصدير CSV، واستعادة بدمج أو استبدال، وحذف كل البيانات</span></div>
+      <div class="ledger-row"><span>💵 الراتب والدورة: المبلغ والعملة ويوم النزول وأهداف المخزون والادخار وسقف السنة (تظهر أشرطتها في صفحة «تحليل»). وإذا سجّلت عملية دخل «راتب» في دورة، يُعتمد المسجّل ولا يُحسب راتب الإعدادات معه، ويوم نزول الراتب لكل شهر</span></div><div class="ledger-row"><span>🏷️ الفئات: سحابة فقاعات حجمها بقدر استخدام الفئة، اضغط الفقاعة لتعديل اسمها وأيقونتها وحدها الشهري أو ترتيبها أو حذفها، وتبويب «ترتيب» للسحب</span></div><div class="ledger-row"><span>🎨 الألوان: ٤٥ ثيماً وتحرير ألوان كل ثيم، و⭐ المفضلة للوصول السريع. و🔤 الخط والأرقام لتغيير مظهر التطبيق</span></div><div class="ledger-row"><span>🗄️ البيانات: نسخة احتياطية JSON، وتصدير CSV، واستعادة بدمج أو استبدال. و«🗑️ إعادة الضبط والحذف» لتصفير الألوان أو الأهداف أو الإعدادات أو العمليات أو كل شيء</span></div>
       <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">💡 <b>ملاحظة:</b> خذ نسخة احتياطية من البيانات بين فترة وأخرى، فالبيانات محفوظة على جهازك فقط.</div>
     </div>
   </div>
@@ -2592,7 +2657,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <div class="ledger-row"><span><b>1.</b> اكتب راتباً للتجربة (اختياري) وأي دخل إضافي، وتقدر تضيف أكثر من مصدر. هذا لا يغيّر راتبك المحفوظ في الإعدادات.</span></div>
       <div class="ledger-row"><span><b>2.</b> اكتب مبلغ كل بند: أساسيات، رغبات، ادخار، وتسديد فواتير / أقساط (اختياري). وإذا تركتها فارغة يُستخدم التقسيم الافتراضي ٥٠ و٣٠ و٢٠٪. يظهر لك «المتبقي بدون إنفاق» أو «الزايد عن الراتب».</span></div>
       <div class="ledger-row"><span><b>3.</b> في جداول الأساسيات والرغبات والفواتير أدرج بنودك ومبالغها يدوياً، أو فعّل «🔗 ربط مع الدورة» واختر فئاتك ليحسب المصروف الفعلي من عملياتك في دورة الراتب الحالية. والمتبقي من كل جدول يُحسب تلقائياً ولا يُعدَّل.</span></div>
-      <div class="ledger-row"><span><b>4.</b> «🏦 الادخار والمستقبل»: حدّد هدف الادخار (وهو نفس هدف حساب الادخار في الإعدادات)، وتابع المتبقي لبلوغه وصافي ادخارك في الدورة الحالية والدورات السابقة.</span></div>
+      <div class="ledger-row"><span><b>4.</b> «🏦 الادخار والمستقبل»: رحلة رصيدك نحو هدف الادخار بمراحل ٢٥٪، وإيصال هذه الدورة، وخريطة بلاطات للدورات السابقة بلون حالة كل منها، وخط زمني لتفاصيلها مع التراكمي. وهدف الادخار هو نفس هدف حساب الادخار في الإعدادات.</span></div>
       <div class="ledger-row"><span><b>5.</b> مفتاح «💾 تذكّر التقسيم» يحفظ ما كتبته. وإذا أطفأته يُمسح ويرجع فارغاً.</span></div>
       <div class="ledger-row"><span><b>6.</b> لكل دورة راتب خطتها الخاصة: اختر من «🗓️ دورات التخطيط» الدورة الحالية (🟡 الآن)، أو القادمة (🟢 سوِّ خطة) لتجهّز تقسيمها مبكراً، أو دورة سابقة (🔴 قديم). وتظهر الدورات السابقة التي فيها عمليات فقط.</span></div>
     </div>
@@ -2627,7 +2692,7 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
       <div class="ledger-row"><span>ابدأ بصندوق طوارئ يغطي أساسيات ٣ إلى ٦ أشهر</span></div>
       <div class="ledger-row"><span>بعده وجّهها لأهدافك الكبيرة: سفر، سيارة، زواج، أو تأسيس مشروع</span></div>
       <div class="ledger-row"><span>حدّد «🎯 هدف الادخار» في قسم «🏦 الادخار والمستقبل» لتتابع تقدمك والمتبقي لبلوغه</span></div>
-      <div class="ledger-row"><span>تابع جدول الدورات السابقة لتعرف كم ادخرت في كل دورة راتب مقارنة بنسبتك المستهدفة</span></div>
+      <div class="ledger-row"><span>تابع خريطة الدورات السابقة لتعرف كم ادخرت في كل دورة راتب مقارنة بنسبتك المستهدفة</span></div>
       <div style="margin-top:12px;font-size:12px;line-height:1.8;border-inline-start:3px solid var(--accent);padding-inline-start:10px">🔑 <b>قاعدة ذهبية:</b> ادخر أولاً ثم أنفق. ما تحتاج تسحب من الادخار لتغطية الرغبات؛ وإذا ضاق الشهر قلل الرغبات قبل أن تمس هذه النسبة.</div>
       <div style="margin-top:10px;font-size:11.5px;color:var(--ink-soft);line-height:1.8">📋 تعدّ القاعدة ثلاثة بنود، وصفحة التخطيط فيها جدول رابع لتسديد الفواتير والأقساط، لأنها التزامات ثابتة تخصمها قبل غيرها.</div>
     </div>
@@ -2643,6 +2708,14 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
     <div class="fgroup"><label>إلى فئة</label><select id="mv-to" onchange="onMoveChange()"></select></div>
     <div id="mv-info" style="font-size:12px;font-weight:800;line-height:1.8;margin:2px 0 14px"></div>
     <button class="btn btn-accent btn-block" id="mv-btn" onclick="confirmMoveTx()">🔀 نقل العمليات</button>
+  </div>
+</div>
+
+<!-- ===================== SHEET: تحرير فئة ===================== -->
+<div class="sheet-overlay hidden" id="sheet-cat-edit">
+  <div class="sheet">
+    <div class="sheet-title"><span>🏷️ تحرير الفئة</span><button onclick="closeSheet('sheet-cat-edit')">✕</button></div>
+    <div id="ce-body"></div>
   </div>
 </div>
 
@@ -3018,6 +3091,15 @@ const COLOR_ROLES = [
   { k:'clockNum', name:'أرقام الساعة',  use:'أرقام ساعة العد التنازلي وعناوينها وأسماء الوحدات.' },
 ];
 let _themeEditing = false;
+let _themeFavView = false;
+function favThemes(){ return (state.settings.favThemes||[]).filter(id=>THEMES.some(t=>t.id===id)); }
+function toggleFavTheme(id){
+  const a = favThemes(), i = a.indexOf(id);
+  if (i>=0) a.splice(i,1); else a.push(id);
+  state.settings.favThemes = a; save(); renderThemeList();
+  showToast(i>=0 ? 'أُزيل من المفضلة' : '⭐ أُضيف للمفضلة');
+}
+function toggleFavView(){ _themeFavView = !_themeFavView; renderThemeList(); }
 function themeEffVars(t){
   const c = (state.settings.customColors||{})[t.id] || {};
   const m = { ...t.vars, ...c };
@@ -3079,26 +3161,34 @@ function renderThemeList(){
   } else {
     rolesBody = `<div class="th-chips">${COLOR_ROLES.map(r=>`<span class="th-chip"><i style="background:${eff[r.k]}"></i>${r.name}</span>`).join('')}</div>`;
   }
+  const fav = favThemes(), isFav = fav.includes(cur.id);
+  const swHtml = t => `<div class="th-sw${state.settings.theme===t.id?' active':''}" onclick="applyTheme('${t.id}')">
+        ${state.settings.theme===t.id?'<span class="th-check">✓</span>':''}
+        <button class="th-sw-star${fav.includes(t.id)?' on':''}" onclick="event.stopPropagation();toggleFavTheme('${t.id}')" aria-label="مفضلة">⭐</button>
+        ${themePreview(t,false)}
+        <div class="th-name">${esc(t.name)}</div>
+      </div>`;
+  const groupsHtml = `<div class="pl-sec-title" style="margin-top:6px">🗂️ المجموعات <small>اختر مجموعة لتشاهد ثيماتها</small></div>
+    <div class="th-gtiles">${cats.map((c,i)=>{ const [ic,nm] = split(c); const dots = THEMES.filter(t=>t.cat===c).slice(0,3).map(t=>`<b style="background:${t.vars.accent}"></b>`).join('');
+      return `<button class="th-gtile${i===_themeGroupIdx?' on':''}" onclick="setThemeGroup(${i})"><span class="gt-ic">${esc(ic)}</span><span class="gt-nm">${esc(nm)}</span><span class="gt-dots">${dots}</span></button>`; }).join('')}</div>
+    <div class="th-grid">${items.map(swHtml).join('')}</div>`;
+  const favHtml = `<div class="pl-sec-title" style="margin-top:6px">⭐ ألوانك المفضلة <small>اضغط النجمة على أي ثيم لإضافته أو إزالته</small></div>` + (fav.length
+    ? `<div class="th-grid">${fav.map(id=>swHtml(THEMES.find(t=>t.id===id))).join('')}</div>`
+    : `<div class="empty"><div class="em-icon">⭐</div><p>لا توجد ثيمات مفضلة بعد — اضغط النجمة على أي ثيم لإضافته</p></div>`);
   el.innerHTML = `<div class="card th-hero">
       <div class="th-hero-lbl">🎨 الثيم الحالي${custom?' <span class="th-custom-badge">مخصّص</span>':''}</div>
       ${themePreview(cur,true)}
       <div class="th-hero-name">${esc(cur.name)}</div>
+      <button class="th-edit-btn th-star-cur${isFav?' on':''}" onclick="toggleFavTheme('${cur.id}')">⭐ ${isFav?'في المفضلة':'أضف للمفضلة'}</button>
       <div class="th-hero-sub">${esc(cur.cat)} · ${fmtNum(THEMES.length)} ثيم في ${fmtNum(cats.length)} مجموعة</div>
       <div class="th-palette">${palette}</div>
       <div class="th-roles-head">
         <div class="th-roles-title2">ألوان هذا الثيم وأين تُستخدم</div>
-        <button class="th-edit-btn${_themeEditing?' on':''}" onclick="toggleThemeEdit()">${_themeEditing?'✓ تم':'✏️ تحرير'}</button>
+        <div class="th-btns"><button class="th-edit-btn th-fav-btn${_themeFavView?' on':''}" onclick="toggleFavView()">⭐ المفضلة${fav.length?' ('+fmtNum(fav.length)+')':''}</button><button class="th-edit-btn${_themeEditing?' on':''}" onclick="toggleThemeEdit()">${_themeEditing?'✓ تم':'✏️ تحرير'}</button></div>
       </div>
       <div class="th-roles">${rolesBody}</div>
     </div>
-    <div class="pl-sec-title" style="margin-top:6px">🗂️ المجموعات <small>اختر مجموعة لتشاهد ثيماتها</small></div>
-    <div class="th-gtiles">${cats.map((c,i)=>{ const [ic,nm] = split(c); const dots = THEMES.filter(t=>t.cat===c).slice(0,3).map(t=>`<b style="background:${t.vars.accent}"></b>`).join('');
-      return `<button class="th-gtile${i===_themeGroupIdx?' on':''}" onclick="setThemeGroup(${i})"><span class="gt-ic">${esc(ic)}</span><span class="gt-nm">${esc(nm)}</span><span class="gt-dots">${dots}</span></button>`; }).join('')}</div>
-    <div class="th-grid">${items.map(t=>`<div class="th-sw${state.settings.theme===t.id?' active':''}" onclick="applyTheme('${t.id}')">
-        ${state.settings.theme===t.id?'<span class="th-check">✓</span>':''}
-        ${themePreview(t,false)}
-        <div class="th-name">${esc(t.name)}</div>
-      </div>`).join('')}</div>`;
+    ${_themeFavView ? favHtml : groupsHtml}`;
 }
 
 // ---------- يوم نزول الراتب لكل شهر ----------
@@ -5929,14 +6019,16 @@ function editTxCat(id){
   ed.innerHTML = `<div class="txed">
     <div class="txed-h">✏️ تحرير الفئة</div>
     <div class="txed-row">
-      <input type="text" id="txed-emoji" value="${esc(c.emoji)}" maxlength="8" aria-label="الإيموجي" style="width:64px;text-align:center">
+      <input type="hidden" id="txed-emoji" value="${esc(c.emoji)}">
       <input type="text" id="txed-name" value="${esc(c.name)}" maxlength="40" placeholder="اسم الفئة">
     </div>
+    <div class="ip" id="txed-picker"></div>
     <div class="row-gap" style="margin-top:8px">
       <button type="button" class="btn btn-accent btn-block btn-sm" onclick="saveTxCatEdit('${c.id}')">💾 حفظ</button>
       <button type="button" class="btn btn-ghost btn-block btn-sm" onclick="document.getElementById('tx-cat-editor').innerHTML=''">إلغاء</button>
     </div>
   </div>`;
+  renderIconPicker('txed-picker','txed-emoji');
   ed.scrollIntoView && ed.scrollIntoView({ block:'nearest', behavior:'smooth' });
 }
 function saveTxCatEdit(id){
@@ -6263,6 +6355,7 @@ function renderCatTabs(){
   show('cat-order-controls', isOrder);
   show('st-cats', !isOrder);
   show('cats-order-list', isOrder);
+  renderIconPicker('new-cat-picker','new-cat-emoji');
 }
 function getCatTabGroupIds(){
   const svIds = getSavingsLinkedCatIds();
@@ -6287,53 +6380,64 @@ function renderCatSettings(){
   const regularCats = state.categories.filter(c=>groupSet.has(c.id));
   const basicCats = regularCats.filter(c=>defaultIds.includes(c.id));
   const addedCats = regularCats.filter(c=>!defaultIds.includes(c.id));
-  const shownBasic = _catsExpanded ? basicCats : basicCats.slice(0,3);
 
   const usageStats = getCategoryUsageStats();
-  const renderRow = (c) => {
-    const idx = groupIds.indexOf(c.id);
-    const menuOpen = _catMoveMenuOpen === c.id;
-    const u = (usageStats[c.id] || { count:0 }).count;
-    const isBasic = defaultIds.includes(c.id);
-    return `<div class="cat-row">
-      <div class="cat-handle-wrap">
-        <button class="cat-handle-btn" onclick="toggleCatMoveMenu('${c.id}')">⋮⋮</button>
-        <div class="cat-handle-menu ${menuOpen?'open':''}">
-          <button onclick="moveCategory('${c.id}',-1)" ${idx===0?'disabled':''}>▲ نقل للأعلى</button>
-          <button onclick="moveCategory('${c.id}',1)" ${idx===groupIds.length-1?'disabled':''}>▼ نقل للأسفل</button>
-        </div>
-      </div>
-      <span class="em">${esc(c.emoji)}</span>
-      <div class="nm"><div>${esc(c.name)}${isBasic?' <span class="cat-badge">أساسية</span>':''}</div><small class="cat-meta">${usageCountText(u)}</small></div>
-      ${c.type==='expense' ? `<input type="text" data-num="1" inputmode="decimal" class="cat-limit-input" placeholder="حد شهري" value="${c.limit||''}" onchange="setCategoryLimit('${c.id}', this.value)" title="حد إنفاق شهري (اتركه فاضي لتجاهله)">` : ''}
-      <div class="acts">
-        <button class="btn btn-ghost btn-sm" onclick="editCategory('${c.id}')">✏️</button>
-        <button class="btn btn-ghost btn-sm" onclick="deleteCategory('${c.id}')" ${CORE_CATEGORY_IDS.includes(c.id)?'disabled title="فئة أساسية محمية"':''}>🗑️</button>
-      </div>
-    </div>`;
+  const maxN = Math.max(1, ...regularCats.map(c=>(usageStats[c.id]||{count:0}).count));
+  const pal = ['var(--accent)','var(--accent2)','var(--income)','var(--expense)','var(--savings-in)','#2f8fc4'];
+  const bubble = (c,i) => {
+    const n = (usageStats[c.id]||{count:0}).count;
+    const size = Math.round(72 + 50*Math.sqrt(n/maxN));
+    const custom = !defaultIds.includes(c.id);
+    return `<button class="cb${custom?' custom':''}" style="--s:${size}px;--c:${pal[i%pal.length]};--e:${Math.round(size*0.36)}px" onclick="openCatEdit('${c.id}')"><span class="cb-e">${esc(c.emoji)}</span><span class="cb-n">${esc(c.name)}</span>${n>0?`<i class="cb-c">${fmtNum(n)}</i>`:''}${c.limit>0?'<i class="cb-l">🎯</i>':''}</button>`;
   };
-  const sectionDivider = (label) => `<div style="text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:1px;margin:10px 0">ــــــــــــــــــــــ ${label} ــــــــــــــــــــــ</div>`;
-
-  if (_catActiveTab === 'savings'){
-    const directCats = regularCats.filter(c=>['s1','s2'].includes(c.id));
-    const transferCats = regularCats.filter(c=>['b1','b2'].includes(c.id));
-    el.innerHTML = regularCats.length ? (
-      (directCats.length ? sectionDivider('🏦 الادخار المباشر') + directCats.map(renderRow).join('') : '')
-      + (transferCats.length ? sectionDivider('🔀 التحويل الجسر') + transferCats.map(renderRow).join('') : '')
-    ) : `<div style="text-align:center;font-size:12px;color:var(--ink-soft);padding:16px 0">لا توجد فئات بهذا النوع بعد</div>`;
-    return;
+  const cloud = (label, arr) => arr.length ? `<div class="cb-lbl">${label}</div><div class="cb-cloud">${arr.map(bubble).join('')}</div>` : '';
+  const legend = `<div class="cb-leg">حجم الفقاعة = كثرة استخدامها · الرقم = عدد عملياتها · ✦ فئة أضفتها · 🎯 لها حد شهري</div>`;
+  if (!regularCats.length){
+    el.innerHTML = `<div style="text-align:center;font-size:12px;color:var(--ink-soft);padding:16px 0">لا توجد فئات بهذا النوع بعد</div>`;
+  } else if (_catActiveTab === 'savings'){
+    el.innerHTML = cloud('🏦 الادخار المباشر', regularCats.filter(c=>['s1','s2'].includes(c.id))) + cloud('🔀 التحويل الجسر', regularCats.filter(c=>['b1','b2'].includes(c.id))) + legend;
+  } else {
+    el.innerHTML = cloud('🏷️ الفئات الأساسية', basicCats) + cloud('✦ الفئات المضافة', addedCats) + legend;
   }
-
-  el.innerHTML = regularCats.length ? (
-    `${sectionDivider('🏷️ الفئات الأساسية')}`
-    + (basicCats.length ? shownBasic.map(renderRow).join('') : `<div style="text-align:center;font-size:11px;color:var(--ink-soft);padding:10px 0">لا توجد فئات أساسية بهذا النوع</div>`)
-    + (basicCats.length>3 ? `<button class="btn btn-ghost btn-block btn-sm" style="margin-top:8px" onclick="toggleCatsExpanded()">${_catsExpanded ? '▲ عرض أقل' : '▼ عرض المزيد ('+(basicCats.length-3)+')'}</button>` : '')
-    + (addedCats.length ? sectionDivider('➕ الفئات المضافة') + addedCats.map(renderRow).join('') : '')
-  ) : `<div style="text-align:center;font-size:12px;color:var(--ink-soft);padding:16px 0">لا توجد فئات بهذا النوع بعد</div>`;
   if (_catActiveTab==='both'){
     el.innerHTML = `<div class="cat-both-note">ℹ️ الفئات الموجودة هنا <b>تعمل بطريقتين</b>: <b>💸 صرف</b> و<b>💰 دخل</b>، وتظهر في نافذة التسجيل عند اختيار أي منهما. فمثلاً «تحويل او استقبال»: التحويل تسجّله صرفاً، والاستقبال تسجّله دخلاً.</div>` + el.innerHTML;
   }
 }
+// ---------- نافذة تحرير فئة (تُفتح من الفقاعة) ----------
+let _ceId = null;
+function openCatEdit(id){
+  const c = state.categories.find(x=>x.id===id); if(!c) return;
+  _ceId = id;
+  const u = getCategoryUsageStats()[id] || { count:0, last:'' };
+  const isSv = getSavingsLinkedCatIds().includes(id);
+  const typeLbl = isSv ? 'ادخار' : ({ expense:'صرف', income:'دخل', both:'كلاهما' }[c.type] || '');
+  const core = CORE_CATEGORY_IDS.includes(id);
+  const gi = getCatTabGroupIds(), idx = gi.indexOf(id);
+  document.getElementById('ce-body').innerHTML = `
+    <div class="ce-hero"><span class="ce-big">${esc(c.emoji)}</span><div class="ce-ht"><b>${esc(c.name)}</b><small>${typeLbl} · ${core?'فئة أساسية':'فئة أضفتها'}</small><small>${u.count>0 ? usageCountText(u.count)+' · آخرها '+usageAgoText(u.last) : 'بدون عمليات'}</small></div></div>
+    <input type="hidden" id="ce-emoji" value="${esc(c.emoji)}"><input type="text" id="ce-name" value="${esc(c.name)}" maxlength="40" placeholder="اسم الفئة"><div class="ip" id="ce-picker"></div>
+    ${c.type==='expense' ? `<div class="fgroup" style="margin-top:10px"><label>🎯 حد إنفاق شهري <small style="font-weight:600">(اتركه فاضياً لتجاهله)</small></label><input type="text" data-num="1" inputmode="decimal" id="ce-limit" placeholder="مثال: 500" value="${c.limit||''}"></div>` : ''}
+    <button class="btn btn-accent btn-block" style="margin-top:12px" onclick="saveCatEdit()">💾 حفظ</button>
+    <div class="row-gap" style="margin-top:8px">
+      <button class="btn btn-ghost btn-block btn-sm" onclick="moveCatInSheet(-1)" ${idx<=0?'disabled':''}>▲ تقديم</button>
+      <button class="btn btn-ghost btn-block btn-sm" onclick="moveCatInSheet(1)" ${idx<0||idx===gi.length-1?'disabled':''}>▼ تأخير</button>
+      <button class="btn btn-ghost btn-block btn-sm" style="color:var(--expense)" onclick="deleteCatFromSheet()" ${core?'disabled title="فئة أساسية محمية"':''}>🗑️ حذف</button>
+    </div>`;
+  renderIconPicker('ce-picker','ce-emoji');
+  openSheet('sheet-cat-edit');
+}
+function saveCatEdit(){
+  const c = state.categories.find(x=>x.id===_ceId); if(!c) return;
+  const name = document.getElementById('ce-name').value.trim();
+  const emoji = document.getElementById('ce-emoji').value.trim() || c.emoji || '🙂';
+  if (!name){ showToast('⚠️ أدخل اسم الفئة'); return; }
+  c.name = name; c.emoji = emoji;
+  const li = document.getElementById('ce-limit'); if (li){ const v = parseFloat(li.value); c.limit = v>0 ? v : 0; }
+  save(); closeSheet('sheet-cat-edit'); renderCatSettings();
+  showToast('✅ تم حفظ الفئة — عملياتها بقيت مرتبطة فيها');
+}
+function moveCatInSheet(dir){ moveCategory(_ceId, dir); openCatEdit(_ceId); }
+function deleteCatFromSheet(){ const id = _ceId; closeSheet('sheet-cat-edit'); deleteCategory(id); }
 document.addEventListener('click', (e)=>{
   if (_catMoveMenuOpen && !e.target.closest('.cat-handle-wrap')){
     _catMoveMenuOpen = null;
@@ -6637,7 +6741,7 @@ let _editingCatId = null;
 function editCategory(id){
   const cat = state.categories.find(c=>c.id===id); if(!cat) return;
   _editingCatId = id;
-  document.getElementById('new-cat-emoji').value = cat.emoji;
+  document.getElementById('new-cat-emoji').value = cat.emoji; renderIconPicker('new-cat-picker','new-cat-emoji');
   document.getElementById('new-cat-name').value = cat.name;
   document.getElementById('new-cat-type').value = cat.type;
   document.getElementById('cat-form-btn').textContent = '💾 حفظ التعديل';
@@ -6645,7 +6749,7 @@ function editCategory(id){
 }
 function cancelEditCategory(){
   _editingCatId = null;
-  document.getElementById('new-cat-emoji').value = '';
+  document.getElementById('new-cat-emoji').value = ''; renderIconPicker('new-cat-picker','new-cat-emoji');
   document.getElementById('new-cat-name').value = '';
   document.getElementById('cat-form-btn').textContent = '+ إضافة فئة';
   document.getElementById('cat-form-cancel').style.display = 'none';
@@ -6666,7 +6770,7 @@ function addCategory(){
   state.categories.push({id:uid(), name, emoji, type, limit:0});
   save(); renderCatSettings();
   document.getElementById('new-cat-name').value='';
-  document.getElementById('new-cat-emoji').value='';
+  document.getElementById('new-cat-emoji').value=''; renderIconPicker('new-cat-picker','new-cat-emoji');
   showToast('✅ تمت إضافة الفئة');
 }
 function deleteCategory(id){
@@ -6872,6 +6976,7 @@ function sanitizeBackup(d){
   const allowedCurrencies = [...document.querySelectorAll('#st-currency option')].map(o=>o.value);
   if (allowedCurrencies.includes(src.currency)) st.currency = src.currency;
   if (THEMES.some(t=>t.id===src.theme)) st.theme = src.theme;
+  if (Array.isArray(src.favThemes)) st.favThemes = src.favThemes.filter(id=>THEMES.some(t=>t.id===id)).slice(0,60);
   if (src.customColors && typeof src.customColors==='object' && !Array.isArray(src.customColors)){
     const cc = {}, colRe = /^(#[0-9a-f]{6}|rgba?\([\d.,\s]+\))$/i;
     THEMES.forEach(t=>{
@@ -6964,6 +7069,22 @@ function restoreFromPaste(mode){
   processRestoreData(d, mode, ()=>{ ta.value = ''; });
 }
 
+const SETTINGS_DEFAULTS = { salary:0, payday:27, paydayTime:'09:00', paydayByMonth:{}, currency:'⃁', theme:'pop', savingsGoal:0, savingsAccountGoal:0, annualSpendCap:0, backupReminderSince:null, linkSavingsToReserve:false, fontChoice:'IBM Plex Sans Arabic', numberStyle:'arabic', autoSortCategoriesByUsage:false, categoriesDedupedV2:true, catsMigratedV3:true, deletedDefaultCats:[] };
+const RESET_ACTS = {
+  colors:{ i:'🎨', t:'إعادة تعيين الألوان', m:'سيرجع الثيم «جريء» وتُمسح كل تخصيصاتك للألوان. عملياتك لا تتأثر.', d:'رجعت الألوان الافتراضية', f(){ delete state.settings.customColors; applyTheme('pop'); } },
+  font:{ i:'🔤', t:'إعادة الخط والأرقام', m:'سيرجع الخط الافتراضي والأرقام الهندية.', d:'رجع الخط والأرقام الافتراضيان', f(){ state.settings.fontChoice='IBM Plex Sans Arabic'; state.settings.numberStyle='arabic'; applyFontAndNumberSettings(); } },
+  goals:{ i:'🎯', t:'مسح الأهداف', m:'سيُصفَّر هدف المخزون وهدف حساب الادخار وسقف السنة.', d:'تم مسح الأهداف', f(){ state.settings.savingsGoal=0; state.settings.savingsAccountGoal=0; state.settings.annualSpendCap=0; } },
+  paydays:{ i:'📅', t:'مسح أيام النزول لكل شهر', m:'سيُمسح التحديد اليدوي لكل شهر، ويرجع الاكتشاف التلقائي من عمليات الراتب واليوم الافتراضي.', d:'تم مسح أيام النزول', f(){ state.settings.paydayByMonth = {}; } },
+  limits:{ i:'🏷️', t:'إلغاء حدود الفئات', m:'سيُمسح الحد الشهري لكل فئات الصرف.', d:'تم إلغاء حدود الفئات', f(){ state.categories.forEach(c=>{ if (c.limit) c.limit = 0; }); } },
+  plans:{ i:'🧭', t:'مسح خطط التخطيط', m:'ستُمسح تقسيمات الرواتب المحفوظة لكل الدورات.', d:'تم مسح خطط التخطيط', f(){ delete state.settings.planCycles; state.settings.planRemember = false; resetPlanMemory(); } },
+  settings:{ i:'⚙️', t:'إعادة ضبط كل الإعدادات', m:'الراتب ويوم النزول والعملة والأهداف والمظهر سترجع للافتراضي. عملياتك وفئاتك تبقى كما هي.', d:'تمت إعادة ضبط الإعدادات', f(){ const lb = state.settings.lastBackupAt; state.settings = JSON.parse(JSON.stringify(SETTINGS_DEFAULTS)); state.settings.lastBackupAt = lb; resetPlanMemory(); applyTheme('pop'); applyFontAndNumberSettings(); } },
+  tx:{ i:'🧾', t:'حذف العمليات فقط', m:'ستُحذف كل العمليات المسجّلة نهائياً، وتبقى الفئات والإعدادات. خذ نسخة احتياطية أولاً.', d:'تم حذف كل العمليات', f(){ state.transactions = []; } },
+};
+function resetAct(k){
+  if (k==='cats'){ restoreDefaultCategories(); return; }
+  const a = RESET_ACTS[k]; if (!a) return;
+  showConfirm(a.t, a.m, a.i, ()=>{ a.f(); save(); refreshAll(); showToast('✅ '+a.d); });
+}
 function askResetAll(){
   showConfirm('حذف كل البيانات','لا يمكن التراجع عن هذا الإجراء. هل أنت متأكد؟','⚠️', ()=>{
     try { localStorage.removeItem('mizaniyati_v2'); } catch(e){}
@@ -7593,6 +7714,150 @@ document.addEventListener('input', e=>{
   const v = normDigits(t.value);
   if (v !== t.value) t.value = v;
 }, true);
+// ---------- أيقونات SVG مرسومة خصيصاً بدل الإيموجي (تُستبدل تلقائياً في كل الواجهة) ----------
+const ICONS = {
+  bank:'<path class="f" d="M3 10l9-6 9 6z"/><path d="M3 10l9-6 9 6M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/>',
+  sack:'<path class="f" d="M8 7.5C5 10 4 13 4 15.5 4 19 7 21 12 21s8-2 8-5.5c0-2.5-1-5.5-4-8z"/><path d="M9 3h6l-1.5 3h-3zM8 7.5C5 10 4 13 4 15.5 4 19 7 21 12 21s8-2 8-5.5c0-2.5-1-5.5-4-8M12 11v6M10.2 12.6c.4-.9 3.4-.9 3.6.4s-3.6 1.1-3.6 2.4 3.2 1.4 3.6.4"/>',
+  note:'<rect class="f" x="2.5" y="6" width="19" height="12" rx="2"/><rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.8"/><path d="M6 9.5v.01M18 14.5v.01"/>',
+  spend:'<rect class="f" x="2.5" y="6" width="13" height="10" rx="2"/><rect x="2.5" y="6" width="13" height="10" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M18 9l3 3-3 3M21 12h-6"/>',
+  brief:'<rect class="f" x="3" y="7.5" width="18" height="12.5" rx="2"/><rect x="3" y="7.5" width="18" height="12.5" rx="2"/><path d="M9 7.5V5.5A1.5 1.5 0 0110.5 4h3A1.5 1.5 0 0115 5.5v2M3 13h18"/>',
+  atm:'<rect class="f" x="4" y="3.5" width="16" height="17" rx="2"/><rect x="4" y="3.5" width="16" height="17" rx="2"/><rect x="7" y="6.5" width="10" height="5" rx="1"/><path d="M8 16h8"/>',
+  cal:'<rect class="f" x="3.5" y="5" width="17" height="15.5" rx="2.5"/><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  check:'<circle class="f" cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="9"/><path d="M7.8 12.4l2.9 2.9 5.6-6"/>',
+  swap:'<path d="M4 8h13l-3-3M20 16H7l3 3"/>',
+  refresh:'<path d="M20 11a8 8 0 00-14-4M4 5v3h3M4 13a8 8 0 0014 4M20 19v-3h-3"/>',
+  bars:'<rect class="f" x="4" y="11" width="4" height="9" rx="1"/><rect x="4" y="11" width="4" height="9" rx="1"/><rect x="10" y="5" width="4" height="15" rx="1"/><rect x="16" y="14" width="4" height="6" rx="1"/>',
+  trendup:'<path d="M3 17l6-6 4 4 8-9M15 6h6v6"/>',
+  trenddown:'<path d="M3 7l6 6 4-4 8 9M15 18h6v-6"/>',
+  clip:'<rect class="f" x="5" y="4.5" width="14" height="16.5" rx="2"/><rect x="5" y="4.5" width="14" height="16.5" rx="2"/><path d="M9 4.5V3.5h6v1M8.5 10h7M8.5 14h7M8.5 17.5h4"/>',
+  receipt:'<path class="f" d="M6 3v18l2.5-1.8L11 21l2-1.8 2.5 1.8L18 19.2V3z"/><path d="M6 3v18l2.5-1.8L11 21l2-1.8 2.5 1.8L18 19.2V3zM9 8h6M9 12h6M9 16h3"/>',
+  trash:'<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/>',
+  arrowr:'<path d="M4 12h15M13 6l6 6-6 6"/>',
+  arrowl:'<path d="M20 12H5M11 6l-6 6 6 6"/>',
+  link:'<path d="M10 14a4 4 0 005.6 0l3-3a4 4 0 00-5.6-5.6l-1 1M14 10a4 4 0 00-5.6 0l-3 3a4 4 0 005.6 5.6l1-1"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  folder:'<path class="f" d="M3 7a2 2 0 012-2h4l2 2.5h8a2 2 0 012 2V18a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M3 7a2 2 0 012-2h4l2 2.5h8a2 2 0 012 2V18a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',
+  pencil:'<path d="M4 20l1-4L16.5 4.5a2 2 0 013 3L8 19zM14.5 6.5l3 3"/>',
+  target:'<circle class="f" cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3"/>',
+  flame:'<path class="f" d="M12 3c1 3.5 5 5.5 5 10a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 2.5 1.5 2.5C10 8 11 5.5 12 3z"/><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 2.5 1.5 2.5C10 8 11 5.5 12 3z"/>',
+  save:'<path class="f" d="M5 3.5h11l3.5 3.5V19a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 19V5A1.5 1.5 0 015 3.5z"/><path d="M5 3.5h11l3.5 3.5V19a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 19V5A1.5 1.5 0 015 3.5zM7.5 3.5v5h7v-5M7.5 20.5v-6h9v6"/>',
+  tag:'<path class="f" d="M3.5 12.5V4.5a1 1 0 011-1h8l8 8-9 9z"/><path d="M3.5 12.5V4.5a1 1 0 011-1h8l8 8-9 9z"/><circle cx="8" cy="8" r="1.4"/>',
+  smile:'<circle class="f" cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="9"/><path d="M8.5 14c1 1.5 2 2 3.5 2s2.5-.5 3.5-2M9 9.5v.01M15 9.5v.01"/>',
+  bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0012 3z"/>',
+  book:'<path class="f" d="M12 6c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-13C17 4 14 4.5 12 6z"/><path d="M12 6c-2-1.5-5-2-8-1.5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5v-13C17 4 14 4.5 12 6zM12 6v13"/>',
+  crystal:'<circle class="f" cx="12" cy="11" r="7"/><circle cx="12" cy="11" r="7"/><path d="M7 20h10M9 17l-1 3M15 17l1 3M9.5 8.5a3.5 3.5 0 012.5-1.5"/>',
+  party:'<path class="f" d="M4 20l4-12 8 8z"/><path d="M4 20l4-12 8 8zM14 5v.01M19 9v.01M17 3.5l1 2M20.5 13l-2-.5"/>',
+  home:'<path class="f" d="M6 9.5V20h12V9.5L12 4z"/><path d="M3.5 11L12 4l8.5 7M6 9.5V20h12V9.5M10 20v-5h4v5"/>',
+  inbox:'<path d="M3.5 13l2.5-8h12l2.5 8v6a1 1 0 01-1 1h-15a1 1 0 01-1-1zM3.5 13h5l1.5 2.5h4l1.5-2.5h5"/>',
+  gear:'<path class="f" d="M10.08 4.85L10.30 2.35L13.70 2.35L13.92 4.85L15.70 5.59L17.62 3.97L20.03 6.38L18.41 8.30L19.15 10.08L21.65 10.30L21.65 13.70L19.15 13.92L18.41 15.70L20.03 17.62L17.62 20.03L15.70 18.41L13.92 19.15L13.70 21.65L10.30 21.65L10.08 19.15L8.30 18.41L6.38 20.03L3.97 17.62L5.59 15.70L4.85 13.92L2.35 13.70L2.35 10.30L4.85 10.08L5.59 8.30L3.97 6.38L6.38 3.97L8.30 5.59z"/><path d="M10.08 4.85L10.30 2.35L13.70 2.35L13.92 4.85L15.70 5.59L17.62 3.97L20.03 6.38L18.41 8.30L19.15 10.08L21.65 10.30L21.65 13.70L19.15 13.92L18.41 15.70L20.03 17.62L17.62 20.03L15.70 18.41L13.92 19.15L13.70 21.65L10.30 21.65L10.08 19.15L8.30 18.41L6.38 20.03L3.97 17.62L5.59 15.70L4.85 13.92L2.35 13.70L2.35 10.30L4.85 10.08L5.59 8.30L3.97 6.38L6.38 3.97L8.30 5.59z"/><circle cx="12" cy="12" r="3.2"/>',
+  bolt:'<path class="f" d="M13 3L5 13.5h6L10 21l9-11h-6.5z"/><path d="M13 3L5 13.5h6L10 21l9-11h-6.5z"/>',
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.9.6-1.5 1.1-1.5 2.2M12 17v.01"/>',
+  compass:'<circle class="f" cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  clipp:'<path d="M20 11.5l-8 8a5 5 0 01-7-7l8.5-8.5a3.3 3.3 0 014.7 4.7L9.5 17a1.7 1.7 0 01-2.4-2.4L14 7.8"/>',
+  down:'<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
+  palette:'<path class="f" d="M12 3.5a8.5 8.5 0 100 17c1.2 0 1.8-.8 1.4-1.8-.4-1 .2-2 1.4-2H17a3.5 3.5 0 003.5-3.5C20.5 7 16.8 3.5 12 3.5z"/><path d="M12 3.5a8.5 8.5 0 100 17c1.2 0 1.8-.8 1.4-1.8-.4-1 .2-2 1.4-2H17a3.5 3.5 0 003.5-3.5C20.5 7 16.8 3.5 12 3.5z"/><circle cx="8" cy="11" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/>',
+  gem:'<path class="f" d="M6 4h12l3.5 5L12 20.5 2.5 9z"/><path d="M6 4h12l3.5 5L12 20.5 2.5 9zM2.5 9h19M9 4l3 5 3-5M12 9v11.5"/>',
+  toolbox:'<rect class="f" x="3" y="8" width="18" height="12" rx="2"/><rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0115 6v2M3 13h18M11 13v2h2v-2"/>',
+  dotY:'<circle cx="12" cy="12" r="6.5" fill="#f2b705" stroke="currentColor"/>',
+  dotG:'<circle cx="12" cy="12" r="6.5" fill="#18a864" stroke="currentColor"/>',
+  dotR:'<circle cx="12" cy="12" r="6.5" fill="#e5294e" stroke="currentColor"/>',
+  dotP:'<circle cx="12" cy="12" r="6.5" fill="#8b5cf6" stroke="currentColor"/>',
+  trophy:'<path class="f" d="M7 4h10v6a5 5 0 01-10 0z"/><path d="M7 4h10v6a5 5 0 01-10 0zM7 6H4v1.5A3 3 0 007 10.5M17 6h3v1.5A3 3 0 0117 10.5M12 15v3.5M8.5 20.5h7"/>',
+  medal:'<circle class="f" cx="12" cy="14.5" r="5.5"/><circle cx="12" cy="14.5" r="5.5"/><path d="M8.5 3.5l3.5 6 3.5-6M12 12.5v4"/>',
+  font:'<path d="M3.5 19L9 5l5.5 14M5.5 14h7M16 12.5a2.5 2.5 0 014 0V19M16 16h4"/>',
+  cabinet:'<rect class="f" x="4" y="3.5" width="16" height="17" rx="2"/><rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M4 12h16M10.5 8h3M10.5 16.5h3"/>',
+  doc:'<path class="f" d="M7 3.5h7l4 4V20a1 1 0 01-1 1H7a1 1 0 01-1-1V4.5a1 1 0 011-1z"/><path d="M7 3.5h7l4 4V20a1 1 0 01-1 1H7a1 1 0 01-1-1V4.5a1 1 0 011-1zM14 3.5V8h4M9 13h6M9 17h6"/>',
+  key:'<circle class="f" cx="8" cy="15" r="4"/><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l2.5 2.5M14 9l2 2"/>',
+  balloon:'<ellipse class="f" cx="12" cy="9.5" rx="6" ry="7"/><ellipse cx="12" cy="9.5" rx="6" ry="7"/><path d="M12 16.5l-1 2h2zM12 18.5c0 1.5 1.5 1.5 1.5 3"/>',
+  phone:'<rect class="f" x="7" y="3" width="10" height="18" rx="2.5"/><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/>',
+  rainbow:'<path d="M3 18a9 9 0 0118 0M6.5 18a5.5 5.5 0 0111 0M10 18a2 2 0 014 0"/>',
+  bento:'<rect class="f" x="4" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+  moon:'<path class="f" d="M20 14.5A8.5 8.5 0 119.5 4a7 7 0 0010.5 10.5z"/><path d="M20 14.5A8.5 8.5 0 119.5 4a7 7 0 0010.5 10.5z"/>',
+  sun:'<circle class="f" cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6L7 7M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/>',
+  waves:'<path d="M2.5 9c2.5-3 4-3 6.5 0s4 3 6.5 0 4-3 6 0M2.5 15c2.5-3 4-3 6.5 0s4 3 6.5 0 4-3 6 0"/>',
+  leaf:'<path class="f" d="M5 19C5 10 10 5 20 4c0 10-5 15-14 15z"/><path d="M5 19C5 10 10 5 20 4c0 10-5 15-14 15zM5 19l8-8"/>',
+  heart:'<path class="f" d="M12 20.5C5 15.5 3 12 3 8.8A4.8 4.8 0 0112 7a4.8 4.8 0 019 1.8c0 3.2-2 6.7-9 11.7z"/><path d="M12 20.5C5 15.5 3 12 3 8.8A4.8 4.8 0 0112 7a4.8 4.8 0 019 1.8c0 3.2-2 6.7-9 11.7z"/>',
+  sparkle:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/>',
+  flask:'<path d="M9 3.5h6M10 3.5v6L4.5 19a1.5 1.5 0 001.3 2.2h12.4A1.5 1.5 0 0019.5 19L14 9.5v-6M7.5 15h9"/>',
+  broom:'<path d="M15 3.5l-4.5 8.5M7.5 12l-3.5 8h13l3-8z"/>',
+  undo:'<path d="M9 6L4 11l5 5M4 11h10a5.5 5.5 0 010 11h-3"/>',
+  utensils:'<path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10M17 3c-2 2-3 5-3 8h3v10M17 3v18"/>',
+  bus:'<rect class="f" x="4" y="4" width="16" height="14" rx="3"/><rect x="4" y="4" width="16" height="14" rx="3"/><path d="M4 11h16M8 18v2M16 18v2M7.5 14.5v.01M16.5 14.5v.01"/>',
+  shopbag:'<path class="f" d="M5 8h14l-1 12H6z"/><path d="M5 8h14l-1 12H6zM9 8V6.5a3 3 0 016 0V8"/>',
+  clapper:'<rect class="f" x="3.5" y="9" width="17" height="11" rx="2"/><rect x="3.5" y="9" width="17" height="11" rx="2"/><path d="M4 9l16-4M8 7.5l2 3M13 6.5l2 3"/>',
+  box:'<path class="f" d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5zM3.5 7.5L12 12l8.5-4.5M12 12v9"/>',
+  hourglass:'<path d="M6.5 3.5h11M6.5 20.5h11M7.5 3.5c0 4.5 4.5 5 4.5 8.5s-4.5 4-4.5 8.5M16.5 3.5c0 4.5-4.5 5-4.5 8.5s4.5 4 4.5 8.5"/>',
+  alarm:'<circle class="f" cx="12" cy="13" r="7.5"/><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 1.5M4 6l3-2M20 6l-3-2"/>',
+  person:'<circle cx="12" cy="5.5" r="2"/><path d="M12 8v5M7 20c0-3 2.5-5 5-5s5 2 5 5M7.5 12l4.5 1 4.5-1"/>',
+  arrowup:'<path d="M12 20V6M6.5 11.5L12 6l5.5 5.5"/>',
+  hash:'<path d="M8 3l-1.5 18M15.5 3L14 21M4 9h17M3 15h17"/>',
+  lock:'<rect class="f" x="5" y="10.5" width="14" height="10" rx="2"/><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 018 0v2.5"/>',
+  unlock:'<rect class="f" x="5" y="10.5" width="14" height="10" rx="2"/><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V8a4 4 0 017.5-2"/>',
+  hand:'<path d="M8 12V6a1.5 1.5 0 013 0v5M11 11V4.5a1.5 1.5 0 013 0V11M14 11V6a1.5 1.5 0 013 0v7c0 4-2 7-6 7s-6-2.5-6-5.5V12a1.5 1.5 0 013 0"/>',
+  up2:'<path d="M6 11l6-6 6 6M6 18l6-6 6 6"/>',
+  down2:'<path d="M6 6l6 6 6-6M6 13l6 6 6-6"/>',
+  flag:'<path class="f" d="M5 4h13l-2.5 4 2.5 4H5z"/><path d="M5 21V4M5 4h13l-2.5 4 2.5 4H5"/>',
+  warn:'<path class="f" d="M12 3.5L2.5 20h19z"/><path d="M12 3.5L2.5 20h19zM12 10v5M12 17.5v.01"/>',
+  updown:'<path d="M8 4v16M4 8l4-4 4 4M16 20V4M12 16l4 4 4-4"/>'
+  ,star:'<path class="f" d="M12 3.5l2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6L3.3 9.9l6-.9z"/><path d="M12 3.5l2.7 5.5 6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6L3.3 9.9l6-.9z"/>'
+};
+const EMO_ICON = {'⭐':'star','🏦':'bank','💰':'sack','💵':'note','💸':'spend','💼':'brief','🏧':'atm','📅':'cal','🗓':'cal','📆':'cal','✅':'check','🔀':'swap','🔁':'swap','↔':'swap','🔄':'refresh','♻':'refresh','📊':'bars','📈':'trendup','📉':'trenddown','📋':'clip','🧾':'receipt','🗑':'trash','➡':'arrowr','⬅':'arrowl','🔗':'link','➕':'plus','🗂':'folder','📂':'folder','✏':'pencil','📝':'pencil','🎯':'target','🔥':'flame','💾':'save','🏷':'tag','🙂':'smile','💡':'bulb','📖':'book','🔮':'crystal','🎉':'party','🏠':'home','📭':'inbox','⚙':'gear','🛠':'gear','⚡':'bolt','🔍':'search','🔎':'search','❓':'help','🧭':'compass','📎':'clipp','⬇':'down','🎨':'palette','💎':'gem','🧰':'toolbox','🟡':'dotY','🟢':'dotG','🔴':'dotR','🟣':'dotP','🏆':'trophy','🏅':'medal','🥇':'medal','🔤':'font','🗄':'cabinet','📄':'doc','📰':'doc','🔑':'key','🎈':'balloon','📱':'phone','🌈':'rainbow','🧩':'bento','🌑':'moon','☀':'sun','🌊':'waves','🌿':'leaf','💜':'heart','✨':'sparkle','🧪':'flask','🧹':'broom','↩':'undo','🍞':'utensils','🚌':'bus','🛍':'shopbag','🎬':'clapper','📦':'box','⏳':'hourglass','⏰':'alarm','🧘':'person','👆':'arrowup','🔢':'hash','🔒':'lock','🔓':'unlock','✋':'hand','⏫':'up2','⏬':'down2','🏁':'flag','⚠':'warn','↕':'updown'};
+const ICON_PICK = ['🍞','🚌','🛍','🧾','🎬','📦','💵','💰','💼','🏧','🏠','🎉','🔥','💎','🎯','🧰','🎨','📱','🧪','🌿','☀','📖','🏦','💡','🔑','🧭','📎','🎈','🏅','🌊'];
+const EMO_T = /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})/u;
+const EMO_G = /(?:\p{Extended_Pictographic}|\p{Emoji_Presentation})\uFE0F?(?:\u200D\p{Extended_Pictographic}\uFE0F?)*/gu;
+function emoKey(e){ return String(e||'').replace(/\uFE0F/g,''); }
+function iconInner(e){ return ICONS[EMO_ICON[emoKey(e)]] || ICONS.tag; }
+function emoSvgHtml(e){ return '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+iconInner(e)+'</svg>'; }
+function iconMaskUrl(e){ return 'url("data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+iconInner(e)+'</svg>')+'")'; }
+function emoStrip(v){ return String(v).replace(EMO_G,'').replace(/\s{2,}/g,' ').trim(); }
+function emoText(t){
+  const v = t.nodeValue; if (!v || !EMO_T.test(v)) return;
+  const p = t.parentNode; if (!p) return;
+  const tag = p.nodeName;
+  if (/^(SCRIPT|STYLE|TEXTAREA|TITLE)$/.test(tag) || (p.closest && p.closest('svg'))) return;
+  if (tag==='OPTION' || tag==='OPTGROUP'){ t.nodeValue = emoStrip(v); return; }
+  const frag = document.createDocumentFragment(); let last = 0;
+  for (const m of v.matchAll(EMO_G)){
+    if (m.index>last) frag.appendChild(document.createTextNode(v.slice(last, m.index)));
+    const tpl = document.createElement('template'); tpl.innerHTML = emoSvgHtml(m[0]); frag.appendChild(tpl.content.firstChild);
+    last = m.index + m[0].length;
+  }
+  if (last<v.length) frag.appendChild(document.createTextNode(v.slice(last)));
+  p.replaceChild(frag, t);
+}
+function emoAttrs(el){
+  ['placeholder','title','aria-label','label'].forEach(a=>{ const v = el.getAttribute && el.getAttribute(a); if (v && EMO_T.test(v)) el.setAttribute(a, emoStrip(v)); });
+}
+function emoProcess(root){
+  if (root.nodeType===3){ emoText(root); return; }
+  if (root.nodeType!==1) return;
+  const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), list = [];
+  while (tw.nextNode()) list.push(tw.currentNode);
+  list.forEach(emoText);
+  emoAttrs(root); root.querySelectorAll('[placeholder],[title],[aria-label],[label]').forEach(emoAttrs);
+}
+function renderIconPicker(pid, iid){
+  const box = document.getElementById(pid), inp = document.getElementById(iid); if (!box || !inp) return;
+  const cur = emoKey(inp.value);
+  box.innerHTML = ICON_PICK.map(e=>`<button type="button" class="ip-b${emoKey(e)===cur?' on':''}" data-e="${e}" onclick="pickIcon('${pid}','${iid}',this.dataset.e)">${e}</button>`).join('');
+}
+function pickIcon(pid, iid, e){ document.getElementById(iid).value = e; renderIconPicker(pid, iid); }
+function initEmojiIcons(){
+  const root = document.documentElement.style;
+  root.setProperty('--m-cal', iconMaskUrl('📅'));
+  document.querySelectorAll('.pl-tile-l').forEach(el=>el.style.setProperty('--m', iconMaskUrl(el.dataset.ic)));
+  emoProcess(document.body);
+  new MutationObserver(muts=>{
+    muts.forEach(m=>{
+      if (m.type==='childList') m.addedNodes.forEach(emoProcess);
+      else if (m.type==='characterData') emoProcess(m.target);
+      else emoAttrs(m.target);
+    });
+  }).observe(document.body, { childList:true, subtree:true, characterData:true, attributes:true, attributeFilter:['placeholder','title','aria-label','label'] });
+}
+
+initEmojiIcons();
 // ---------- بدء التشغيل ----------
 load();
 applyTheme(state.settings.theme);
