@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#f6f1e6">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ميزانيتي — دفتر الحساب</title>
+<title>دورتي — دفتر الحساب</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="favicon.png">
 <link rel="shortcut icon" href="favicon.png">
@@ -777,6 +777,20 @@ label{ font-size:12.5px; font-weight:900; font-style:normal; color:var(--ink); }
 .dtx-note{ font-size:11px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .dtx-r{ flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:3px; }
 
+/* ===== منتقي الساعة: أسهم تنقّل ===== */
+.pt-row{ display:flex; align-items:center; justify-content:center; gap:14px; margin:4px 0 8px; }
+.pt-val{ min-width:70px; text-align:center; }
+.pt-val b{ font-size:26px; font-weight:900; font-variant-numeric:tabular-nums; }
+.pay-lbls, .pay-card{ display:grid; grid-template-columns:1fr 1fr 80px; align-items:center; }
+.pay-lbls{ gap:8px; margin-bottom:6px; font-size:12px; font-weight:800; color:var(--ink-soft); text-align:center; }
+.pay-card{ gap:8px; padding:10px; border:2px solid var(--ink); border-radius:14px; background:var(--card); }
+.pay-v{ font-size:22px; font-weight:900; text-align:center; font-variant-numeric:tabular-nums; }
+.pay-sep{ display:none; }
+.pay-lbls .pay-d{ color:var(--accent); }
+.pay-lbls .pay-t{ color:color-mix(in srgb,var(--accent2) 55%,var(--ink)); }
+.pay-v.pay-d{ color:var(--accent); background:color-mix(in srgb,var(--accent) 14%,transparent); border-radius:10px; padding:4px 0; }
+.pay-v.pay-t{ color:color-mix(in srgb,var(--accent2) 50%,var(--ink)); background:color-mix(in srgb,var(--accent2) 22%,transparent); border-radius:10px; padding:4px 0; }
+.pay-card .btn{ justify-self:center; }
 /* ===== اختيار التاريخ ===== */
 .dp-step{ font-size:12.5px; font-weight:900; margin-bottom:8px; }
 .dp-day{ min-height:44px; display:flex; align-items:center; justify-content:center; border:2px solid var(--ink); border-radius:11px; background:var(--card); color:var(--ink); font-family:var(--font-body),sans-serif; font-size:15px; font-weight:900; cursor:pointer; padding:0; }
@@ -2027,7 +2041,18 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
 .md-st small{ font-size:10.5px; font-weight:900; color:var(--ink-soft); } .md-st .chip{ font-size:9.5px; padding:1px 6px; } .md-no{ font-size:12px; font-weight:900; color:var(--ink-soft); }
 .md-bar{ width:100%; height:4px; border-radius:3px; background:color-mix(in srgb,var(--ink) 9%,transparent); overflow:hidden; } .md-bar i{ display:block; height:100%; border-radius:3px; background:var(--c); }
 .md-st em{ font-style:normal; font-size:9px; font-weight:700; line-height:1.4; color:var(--ink-soft); }
-/* ===== ساعة نزول الراتب: شكل ساعة قلّابة ===== */
+/* ===== ساعة نزول الراتب: شكل حلقة دائرية ===== */
+.cdr{ padding:10px 12px 9px; }
+.cdr .cd2-h{ margin-bottom:6px; font-size:12px; }
+.cdr-ring{ position:relative; width:104px; height:104px; margin:0 auto; }
+.cdr-ring svg{ display:block; width:104px; height:104px; }
+.cdr-c{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--clock-num,var(--bg)); }
+.cdr-c b{ font-size:24px; font-weight:900; line-height:1; font-variant-numeric:tabular-nums; }
+.cdr-c small{ font-size:10px; font-weight:800; opacity:.8; margin-top:2px; }
+.cdr-hms{ margin-top:6px; font-size:15px; font-weight:900; letter-spacing:.5px; font-variant-numeric:tabular-nums; color:var(--clock-num,var(--bg)); }
+.cdr .fc-when{ margin:4px 0 0; font-size:10px; }
+.cdr .cd2-f{ margin-top:4px; font-size:10px; }
+/* ===== ساعة نزول الراتب: شكل ساعة قلّابة (قديم) ===== */
 .fc{ padding:14px 10px 12px; }
 .fc .cd2-h{ margin-bottom:2px; }
 .fc-when{ margin-bottom:12px; font-size:10.5px; font-weight:700; opacity:.7; }
@@ -2042,7 +2067,7 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
 @keyframes fcBlink{ 50%{ opacity:.25; } }
 @media (prefers-reduced-motion:reduce){ .fc-sep{ animation:none; } }
 /* ===== توقّع دورة الراتب: تصميم جديد ===== */
-/* ===== «حول ميزانيتي»: تصميم جديد (بطاقة تعريف + مصطلحات + أقسام قابلة للطي) ===== */
+/* ===== «حول دورتي»: تصميم جديد (بطاقة تعريف + مصطلحات + أقسام قابلة للطي) ===== */
 .ab-hero{ display:flex; align-items:center; gap:12px; padding:14px; border:1px solid var(--line); border-radius:22px; background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 16%,var(--card)),color-mix(in srgb,var(--accent2) 14%,var(--card))); box-shadow:0 10px 22px -16px rgba(0,0,0,.45); }
 .ab-mark{ flex:none; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:15px; background:linear-gradient(145deg,var(--accent),color-mix(in srgb,var(--accent) 55%,var(--accent2))); color:var(--on-accent); font-family:var(--font-disp),serif; font-size:22px; font-weight:900; box-shadow:0 8px 16px -8px var(--accent); }
 .ab-hero b{ display:block; font-size:17px; font-weight:900; } .ab-hero small{ display:block; margin-top:2px; font-size:11px; font-weight:600; line-height:1.8; color:var(--ink-soft); }
@@ -2099,6 +2124,27 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
 .pk-b small{ display:block; font-size:10.5px; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .pk-more, .pk-empty{ margin-top:10px; text-align:center; font-size:11px; font-weight:700; color:var(--ink-soft); }
 
+/* ===== أقرب مناسبة: بنفس تصميم الاشتراكات ===== */
+.evr-hero.evfc{ animation:pgRise .38s ease backwards; }
+.evr-title{ font-size:18px; line-height:1.3; margin:4px 0 6px; }
+.evr-hms{ direction:ltr; font-size:15px; font-weight:900; letter-spacing:.5px; font-variant-numeric:tabular-nums; margin:4px 0 8px; }
+/* ===== أقرب مناسبة: تصميم مضغوط بحلقة (قديم) ===== */
+.cd2.evr-card{ padding:10px 12px 9px; }
+.cd2.evr-card .fc-tag{ margin-bottom:4px; font-size:10px; padding:1px 9px; }
+.cd2.evr-card .cd2-h{ font-size:12.5px; margin-bottom:2px; }
+.cd2.evr-card .fc-when{ font-size:10px; margin-bottom:8px; }
+.cd2.evr-card .cd2-f{ margin-top:8px; font-size:10px; }
+.cd2.evr-card .fc-done{ font-size:14px; margin:6px 0; }
+.evr-row{ display:flex; align-items:center; gap:12px; }
+.evr-ring{ position:relative; flex:none; width:84px; height:84px; }
+.evr-ring svg{ display:block; width:84px; height:84px; }
+.evr-c{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--clock-num,var(--bg)); }
+.evr-c b{ font-size:20px; font-weight:900; line-height:1; font-variant-numeric:tabular-nums; }
+.evr-c small{ font-size:9px; font-weight:800; opacity:.8; margin-top:2px; }
+.evr-info{ flex:1; min-width:0; color:var(--clock-num,var(--bg)); }
+.evr-mo{ font-size:12px; font-weight:800; line-height:1.4; }
+.evr-hms{ margin-top:4px; font-size:14px; font-weight:900; letter-spacing:.5px; font-variant-numeric:tabular-nums; }
+.evr-f{ margin-top:3px; font-size:9.5px; opacity:.75; }
 /* ===== «عدّاد»: بطاقة أقرب مناسبة بنفس ساعة «باقي على نزول الراتب» ===== */
 .evfc[onclick]{ cursor:pointer; } .evfc[onclick]:active{ transform:translateY(1px); }
 .evfc .cd2-h{ font-size:14px; font-weight:900; opacity:1; word-break:break-word; }
@@ -2133,6 +2179,7 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
 .nt-ttl{ margin-top:7px; font-size:10px; font-weight:700; line-height:1.7; color:var(--ink-soft); }
 .nt-empty{ padding:34px 10px; text-align:center; font-size:13px; font-weight:800; line-height:2; color:var(--ink-soft); } .nt-empty small{ display:block; font-size:11px; font-weight:600; }
 </style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -2141,9 +2188,9 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
   <div class="hdr" id="hdr">
   <header class="topbar">
     <div class="brand">
-      <div class="brand-mark disp">م</div>
+      <button type="button" class="brand-mark disp" style="padding:0;border:none;cursor:pointer" onclick="openAccountSheet()" aria-label="الحساب">د</button>
       <div class="brand-text">
-        <span class="brand-title">ميزانيتي</span>
+        <span class="brand-title">دورتي</span>
         <span class="brand-sub" id="topbar-sub">دفتر حسابك اليومي</span>
       </div>
     </div>
@@ -2286,7 +2333,10 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
         </div>
       </div>
 
-      <button class="btn btn-accent btn-block dadd" onclick="openTxModal()">🧾 تسجيل عملية جديدة</button>
+      <div class="row-gap" style="margin-bottom:10px">
+        <button class="btn btn-accent btn-block dadd" style="margin:0;flex:1" onclick="openTxModal()">🧾 تسجيل عملية جديدة</button>
+        <button class="btn btn-ghost btn-block dadd" style="margin:0;flex:1" onclick="openTxModalTransfer()">🔀 تحويل / استقبال</button>
+      </div>
       <div id="day-weekday-avg" class="davg"></div>
       <div id="day-list"></div>
     </section>
@@ -2888,8 +2938,8 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
         <div class="card">
           <div class="card-title">📅 موعد نزول الراتب</div>
           <div class="sal-grid2">
-            <div class="fgroup" style="margin:0"><label>اليوم الافتراضي</label><input type="text" data-num="1" inputmode="numeric" id="st-payday" min="1" max="31" placeholder="مثال: 27"></div>
-            <div class="fgroup" style="margin:0"><label>⏰ الساعة المتوقعة</label><input type="time" id="st-payday-time"></div>
+            <div id="st-pay-box" style="grid-column:1 / -1"></div><input type="hidden" id="st-payday">
+            <input type="hidden" id="st-payday-time">
           </div>
           <div class="sal-note">منه تبدأ دورتك وتنتهي في اليوم الذي قبل النزول القادم. ولو اختلف يوم النزول في شهر ما، اضبطه من «يوم النزول لكل شهر» أدناه.</div>
           <div class="sal-sub">
@@ -3038,7 +3088,7 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
 
         <div style="height:1px;background:var(--line);margin:12px 0"></div>
 
-        <label>📂 استعادة نسخة ميزانيتي (JSON)</label>
+        <label>📂 استعادة نسخة دورتي (JSON)</label>
         <input type="file" id="restore-file" accept=".json" style="margin-bottom:10px">
         <div class="row-gap" style="margin-bottom:12px">
           <button class="btn btn-accent btn-block" onclick="restoreBackup('merge')">🔗 دمج مع الحالية</button>
@@ -3203,8 +3253,8 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
 <!-- ===================== SHEET: ABOUT (شرح كل قسم) ===================== -->
 <div class="sheet-overlay hidden" id="sheet-about">
   <div class="sheet" style="max-width:560px">
-    <div class="sheet-title"><span>❓ حول ميزانيتي</span><button onclick="closeSheet('sheet-about')">✕</button></div>
-    <div class="ab-hero"><div class="ab-mark">م</div><div><b>ميزانيتي</b><small>دفتر حساب يومي يتتبع دخلك وصرفك على دورة الراتب، ويفصل المخزون (رصيد دوراتك) عن حساب الادخار. تنقّل بين الصفحات من صف الأيقونات في أعلى الشاشة، وهذا شرح لكل صفحة.</small></div></div>
+    <div class="sheet-title"><span>❓ حول دورتي</span><button onclick="closeSheet('sheet-about')">✕</button></div>
+    <div class="ab-hero"><div class="ab-mark">د</div><div><b>دورتي</b><small>دفتر حساب يومي يتتبع دخلك وصرفك على دورة الراتب، ويفصل المخزون (رصيد دوراتك) عن حساب الادخار. تنقّل بين الصفحات من صف الأيقونات في أعلى الشاشة، وهذا شرح لكل صفحة.</small></div></div>
     <div class="ab-gl">
       <div class="ab-g" style="--c:var(--accent)"><b>🔄 دورة الراتب</b><small>من يوم نزول الراتب إلى اليوم الذي قبل النزول القادم</small></div>
       <div class="ab-g" style="--c:var(--income)"><b>🏦 المخزون</b><small>رصيدك المتراكم من دورات الراتب الماضية</small></div>
@@ -3404,6 +3454,12 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
   </div>
 </div>
 
+<!-- ===================== SHEET: ACCOUNT ===================== -->
+<div class="sheet-overlay hidden" id="sheet-account"><div class="sheet">
+  <div class="sheet-title"><span>🙂 حسابي</span><button onclick="closeSheet('sheet-account')" aria-label="إغلاق">✕</button></div>
+  <div id="acc-body"></div>
+</div></div>
+
 <!-- ===================== SHEET: CONFIRM ===================== -->
 <div class="sheet-overlay hidden" id="sheet-confirm">
   <div class="sheet" style="text-align:center">
@@ -3439,7 +3495,7 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
 
 <script>
 /* ============================================================
-   ميزانيتي v2 — إعادة بناء كاملة بهوية بصرية جديدة (دفتر/ختم)
+   دورتي v2 — إعادة بناء كاملة بهوية بصرية جديدة (دفتر/ختم)
    ============================================================ */
 
 // ---------- الثيمات: 21 ثيم فقط (3 من كل فئة × 7 فئات) ----------
@@ -3654,7 +3710,7 @@ function dedupeCategories(){
 function load() {
   const defaults = DEFAULT_CATEGORIES; // القيم الافتراضية المعرّفة أعلاه (تشمل أي فئات جديدة أضفناها لاحقاً)
   try {
-    const s = localStorage.getItem('mizaniyati_v2');
+    const s = localStorage.getItem(dataKey());
     if (s) {
       const d = JSON.parse(s);
       state.transactions = d.transactions || [];
@@ -3691,7 +3747,7 @@ let _saveFailNotified = false;
 function save() {
   _memo.gen++;
   try {
-    localStorage.setItem('mizaniyati_v2', JSON.stringify({
+    localStorage.setItem(dataKey(), JSON.stringify({
       transactions: state.transactions, categories: state.categories, settings: state.settings
     }));
     _saveFailNotified = false;
@@ -4406,7 +4462,7 @@ function renderAnQuick(){
   const rI = info.isCur ? [['📎 يومياً',fmt(info.avgPerDay)],['متبقي',fmt(info.remaining)]] : [['📎 يومياً',fmt(info.totalIncome/info.totalDays)],['متبقي',fmt(info.remaining)]];
   const rS = info.isCur ? [['📎 يومياً',fmt(bal/info.daysToGo)],netR] : [['إيداعات',fmt(ac.deposits)],netR];
   const rE = info.isCur ? [['📎 المسموح يومياً',fmt(totRem/info.daysToGo)],['نسبة الصرف',pct]] : [['📎 متوسط يومياً',fmt(info.expense/info.totalDays)],['نسبة الصرف',pct]];
-  el.innerHTML = `<div class="qm"><div class="qk-ch"><span>📅 تنقّل بين الدورات</span><div class="qm-yr"><button type="button" class="qm-y" onclick="aqYear(-1)" aria-label="السنة السابقة">›</button><b>${fmtNum(yr)}</b><button type="button" class="qm-y" onclick="aqYear(1)" aria-label="السنة التالية">‹</button></div></div><div class="qm-g">${btns}</div><div class="qm-lg">كل رقم = دورة الراتب التي تغطي منتصف ذلك الشهر · المؤطّر بالأخضر فيه عمليات</div></div>
+  el.innerHTML = `<div class="qm"><div class="qk-ch"><span>📅 تنقّل بين الدورات</span><div class="qm-yr"><button type="button" class="qm-y" style="display:flex;align-items:center;justify-content:center" onclick="aqYear(-1)" aria-label="السنة السابقة"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button><b>${digAr(yr)}</b><button type="button" class="qm-y" style="display:flex;align-items:center;justify-content:center" onclick="aqYear(1)" aria-label="السنة التالية"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div></div><div class="qm-g">${btns}</div><div class="qm-lg">كل رقم = دورة الراتب التي تغطي منتصف ذلك الشهر · المؤطّر بالأخضر فيه عمليات</div></div>
     <div class="qk-ch"><span>⚡ ملخص سريع · ${info.isCur?'هذه الدورة':'دورة سابقة'}</span><small>${rg}</small></div>
     ${info.isCur ? '' : '<button type="button" class="btn btn-ghost btn-sm qm-back" onclick="aqCurrent()">↩ العودة لهذه الدورة</button>'}
     <div class="qk-g">
@@ -4695,12 +4751,12 @@ function evPanelHtml(e,click){
   const PR = { h:'أولوية عالية', m:'أولوية متوسطة', l:'أولوية منخفضة' };
   const when = `${DAY_NAMES[t.getDay()]} ${fmtNum(t.getDate())} ${MONTH_NAMES[t.getMonth()]} ${digAr(t.getFullYear())}${e.time ? ' · '+digAr(e.time) : ''}`;
   const meta = [PR[e.prio||'m'], e.cost>0 ? 'التكلفة المتوقعة '+fmt(e.cost) : '', e.yearly ? 'تتكرر سنوياً' : '', e.pin ? '📌 مثبّتة' : ''].filter(Boolean).join(' · ');
-  return `<div class="cd2 fc evfc ${!live?'over':n<=0?'now':n<=3?'hot':''}"${click?` onclick="openEventDetails('${e.id}')"`:''}>
-    ${click?'<div class="fc-tag">أقرب مناسبة</div>':''}
-    <div class="cd2-h">${live ? esc(e.icon||'⏳')+' باقي على «'+esc(e.name)+'»' : '✅ انتهت «'+esc(e.name)+'»'}</div>
+  return `<div class="dv-card evr-hero evfc ${!live?'over':n<=0?'now':n<=3?'hot':''}"${click?` onclick="openEventDetails('${e.id}')"`:''}>
+    ${click?'<div class="dv-cap">🎯 أقرب مناسبة</div>':''}
+    <div class="dv-net evr-title">${live ? esc(e.icon||'⏳')+' باقي على «'+esc(e.name)+'»' : '✅ انتهت «'+esc(e.name)+'»'}</div>
     <div class="fc-when">${when}</div>
-    ${live ? `<div class="fc-live" data-t="${t.getTime()}" data-w="60"></div>` : '<div class="fc-done">انتهت هذه المناسبة</div>'}
-    <div class="cd2-f">${meta}</div>
+    ${live ? `<div class="fc-live" data-t="${t.getTime()}" data-w="60"></div>` : '<div class="dv-cap">انتهت هذه المناسبة</div>'}
+    <div class="dv-cap" style="margin-top:8px">${meta}</div>
   </div>`;
 }
 function togglePinEvent(id,ev){ if (ev) ev.stopPropagation(); const e = (state.settings.events||[]).find(x=>x.id===id); if(!e) return; e.pin = !e.pin; save(); renderEvents(); showToast(e.pin ? '📌 تم التثبيت' : 'أُلغي التثبيت'); }
@@ -4710,6 +4766,11 @@ function openEventDetails(id){
     + `<div class="dt-btns"><button onclick="closeSheet('sheet-evd');openEventSheet('${e.id}')">✏️ تعديل</button><button onclick="togglePinEvent('${e.id}');openEventDetails('${e.id}')">📌 ${e.pin?'إلغاء التثبيت':'تثبيت'}</button></div>`
     + `<button class="dt-del" onclick="_evEditId='${e.id}';deleteEvent()">🗑️ حذف المناسبة</button>`;
   openSheet('sheet-evd'); clkStart();
+}
+function nearEvBox(e){
+  const t = evTime(e);
+  const note = `<span data-mo="${t.getTime()}">${monthsLeftTxt(t - new Date())}</span> · ${DAY_NAMES[t.getDay()]} ${fmtNum(t.getDate())} ${MONTH_NAMES[t.getMonth()]}${e.time?' · '+digAr(e.time):''}${e.cost>0?' · '+fmt(e.cost):''}`;
+  return clockBox(`🎯 أقرب مناسبة: ${esc(e.icon||'⏳')} ${esc(e.name)}`, t, note);
 }
 function renderEvents(){
   const box = document.getElementById('db-events'); if(!box) return;
@@ -4726,7 +4787,7 @@ function renderEvents(){
         ${live?`<button class="ev-pn${e.pin?' on':''}" onclick="togglePinEvent('${e.id}',event)" aria-label="تثبيت">📌</button>`:''}</div>
       <div class="dv-ln"><i style="width:${close.toFixed(1)}%"></i></div></div>`; };
   box.innerHTML = `<div class="dv">
-    ${near.length ? evPanelHtml(near[0],true) : ''}
+    ${near.length ? nearEvBox(near[0]) : ''}
     <div class="dv-act"><button class="dv-add" onclick="openEventSheet()"><span>＋</span> مناسبة جديدة</button></div>
     ${list.length ? `<div class="dv-gh" style="--c:var(--accent)"><span>📋 مناسباتك</span><small>${fmtNum(list.length)} · المثبّتة أولاً</small></div><div class="dv-grp">${list.map(e=>row(e,true)).join('')}</div>` : ''}
     ${past.length ? `<details class="dv-done"><summary>✅ انتهت (${fmtNum(past.length)})</summary><div class="dv-grp">${past.map(e=>row(e,false)).join('')}</div></details>` : ''}
@@ -4959,7 +5020,12 @@ function monthsLeftTxt(ms){
 }
 function evLiveHtml(ms, wDays){
   const win = wDays*86400000, pct = Math.max(0, Math.min(100, (1 - Math.min(ms,win)/win)*100)), d = Math.floor(ms/86400000);
-  return `<div class="fc-mo">${monthsLeftTxt(ms)}</div>` + flipRowHtml(ms) + `<div class="cd2-bar"><i style="width:${pct.toFixed(1)}%"></i></div><div class="cd2-f">${d===0?'أقل من يوم':'باقي '+planDaysTxt(d)} · اقتراب ${fmtNum(Math.floor(pct))}٪ خلال آخر ${fmtNum(wDays)} يوماً</div>`;
+  const s = Math.floor(ms/1000), hh = Math.floor(s%86400/3600), mm = Math.floor(s%3600/60), ss = s%60, C = 2*Math.PI*50, p2 = n => digAr(String(n).padStart(2,'0'));
+  return `<div class="dv-net">${digAr(d)} <small style="font-size:13px;font-weight:800;opacity:.8">${d===0?'أقل من يوم':d===1?'يوم':'أيام'}</small></div>
+    <div class="dv-cap">${monthsLeftTxt(ms)}</div>
+    <div class="evr-hms" dir="ltr">${p2(hh)} : ${p2(mm)} : ${p2(ss)}</div>
+    <div class="dv-split"><i style="width:${pct.toFixed(1)}%;background:var(--bg)"></i><i style="width:${(100-pct).toFixed(1)}%;background:color-mix(in srgb,var(--bg) 22%,transparent)"></i></div>
+    <div class="dv-lg"><span>اقتراب <b>${fmtNum(Math.floor(pct))}٪</b></span><span>آخر ${fmtNum(wDays)} يوماً</span></div>`;
 }
 function clkTick(){
   const rows = document.querySelectorAll('.cd3-row[data-t],.fc-live[data-t]');
@@ -4968,6 +5034,7 @@ function clkTick(){
   rows.forEach(r=>{ if (r.offsetParent===null) return; const ms = +r.dataset.t - Date.now(), live = r.classList.contains('fc-live');
     if (ms<=0){ expired = true; if (live){ r.removeAttribute('data-t'); r.innerHTML = '<div class="fc-done">🎉 حان الموعد</div>'; } }
     else r.innerHTML = live ? evLiveHtml(ms, +r.dataset.w || 60) : clockRings(ms); });
+  document.querySelectorAll('[data-mo]').forEach(el=>{ const ms = +el.dataset.mo - Date.now(); if (ms>0) el.textContent = monthsLeftTxt(ms); });
   if (expired) renderPlanTabs();
 }
 function clkStart(){ clkTick(); if (!_clkTimer) _clkTimer = setInterval(clkTick,1000); }
@@ -5120,12 +5187,7 @@ function renderStampCountdown(info){
 }
 function digAr(t){ return state.settings.numberStyle==='arabic' ? String(t).replace(/\d/g, x=>'٠١٢٣٤٥٦٧٨٩'[x]) : String(t); }
 // صف الساعة القلّابة (أيام : ساعات : دقائق : ثوانٍ) — يستخدمه عدّاد نزول الراتب وبطاقة أقرب مناسبة
-function flipRowHtml(ms){
-  const s = Math.floor(Math.max(0,ms)/1000);
-  const parts = [[Math.floor(s/86400),'يوم'],[Math.floor(s%86400/3600),'ساعة'],[Math.floor(s%3600/60),'دقيقة'],[s%60,'ثانية']];
-  const unit = ([n,l]) => { const t = String(n).padStart(2,'0'); return `<div class="fc-u"><div class="fc-t${t.length>2?' l3':''}">${digAr(t)}</div><small>${l}</small></div>`; };
-  return `<div class="fc-row">${parts.map(unit).join('<div class="fc-sep">:</div>')}</div>`;
-}
+
 function updateStampCountdownTick(){
   const el = document.getElementById('db-countdown');
   if (!el || !stampCountdownTarget) return;
@@ -5143,11 +5205,14 @@ function updateStampCountdownTick(){
   const pct = span>0 ? Math.max(0, Math.min(100, ((now - stampCountdownStart)/span)*100)) : 100;
   const done = diffMs<=0;
   const tg = stampCountdownTarget, when = `${DAY_NAMES[tg.getDay()]} ${tg.getDate()} ${MONTH_NAMES[tg.getMonth()]} · ${digAr(String(tg.getHours()).padStart(2,'0')+':'+String(tg.getMinutes()).padStart(2,'0'))}`;
-  el.innerHTML = `<div class="cd2 fc">
+  el.innerHTML = `<div class="cd2 cdr">
     <div class="cd2-h">${done ? '🎉 حان موعد نزول الراتب' : '⏳ باقي على نزول الراتب'}</div>
+    <div class="cdr-ring">
+      <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="50" fill="none" stroke="var(--clock-num,var(--bg))" stroke-opacity=".18" stroke-width="10"/><circle cx="60" cy="60" r="50" fill="none" stroke="var(--accent2)" stroke-width="10" stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="${(314.16*Math.min(100,Math.max(0,pct))/100).toFixed(1)} 314.2"/></svg>
+      <div class="cdr-c"><b>${digAr(parts[0][0])}</b><small>${parts[0][0]===1?'يوم':'أيام'}</small></div>
+    </div>
+    <div class="cdr-hms" dir="ltr">${[1,2,3].map(i=>digAr(String(parts[i][0]).padStart(2,'0'))).join(' : ')}</div>
     <div class="fc-when">${when}</div>
-    ${flipRowHtml(diffMs)}
-    <div class="cd2-bar"><i style="width:${pct.toFixed(1)}%"></i></div>
     <div class="cd2-f">مرّ ${fmtNum(Math.floor(pct))}٪ من الدورة${done ? '' : ' · باقي '+fmtNum(parts[0][0])+(parts[0][0]===1?' يوم':parts[0][0]===2?' يومان':parts[0][0]<=10?' أيام':' يوماً')}</div>
   </div>`;
 }
@@ -7111,8 +7176,20 @@ function txCatGroups(type){
     added: cats.filter(c=>!defaultIds.includes(c.id)),
   };
 }
+let _txTransferOnly = false, _txShowTransfer = false;
 function populateCatSelect(type){
-  const { basic:basicCats, savings:savingsCats, added:addedCats } = txCatGroups(type);
+  let { basic:basicCats, savings:savingsCats, added:addedCats } = txCatGroups(type);
+  if (_txTransferOnly){
+    const pick = ids => ids.map(id=>state.categories.find(c=>c.id===id)).filter(Boolean);
+    basicCats = pick(['t1']);
+    savingsCats = pick(['b1','b2']);
+    addedCats = [];
+  } else if (!_txShowTransfer){
+    const hide = ['t1','b1','b2'];
+    basicCats = basicCats.filter(c=>!hide.includes(c.id));
+    savingsCats = savingsCats.filter(c=>!hide.includes(c.id));
+    addedCats = addedCats.filter(c=>!hide.includes(c.id));
+  }
   const sel = document.getElementById('tx-cat');
   const prevVal = sel.value;
   const optHtml = c => `<option value="${c.id}">${esc(c.emoji)} ${esc(c.name)}</option>`;
@@ -7185,7 +7262,12 @@ function txcUp(){
   if (!d.moved) return;
   if (d.target!==d.id) reorderTxCat(d.id, d.target);
 }
-function pickTxCat(id){ document.getElementById('tx-cat').value = id; syncTxCatChips(); }
+function pickTxCat(id){
+  document.getElementById('tx-cat').value = id;
+  if (id==='b1') setTxType('expense');
+  else if (id==='b2') setTxType('income');
+  syncTxCatChips();
+}
 function syncTxCatChips(){
   const v = document.getElementById('tx-cat').value;
   const pw = document.getElementById('tx-person-wrap'); if (pw) pw.style.display = v==='t1' ? '' : 'none';
@@ -7262,8 +7344,6 @@ function syncMonthGridSwitch(){
   const tg = document.getElementById('an-grid-toggle'); if (tg) tg.classList.toggle('on', on);
   const sub = document.getElementById('an-grid-sub');
   if (sub) sub.textContent = on ? 'مفعّل — كل مربع دورة راتب بدأت في هذه السنة، من يوم نزول الراتب.' : 'معطّل — كل مربع شهر ميلادي.';
-  const sm = document.getElementById('an-grid-small');
-  if (sm) sm.textContent = on ? 'دورات الراتب' : 'الاثني عشر شهراً';
 }
 function toggleMonthGridCycle(){
   state.settings.monthGridCycle = !state.settings.monthGridCycle;
@@ -7408,7 +7488,9 @@ function saveTransfer(){
   showToast(`✅ تم تنفيذ التحويل (${dirLabel}): ${fmt(amount)}`);
 }
 
-function openTxModal(dateStr){
+function openTxModal(dateStr, transferOnly){
+  _txTransferOnly = !!transferOnly;
+  _txShowTransfer = false;
   state.editingTx = null;
   document.getElementById('tx-title').textContent='عملية جديدة';
   document.getElementById('tx-amount').value='';
@@ -7421,8 +7503,20 @@ function openTxModal(dateStr){
   openSheet('sheet-tx');
   setTimeout(()=>{ const a = document.getElementById('tx-amount'); if (a && !state.editingTx) a.focus(); }, 150);
 }
+function openTxModalTransfer(dateStr){
+  openTxModal(dateStr, true);
+  const sel = document.getElementById('tx-cat');
+  if (sel && [...sel.options].some(o => o.value === 't1')) sel.value = 't1';
+  setTxType('expense');
+  sel.value = 't1';
+  syncTxCatChips();
+  const title = document.getElementById('tx-title');
+  if (title) title.textContent = 'تحويل / استقبال';
+}
 function editTx(id){
+  _txTransferOnly = false;
   const t = state.transactions.find(x=>x.id===id); if(!t) return;
+  _txShowTransfer = ['t1','b1','b2'].includes(t.category);
   state.editingTx = id;
   document.getElementById('tx-title').textContent='تعديل العملية';
   document.getElementById('tx-amount').value=t.amount;
@@ -7498,6 +7592,7 @@ function fillSettingsForm(){
   document.getElementById('st-salary').value = state.settings.salary||'';
   document.getElementById('st-payday').value = state.settings.payday||'';
   document.getElementById('st-payday-time').value = state.settings.paydayTime||'09:00';
+  _ptOpen = false; renderPaydayTimeBox();
   document.getElementById('st-currency').value = state.settings.currency;
   document.getElementById('st-goal').value = state.settings.savingsGoal||'';
   document.getElementById('st-savings-goal').value = state.settings.savingsAccountGoal||'';
@@ -7528,10 +7623,60 @@ function toggleLinkSavings(){
   refreshAll();
   showToast(state.settings.linkSavingsToReserve ? '🔗 تم تفعيل ربط الادخار بالمخزون' : '🔓 تم فصل الادخار عن المخزون مجدداً');
 }
+let _ptOpen = false, _ptPend = null;
+function ptParts(v){ const m = /^(\d{2}):(\d{2})$/.exec(v||''); return m ? [+m[1], +m[2]] : [9,0]; }
+function ptStr(h,m){ return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
+let _ptDayPend = null;
+function stepPay(k,n){
+  let [h,m] = ptParts(_ptPend || document.getElementById('st-payday-time').value || '09:00');
+  let d = _ptDayPend ?? (Number(document.getElementById('st-payday').value) || state.settings.payday || 27);
+  if (k==='d') d = ((d-1+n+31)%31)+1;
+  if (k==='h') h = (h+n+24)%24;
+  if (k==='m') m = (m+n+60)%60;
+  _ptDayPend = d; _ptPend = ptStr(h,m); renderPaydayTimeBox();
+}
+function renderPaydayTimeBox(){
+  const box = document.getElementById('st-pay-box'); if (!box) return;
+  const dayCur = Number(document.getElementById('st-payday').value) || state.settings.payday || 27;
+  const timeCur = document.getElementById('st-payday-time').value || '09:00';
+  if (!_ptOpen){
+    _ptDayPend = null; _ptPend = null;
+    const [h,m] = ptParts(timeCur);
+    box.innerHTML = `<div class="pay-lbls"><span class="pay-d">اليوم الافتراضي</span><span class="pay-t">⏰ الساعة المتوقعة</span><span></span></div><div class="pay-card"><div class="pay-v pay-d">${digAr(dayCur)}</div><div class="pay-sep"></div><div class="pay-v pay-t">${digAr(ptStr(h,m))}</div><button type="button" class="btn btn-ghost btn-sm" onclick="openPaydayTimePick()">✏️ تغيير</button></div>`;
+    return;
+  }
+  const dd = _ptDayPend ?? dayCur;
+  const [ph,pm] = ptParts(_ptPend || timeCur);
+  const mins = Array.from({length:12}, (_,i)=>i*5);
+  if (!mins.includes(pm)){ mins.push(pm); mins.sort((a,b)=>a-b); }
+  const mns = mins.map(x=>`<button type="button" class="td-q${x===pm?' on':''}" onclick="setPtM(${x})">${digAr(String(x).padStart(2,'0'))}</button>`).join('');
+  const row = (val, k, step) => `<div class="pt-row"><button type="button" class="arrow" onclick="stepPay('${k}',${-step})" aria-label="السابق"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button><div class="pt-val"><b>${val}</b></div><button type="button" class="arrow" onclick="stepPay('${k}',${step})" aria-label="التالي"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>`;
+  box.innerHTML = `<div class="td-pick">
+    <div class="dp-step">يوم النزول من الشهر</div>${row(digAr(dd),'d',1)}
+    <div class="dp-step" style="margin-top:8px">الساعة</div>${row(digAr(String(ph).padStart(2,'0')),'h',1)}
+    <div class="dp-step" style="margin-top:8px">الدقائق</div>${row(digAr(String(pm).padStart(2,'0')),'m',5)}
+    <div class="td-quick">${mns}</div>
+    <div class="td-prev" style="margin-bottom:8px"><b>يوم ${digAr(dd)} · ${digAr(ptStr(ph,pm))} ${ph<12?'صباحاً':'مساءً'}</b></div>
+    <div class="row-gap"><button type="button" class="btn btn-accent btn-block" onclick="confirmPaydayTime()">✅ تأكيد</button><button type="button" class="btn btn-ghost btn-block" onclick="cancelPaydayTime()">إلغاء</button></div>
+  </div>`;
+}
+
+function openPaydayTimePick(){ _ptOpen = true; _ptPend = document.getElementById('st-payday-time').value || '09:00'; renderPaydayTimeBox(); }
+
+
+function setPtM(m){ const [h] = ptParts(_ptPend); _ptPend = ptStr(h,m); renderPaydayTimeBox(); }
+function confirmPaydayTime(){ document.getElementById('st-payday-time').value = _ptPend; if (_ptDayPend!=null) document.getElementById('st-payday').value = _ptDayPend; _ptOpen = false; renderPaydayTimeBox(); showToast('✅ تم تحديد الساعة — اضغط حفظ الإعدادات'); }
+function cancelPaydayTime(){ _ptOpen = false; renderPaydayTimeBox(); }
 function saveSettingsForm(){
+  const pdRaw = document.getElementById('st-payday').value.trim();
+  const ptRaw = document.getElementById('st-payday-time').value.trim();
+  const pd = pdRaw==='' ? (state.settings.payday||27) : Number(pdRaw);
+  if (!(Number.isInteger(pd) && pd>=1 && pd<=31)){ showToast('⚠️ يوم النزول يجب أن يكون بين 1 و31 — لم يُحفظ شيء'); return; }
+  const pt = ptRaw==='' ? (state.settings.paydayTime||'09:00') : ptRaw;
+  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(pt)){ showToast('⚠️ الساعة غير صحيحة — لم يُحفظ شيء'); return; }
+  state.settings.payday = pd;
+  state.settings.paydayTime = pt;
   state.settings.salary = parseFloat(document.getElementById('st-salary').value)||0;
-  state.settings.payday = parseInt(document.getElementById('st-payday').value)||27;
-  state.settings.paydayTime = document.getElementById('st-payday-time').value || '09:00';
   state.settings.currency = document.getElementById('st-currency').value;
   state.settings.savingsGoal = parseFloat(document.getElementById('st-goal').value)||0;
   state.settings.savingsAccountGoal = parseFloat(document.getElementById('st-savings-goal').value)||0;
@@ -7542,7 +7687,7 @@ function saveSettingsForm(){
     state.settings.paydayByMonth = map;
   }
   save(); refreshAll();
-  showToast('✅ تم حفظ الإعدادات');
+  showToast(`✅ تم حفظ الإعدادات — النزول: يوم ${digAr(state.settings.payday)} الساعة ${digAr(state.settings.paydayTime)}`, 3600);
 }
 let _catsExpanded = false;
 let _catActiveTab = 'expense';
@@ -7866,7 +8011,7 @@ function exportTransactionsCSV(){
     const c = getCat(t.category);
     return [t.date, t.type==='income'?'دخل':'صرف', c.name, t.amount, t.note||'', t.person||''];
   });
-  downloadCSV(`mizaniyati_عمليات_${dateKey(localToday())}.csv`, ['التاريخ','النوع','الفئة','المبلغ','ملاحظة','الشخص'], rows);
+  downloadCSV(`dawrati_عمليات_${dateKey(localToday())}.csv`, ['التاريخ','النوع','الفئة','المبلغ','ملاحظة','الشخص'], rows);
 }
 let _lastCarryRows = [];
 let _carryView = [];
@@ -7876,19 +8021,19 @@ function exportDetailedTableCSV(){
   if (anCycle()){
     if (!_lastCycleRows.length){ showToast('⚠️ ما فيه بيانات للتصدير'); return; }
     const st = { green:'منتظم', yellow:'مرتفع', red:'مرتفع جدًا', purple:'تجاوز كامل' };
-    downloadCSV(`mizaniyati_الدورات_${_lastAnalysisYear}.csv`, ['الدورة','الدخل','المصروف','المتبقي','النسبة٪','الحالة'],
+    downloadCSV(`dawrati_الدورات_${_lastAnalysisYear}.csv`, ['الدورة','الدخل','المصروف','المتبقي','النسبة٪','الحالة'],
       _lastCycleRows.map(r=>[`${dateKey(r.start)} ← ${dateKey(r.end)}`, r.income, r.expense, r.reserve, Math.round(r.carryPct), st[r.carryStatus]||'']));
     return;
   }
   if (!_lastCarryRows.length){ showToast('⚠️ ما فيه بيانات للتصدير'); return; }
   const chipTextMap = { green:'منتظم', yellow:'مرتفع', red:'مرتفع جدًا', purple:'تجاوز كامل', gray:'—' };
   const rows = _lastCarryRows.map(r => [r.name, r.totalIncome, r.hasData?r.expense:'', r.carryOut, r.hasData?Math.round(r.carryPct):'', chipTextMap[r.carryStatus]]);
-  downloadCSV(`mizaniyati_الجدول_التفصيلي_${_lastAnalysisYear}.csv`, ['الشهر','الدخل','المصروف','المتبقي','النسبة٪','الحالة'], rows);
+  downloadCSV(`dawrati_الجدول_التفصيلي_${_lastAnalysisYear}.csv`, ['الشهر','الدخل','المصروف','المتبقي','النسبة٪','الحالة'], rows);
 }
 function exportCarryTableCSV(){
   if (!_carryView.length){ showToast('⚠️ ما فيه بيانات للتصدير'); return; }
   const rows = _carryView.map(r => [r.name, r.available, r.hasData?r.expense:'', r.carryOut]);
-  downloadCSV(`mizaniyati_جدول_الترحيل_${_lastAnalysisYear}.csv`, ['الشهر','المتاح','المصروف','يرحّل للي بعده'], rows);
+  downloadCSV(`dawrati_جدول_الترحيل_${_lastAnalysisYear}.csv`, ['الشهر','المتاح','المصروف','يرحّل للي بعده'], rows);
 }
 
 function exportBackup(){
@@ -7941,7 +8086,7 @@ function downloadBackupFallback(){
     const data = document.getElementById('backup-textarea').value;
     const blob = new Blob([data], {type:'application/json'});
     const url = URL.createObjectURL(blob);
-    const filename = `mizaniyati_${dateKey(localToday())}.json`;
+    const filename = `dawrati_${dateKey(localToday())}.json`;
     const a = document.createElement('a');
     a.href = url; a.download = filename; a.style.display = 'none';
     document.body.appendChild(a); a.click();
@@ -8064,17 +8209,18 @@ function sanitizeBackup(d){
   if (Array.isArray(src.notifications)){
     const seenN = new Set();
     st.notifications = src.notifications
-      .filter(n=>n && typeof n==='object' && n.type==='cycle' && isValidDateStr(n.sStr) && isValidDateStr(n.eStr) && Number(n.at)>0 && Number(n.at)<4102444800000)
+      .filter(n=>n && typeof n==='object' && ['cycle','limit','due','sub','event'].includes(n.type) && Number(n.at)>0 && Number(n.at)<4102444800000 && (n.type!=='cycle' || (isValidDateStr(n.sStr) && isValidDateStr(n.eStr))))
       .slice(0,200)
-      .map(n=>({ id:(typeof n.id==='string' && SAFE_ID_RE.test(n.id)) ? n.id : uid(), type:'cycle', at:Number(n.at), read:n.read===true, pinned:n.pinned===true, sStr:n.sStr, eStr:n.eStr, psStr:isValidDateStr(n.psStr)?n.psStr:'', peStr:isValidDateStr(n.peStr)?n.peStr:'' }))
+      .map(n=>({ id:(typeof n.id==='string' && SAFE_ID_RE.test(n.id)) ? n.id : uid(), type:n.type, k:typeof n.k==='string'?n.k.slice(0,120):'', title:typeof n.title==='string'?n.title.slice(0,120):'', body:typeof n.body==='string'?n.body.slice(0,240):'', icon:typeof n.icon==='string'?n.icon.slice(0,8):'', color:(typeof n.color==='string' && /^var\(--[a-z0-9-]+\)$/.test(n.color))?n.color:'', go:(n.go && typeof n.go==='object' && !Array.isArray(n.go))?n.go:null, at:Number(n.at), read:n.read===true, pinned:n.pinned===true, sStr:isValidDateStr(n.sStr)?n.sStr:'', eStr:isValidDateStr(n.eStr)?n.eStr:'', psStr:isValidDateStr(n.psStr)?n.psStr:'', peStr:isValidDateStr(n.peStr)?n.peStr:'' }))
       .filter(n=>{ if (seenN.has(n.id)) return false; seenN.add(n.id); return true; });
   }
   if (isValidDateStr(src.notifProcessed)) st.notifProcessed = src.notifProcessed;
+  if (Array.isArray(src.notifSeen)) st.notifSeen = src.notifSeen.filter(x=>typeof x==='string').slice(-600).map(x=>x.slice(0,120));
 
   return { transactions: txs, categories: cats.length ? cats : null, settings: st, skipped };
 }
 function processRestoreData(d, mode, onDone){
-  if (!d || typeof d!=='object' || !Array.isArray(d.transactions)) { showToast('⚠️ هذا النص/الملف ليس نسخة ميزانيتي صحيحة'); return; }
+  if (!d || typeof d!=='object' || !Array.isArray(d.transactions)) { showToast('⚠️ هذا النص/الملف ليس نسخة دورتي صحيحة'); return; }
   const clean = sanitizeBackup(d);
   if (d.transactions.length && !clean.transactions.length){ showToast('⚠️ ما فيه أي عملية صالحة بالملف — ما تم استيراد شي'); return; }
   const skipNote = (clean.skipped.tx || clean.skipped.cat) ? `<br>⚠️ تم تجاهل ${clean.skipped.tx} عملية و${clean.skipped.cat} فئة غير صالحة` : '';
@@ -8127,7 +8273,7 @@ function restoreBackup(mode){
   const fileInput = document.getElementById('restore-file');
   const file = fileInput.files[0];
   if (!file) { showToast('⚠️ اختر ملف JSON أولاً'); return; }
-  if (file.size > 20*1024*1024) { showToast('⚠️ الملف كبير جداً (أكثر من 20 ميجا) — ما يبدو نسخة ميزانيتي'); return; }
+  if (file.size > 20*1024*1024) { showToast('⚠️ الملف كبير جداً (أكثر من 20 ميجا) — ما يبدو نسخة دورتي'); return; }
   const reader = new FileReader();
   reader.onload = e => {
     let d;
@@ -8155,7 +8301,7 @@ const RESET_ACTS = {
   paydays:{ i:'📅', t:'مسح أيام النزول لكل شهر', m:'سيُمسح التحديد اليدوي لكل شهر، ويرجع الاكتشاف التلقائي من عمليات الراتب واليوم الافتراضي.', d:'تم مسح أيام النزول', f(){ state.settings.paydayByMonth = {}; } },
   limits:{ i:'🏷️', t:'إلغاء حدود الفئات', m:'سيُمسح الحد الشهري لكل فئات الصرف.', d:'تم إلغاء حدود الفئات', f(){ state.categories.forEach(c=>{ if (c.limit) c.limit = 0; }); } },
   plans:{ i:'🧭', t:'مسح خطط التخطيط', m:'ستُمسح تقسيمات الرواتب المحفوظة لكل الدورات.', d:'تم مسح خطط التخطيط', f(){ delete state.settings.planCycles; resetPlanMemory(); } },
-  settings:{ i:'⚙️', t:'إعادة ضبط كل الإعدادات', m:'الراتب ويوم النزول والعملة والأهداف والمظهر سترجع للافتراضي. عملياتك وفئاتك تبقى كما هي.', d:'تمت إعادة ضبط الإعدادات', f(){ const lb = state.settings.lastBackupAt; const keep = { events:state.settings.events, debts:state.settings.debts, subs:state.settings.subs, notifications:state.settings.notifications, notifProcessed:state.settings.notifProcessed }; state.settings = JSON.parse(JSON.stringify(SETTINGS_DEFAULTS)); state.settings.lastBackupAt = lb; Object.entries(keep).forEach(([k,v])=>{ if (v) state.settings[k] = v; }); resetPlanMemory(); applyTheme('pop'); applyFontAndNumberSettings(); applyBg(); } },
+  settings:{ i:'⚙️', t:'إعادة ضبط كل الإعدادات', m:'الراتب ويوم النزول والعملة والأهداف والمظهر سترجع للافتراضي. عملياتك وفئاتك تبقى كما هي.', d:'تمت إعادة ضبط الإعدادات', f(){ const lb = state.settings.lastBackupAt; const keep = { events:state.settings.events, debts:state.settings.debts, subs:state.settings.subs, notifications:state.settings.notifications, notifProcessed:state.settings.notifProcessed, notifSeen:state.settings.notifSeen }; state.settings = JSON.parse(JSON.stringify(SETTINGS_DEFAULTS)); state.settings.lastBackupAt = lb; Object.entries(keep).forEach(([k,v])=>{ if (v) state.settings[k] = v; }); resetPlanMemory(); applyTheme('pop'); applyFontAndNumberSettings(); applyBg(); } },
   tx:{ i:'🧾', t:'حذف العمليات فقط', m:'ستُحذف كل العمليات المسجّلة نهائياً، وتبقى الفئات والإعدادات. خذ نسخة احتياطية أولاً.', d:'تم حذف كل العمليات', f(){ state.transactions = []; state.settings.notifications = []; delete state.settings.notifProcessed; } },
 };
 function resetAct(k){
@@ -8165,7 +8311,7 @@ function resetAct(k){
 }
 function askResetAll(){
   showConfirm('حذف كل البيانات','لا يمكن التراجع عن هذا الإجراء. هل أنت متأكد؟','⚠️', ()=>{
-    try { localStorage.removeItem('mizaniyati_v2'); localStorage.removeItem('mizaniyati_bgimg'); } catch(e){}
+    try { localStorage.removeItem(dataKey()); localStorage.removeItem('mizaniyati_bgimg'); } catch(e){}
     location.reload();
   });
 }
@@ -8716,7 +8862,7 @@ document.querySelectorAll('.sheet-overlay').forEach(el=>{
 function refreshAll(){
   const active = document.querySelector('.page.active')?.id?.replace('page-','') || 'dashboard';
   showPage(active);
-  updateNotifBadge();
+  checkNotifications(true, false);
 }
 
 // ---------- الخلفية: ثابتة + متحركة + صورة من الاستديو ----------
@@ -9145,9 +9291,80 @@ function checkNotifications(force, quiet){
   });
   if (done.length){ const newest = done[done.length-1].eStr; if (!last || newest > last){ state.settings.notifProcessed = newest; changed = true; } }
   if (fresh) state.settings.notifications = list.sort((a,b)=>a.at-b.at).slice(-200);
-  if (changed) save();
+  fresh += checkReminders();
+  if (fresh || changed) save();
   updateNotifBadge();
-  if (fresh && !quiet) showToast(`✉️ وصلك ${fresh===1?'تنبيه جديد':fmtNum(fresh)+' تنبيهات جديدة'}: ملخص دورة الراتب`, 3600);
+  if (fresh && !quiet) showToast(`✉️ وصلك ${fresh===1?'تنبيه جديد':fmtNum(fresh)+' تنبيهات جديدة'}`, 3600);
+}
+function checkReminders(){
+  const list = notifList();
+  const seen = state.settings.notifSeen || (state.settings.notifSeen = []);
+  const have = new Set([...seen, ...list.map(n=>n.k).filter(Boolean)]);
+  const today = localToday(), now = Date.now();
+  let added = 0;
+  const daysTo = s => Math.round((parseLocalDate(s) - today)/86400000);
+  const dl = k => k===0 ? 'اليوم' : (k===1 ? 'بعد يوم' : `بعد ${fmtNum(k)} ${k<=10?'أيام':'يوماً'}`);
+  const add = (k, type, icon, color, title, body, go) => {
+    if (have.has(k)) return;
+    have.add(k); seen.push(k);
+    list.push({ id:uid(), type, k, at:now, read:false, pinned:false, icon, color, title, body, go, sStr:'', eStr:'' });
+    added++;
+  };
+  // 1) حدود الفئات للشهر الحالي (80٪ و100٪)
+  const y = today.getFullYear(), m = today.getMonth(), mk = `${y}-${String(m+1).padStart(2,'0')}`;
+  const spent = {};
+  excludeSavingsAndTransfers(getMonthTxs(y,m)).forEach(t=>{ if (t.type==='expense') spent[t.category] = (spent[t.category]||0) + t.amount; });
+  state.categories.forEach(c=>{
+    if (!(c.limit>0)) return;
+    const sp = spent[c.id]||0, pct = sp/c.limit*100;
+    if (pct>=100) add(`lim100:${c.id}:${mk}`, 'limit', c.emoji||'🎯', 'var(--expense)', `تجاوزت حد «${c.name}»`, `صرفت ${fmt(sp)} من حد ${fmt(c.limit)} هذا الشهر`, {p:'month'});
+    else if (pct>=80) add(`lim80:${c.id}:${mk}`, 'limit', c.emoji||'🎯', 'var(--accent2)', `اقتربت من حد «${c.name}»`, `صرفت ${fmtNum(Math.round(pct))}٪ من حد ${fmt(c.limit)} هذا الشهر`, {p:'month'});
+  });
+  // 2) الديون: قبل الاستحقاق بثلاثة أيام، ويوم الاستحقاق، ومتأخرة (حتى 30 يوماً)
+  (state.settings.debts||[]).forEach(d=>{
+    (d.items||[]).forEach(x=>{
+      if (!x.due) return;
+      const left = x.a - itPaid(d, x.id);
+      if (!(left>1e-9)) return;
+      const k = daysTo(x.due), body = `${d.dir==='owe'?'عليك':'لك'} · ${d.person} — المتبقي ${fmt(left)}`;
+      if (k<0 && k>=-NOTIF_TTL_DAYS) add(`late:${x.id}:${x.due}`, 'due', '⏰', 'var(--expense)', 'دين متأخر', body, {d:1, id:d.id});
+      else if (k>=0 && k<=3) add(`due:${x.id}:${x.due}`, 'due', '⏰', 'var(--accent2)', `دين يستحق ${dl(k)}`, body, {d:1, id:d.id});
+    });
+  });
+  // 3) تجديد الاشتراكات قبل يومين
+  (state.settings.subs||[]).forEach(s=>{
+    const ns = dateKey(subNext(s)), k = daysTo(ns);
+    if (k>=0 && k<=2) add(`sub:${s.id}:${ns}`, 'sub', '🔄', 'var(--accent)', `${s.name}: ${s.auto===false?'ينتهي':'يتجدد'} ${dl(k)}`, `${fmt(s.p)} ${s.cyc==='y'?'سنوياً':'شهرياً'}`, {s:1, id:s.id});
+  });
+  // 4) المناسبات قبل ثلاثة أيام
+  (state.settings.events||[]).forEach(e=>{
+    const t = evTime(e), es = dateKey(t), k = daysTo(es);
+    if (k>=0 && k<=3 && t>new Date()) add(`ev:${e.id}:${es}`, 'event', e.icon||'⏳', 'var(--accent)', `${e.name}: ${dl(k)}`, `${DAY_NAMES[t.getDay()]} ${fmtNum(t.getDate())} ${MONTH_NAMES[t.getMonth()]}${e.time?' · '+digAr(e.time):''}`, {e:1, id:e.id});
+  });
+  if (added) state.settings.notifSeen = seen.slice(-600);
+  return added;
+}
+function notifGo(id){
+  const n = notifList().find(x=>x.id===id); if (!n || !n.go) return;
+  const g = n.go, ok = v => typeof v==='string' && SAFE_ID_RE.test(v);
+  closeSheet('sheet-notif');
+  if (g.p==='month'){ showPage('month'); return; }
+  if (g.d && ok(g.id)) return openDebtDetails(g.id);
+  if (g.s && ok(g.id)) return openSubSheet(g.id);
+  if (g.e && ok(g.id)) return openEventDetails(g.id);
+}
+function genNotifCard(n){
+  const col = n.color || 'var(--accent)';
+  return `<div class="nt-c${n.read?'':' new'}" style="--c:${col}">
+    <div class="nt-h">
+      <span class="nt-ic">${esc(n.icon||'🔔')}</span>
+      <div class="nt-t"><b>${esc(n.title||'تنبيه')}${n.read?'':' <i class="nt-new">جديد</i>'}</b><small>⏰ ${notifTimeText(n.at)}</small></div>
+      <div class="nt-btns"><button class="${n.pinned?'on':''}" onclick="toggleNotifPin('${n.id}')" aria-label="تثبيت التنبيه" aria-pressed="${n.pinned}">📌</button><button onclick="deleteNotif('${n.id}')" aria-label="حذف التنبيه">🗑️</button></div>
+    </div>
+    ${n.body?`<div class="nt-msg">${esc(n.body)}</div>`:''}
+    <div class="nt-ttl">${n.pinned?'📌 مثبّت — لا يُحذف تلقائياً':'⏳ يُحذف تلقائياً '+notifDeleteIn(n.at)}</div>
+    ${n.go?`<div class="sb-rn" style="margin-top:8px"><button onclick="notifGo('${n.id}')">عرض ›</button></div>`:''}
+  </div>`;
 }
 function notifCountText(n){ return n===0 ? 'لا توجد تنبيهات' : n===1 ? 'تنبيه واحد' : n===2 ? 'تنبيهان' : `${fmtNum(n)} ${n<=10?'تنبيهات':'تنبيهاً'}`; }
 function notifTimeText(ms){
@@ -9165,6 +9382,7 @@ function renderNotifSheet(){
   const firstTx = state.transactions.length ? state.transactions.map(t=>t.date).sort()[0] : '';
   const range = (s,e) => { const a = parseLocalDate(s), b = parseLocalDate(e); return `${a.getDate()} ${MONTH_NAMES[a.getMonth()]} ← ${b.getDate()} ${MONTH_NAMES[b.getMonth()]}`; };
   const cards = list.map(n=>{
+    if (n.type!=='cycle') return genNotifCard(n);
     const spend = cycleFlow(n.sStr, n.eStr).spend;
     let cmp, k = 'var(--ink-soft)', note = '';
     if (n.psStr){
@@ -9233,6 +9451,95 @@ function clearNotifs(){
   });
 }
 
+// ---------- تسجيل الدخول بحساب Google (تعريف محلي على الجهاز) ----------
+// ضع معرّف العميل (Client ID) من Google Cloud Console بين علامتي التنصيص:
+const GOOGLE_CLIENT_ID = '';
+const G_PROFILE_KEY = 'dawrati_g_profile';
+const INITIAL_SETTINGS = JSON.parse(JSON.stringify(state.settings));
+function gCurrent(){
+  try { const p = JSON.parse(localStorage.getItem(G_PROFILE_KEY) || 'null'); return (p && /^\d+$/.test(String(p.sub))) ? p : null; } catch(e){ return null; }
+}
+// الضيف يستخدم المفتاح القديم نفسه، فلا تضيع بياناته
+function dataKey(){ const p = gCurrent(); return p ? 'dawrati_g_' + p.sub : 'mizaniyati_v2'; }
+function jwtPayload(t){
+  const b = String(t).split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+  const bin = atob(b.padEnd(b.length + (4 - b.length % 4) % 4, '='));
+  return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
+}
+function accApplyUI(){
+  const p = gCurrent(), sub = document.getElementById('topbar-sub');
+  if (sub) sub.textContent = p ? 'مرحباً، ' + (p.name || p.email || '') : 'دفتر حسابك اليومي';
+}
+function accSwitchData(){
+  _memo.gen++;
+  state.transactions = []; state.categories = DEFAULT_CATEGORIES.slice();
+  state.settings = JSON.parse(JSON.stringify(INITIAL_SETTINGS));
+  resetPlanMemory();
+  load();
+  applyTheme(state.settings.theme); applyFontAndNumberSettings(); applyBg();
+  accApplyUI(); refreshAll();
+}
+function openAccountSheet(){ renderAccountSheet(); openSheet('sheet-account'); gRender(); }
+function renderAccountSheet(){
+  const box = document.getElementById('acc-body'); if (!box) return;
+  const p = gCurrent();
+  if (p){
+    const pic = /^https:\/\//.test(p.picture || '') ? `<img src="${esc(p.picture)}" alt="" referrerpolicy="no-referrer" style="width:64px;height:64px;border-radius:50%;border:2.5px solid var(--ink);object-fit:cover">` : '<span class="ce-big">🙂</span>';
+    box.innerHTML = `<div class="ce-hero">${pic}<div class="ce-ht"><b>${esc(p.name||'')}</b><small>${esc(p.email||'')}</small></div></div>
+      <div class="sal-note" style="margin:10px 0 14px">بياناتك محفوظة على هذا الجهاز ضمن حسابك. عند تسجيل الخروج تبقى محفوظة ويعود التطبيق إلى وضع الضيف.</div>
+      <button class="btn btn-accent btn-block" onclick="gLogout()">🔓 تسجيل الخروج</button>
+      <button class="btn btn-ghost btn-block" style="margin-top:8px;color:var(--expense)" onclick="gDelete()">🗑️ حذف الحساب وبياناته</button>`;
+    return;
+  }
+  box.innerHTML = `<div class="sal-note" style="margin-bottom:12px">سجّل الدخول بحساب Google لتنفصل بياناتك على هذا الجهاز عن الضيف. التسجيل تعريف محلي فقط، ولا تُزامَن البيانات مع أجهزة أخرى.</div>
+    ${GOOGLE_CLIENT_ID
+      ? `<div id="gsi-btn" style="display:flex;justify-content:center;min-height:44px"></div>`
+      : `<div class="sal-note" style="border:2px dashed var(--ink);border-radius:14px;padding:12px">⚠️ لم يُضبط معرّف Google بعد. ضع Client ID في أول الكود (GOOGLE_CLIENT_ID).</div>`}
+    <div class="sal-note" style="margin-top:10px">يعمل التسجيل فقط عند فتح الصفحة عبر https.</div>`;
+}
+function gRender(){
+  if (!GOOGLE_CLIENT_ID || gCurrent()) return;
+  const el = document.getElementById('gsi-btn'), gid = window.google && google.accounts && google.accounts.id;
+  if (!el || !gid) return;
+  gid.initialize({ client_id: GOOGLE_CLIENT_ID, callback: gHandle, auto_select: false, cancel_on_tap_outside: true });
+  gid.renderButton(el, { theme:'outline', size:'large', text:'signin_with', shape:'pill', locale:'ar' });
+}
+function gHandle(resp){
+  try {
+    const p = jwtPayload(resp.credential);
+    const okIss = p.iss === 'https://accounts.google.com' || p.iss === 'accounts.google.com';
+    if (p.aud !== GOOGLE_CLIENT_ID || !okIss) throw new Error('aud/iss');
+    if (!/^\d+$/.test(String(p.sub))) throw new Error('sub');
+    if (p.exp && p.exp * 1000 < Date.now()) throw new Error('expired');
+    const sub = String(p.sub), wasGuest = !gCurrent();
+    // أول دخول من الضيف: تُنسخ بياناته الحالية إلى الحساب إن لم يكن له بيانات
+    if (wasGuest && !localStorage.getItem('dawrati_g_' + sub)){
+      const guest = localStorage.getItem('mizaniyati_v2'); if (guest) localStorage.setItem('dawrati_g_' + sub, guest);
+    }
+    localStorage.setItem(G_PROFILE_KEY, JSON.stringify({
+      sub, name: String(p.name || '').slice(0,60),
+      email: String(p.email || '').slice(0,120),
+      picture: /^https:\/\//.test(String(p.picture || '')) ? String(p.picture) : ''
+    }));
+    closeSheet('sheet-account'); accSwitchData();
+    showToast('👋 أهلاً ' + (p.name || p.email || ''));
+  } catch(e){ showToast('⚠️ تعذّر تسجيل الدخول بحساب Google'); }
+}
+function gLogout(){
+  try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch(e){}
+  try { localStorage.removeItem(G_PROFILE_KEY); } catch(e){}
+  closeSheet('sheet-account'); accSwitchData();
+  showToast('تم تسجيل الخروج، بياناتك محفوظة في حسابك');
+}
+function gDelete(){
+  const p = gCurrent(); if (!p) return;
+  showConfirm('حذف البيانات', 'سيُحذف بياناتك من هذا الجهاز نهائياً، ولا يمكن التراجع. حساب Google نفسه لا يتأثر.', '🗑️', ()=>{
+    try { localStorage.removeItem('dawrati_g_' + p.sub); localStorage.removeItem(G_PROFILE_KEY); } catch(e){}
+    closeSheet('sheet-account'); accSwitchData();
+    showToast('🗑️ تم حذف بياناتك من هذا الجهاز');
+  });
+}
+
 // ---------- بدء التشغيل ----------
 load();
 if ((state.settings.debts||[]).some(d=>!Array.isArray(d.items))){ state.settings.debts = normDebts(state.settings.debts); save(); }
@@ -9241,6 +9548,7 @@ applyTheme(state.settings.theme);
 applyFontAndNumberSettings();
 applyBg();
 checkNotifications();
+accApplyUI();
 document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) checkNotifications(); });
 setInterval(()=>{ if (!document.hidden) checkNotifications(); }, 60000);
 showPage('dashboard');
