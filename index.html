@@ -2179,7 +2179,6 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
 .nt-ttl{ margin-top:7px; font-size:10px; font-weight:700; line-height:1.7; color:var(--ink-soft); }
 .nt-empty{ padding:34px 10px; text-align:center; font-size:13px; font-weight:800; line-height:2; color:var(--ink-soft); } .nt-empty small{ display:block; font-size:11px; font-weight:600; }
 </style>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
@@ -2188,7 +2187,7 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
   <div class="hdr" id="hdr">
   <header class="topbar">
     <div class="brand">
-      <button type="button" class="brand-mark disp" style="padding:0;border:none;cursor:pointer" onclick="openAccountSheet()" aria-label="الحساب">د</button>
+      <button type="button" class="brand-mark" style="padding:0;border:none;background:none;box-shadow:none;cursor:pointer;width:auto;height:auto" onclick="openSheet('sheet-account')" aria-label="حسابي"><svg viewBox="0 0 120 110" width="34" height="31" aria-hidden="true" style="display:block"><path d="M60 104 C10 70 4 44 4 30 C4 14 16 4 32 4 C44 4 54 11 60 22 C66 11 76 4 88 4 C104 4 116 14 116 30 C116 44 110 70 60 104Z" fill="var(--accent)"/></svg></button>
       <div class="brand-text">
         <span class="brand-title">دورتي</span>
         <span class="brand-sub" id="topbar-sub">دفتر حسابك اليومي</span>
@@ -3455,9 +3454,14 @@ input.bg-rng{ width:100%; padding:0; border:none; background:transparent; box-sh
 </div>
 
 <!-- ===================== SHEET: ACCOUNT ===================== -->
-<div class="sheet-overlay hidden" id="sheet-account"><div class="sheet">
-  <div class="sheet-title"><span>🙂 حسابي</span><button onclick="closeSheet('sheet-account')" aria-label="إغلاق">✕</button></div>
-  <div id="acc-body"></div>
+<div class="sheet-overlay hidden" id="sheet-account"><div class="sheet" style="text-align:center">
+  <div class="sheet-title"><span>حسابي</span><button onclick="closeSheet('sheet-account')" aria-label="إغلاق">✕</button></div>
+  <div style="margin:14px 0 10px">
+    <svg viewBox="0 0 120 110" width="132" height="121" aria-hidden="true">
+      <path d="M60 104 C10 70 4 44 4 30 C4 14 16 4 32 4 C44 4 54 11 60 22 C66 11 76 4 88 4 C104 4 116 14 116 30 C116 44 110 70 60 104Z" fill="var(--accent)"/>
+    </svg>
+  </div>
+  <p style="font-size:15px;font-weight:800;line-height:1.9;margin:0 6px">ما فيه تسجيل دخول ولا حساب ولا كلمة سر… الحساب الوحيد اللي تحتاجه هو راتبك 🙂</p>
 </div></div>
 
 <!-- ===================== SHEET: CONFIRM ===================== -->
@@ -3710,7 +3714,7 @@ function dedupeCategories(){
 function load() {
   const defaults = DEFAULT_CATEGORIES; // القيم الافتراضية المعرّفة أعلاه (تشمل أي فئات جديدة أضفناها لاحقاً)
   try {
-    const s = localStorage.getItem(dataKey());
+    const s = localStorage.getItem('mizaniyati_v2');
     if (s) {
       const d = JSON.parse(s);
       state.transactions = d.transactions || [];
@@ -3747,7 +3751,7 @@ let _saveFailNotified = false;
 function save() {
   _memo.gen++;
   try {
-    localStorage.setItem(dataKey(), JSON.stringify({
+    localStorage.setItem('mizaniyati_v2', JSON.stringify({
       transactions: state.transactions, categories: state.categories, settings: state.settings
     }));
     _saveFailNotified = false;
@@ -8311,7 +8315,7 @@ function resetAct(k){
 }
 function askResetAll(){
   showConfirm('حذف كل البيانات','لا يمكن التراجع عن هذا الإجراء. هل أنت متأكد؟','⚠️', ()=>{
-    try { localStorage.removeItem(dataKey()); localStorage.removeItem('mizaniyati_bgimg'); } catch(e){}
+    try { localStorage.removeItem('mizaniyati_v2'); localStorage.removeItem('mizaniyati_bgimg'); } catch(e){}
     location.reload();
   });
 }
@@ -9451,95 +9455,6 @@ function clearNotifs(){
   });
 }
 
-// ---------- تسجيل الدخول بحساب Google (تعريف محلي على الجهاز) ----------
-// ضع معرّف العميل (Client ID) من Google Cloud Console بين علامتي التنصيص:
-const GOOGLE_CLIENT_ID = '';
-const G_PROFILE_KEY = 'dawrati_g_profile';
-const INITIAL_SETTINGS = JSON.parse(JSON.stringify(state.settings));
-function gCurrent(){
-  try { const p = JSON.parse(localStorage.getItem(G_PROFILE_KEY) || 'null'); return (p && /^\d+$/.test(String(p.sub))) ? p : null; } catch(e){ return null; }
-}
-// الضيف يستخدم المفتاح القديم نفسه، فلا تضيع بياناته
-function dataKey(){ const p = gCurrent(); return p ? 'dawrati_g_' + p.sub : 'mizaniyati_v2'; }
-function jwtPayload(t){
-  const b = String(t).split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-  const bin = atob(b.padEnd(b.length + (4 - b.length % 4) % 4, '='));
-  return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0))));
-}
-function accApplyUI(){
-  const p = gCurrent(), sub = document.getElementById('topbar-sub');
-  if (sub) sub.textContent = p ? 'مرحباً، ' + (p.name || p.email || '') : 'دفتر حسابك اليومي';
-}
-function accSwitchData(){
-  _memo.gen++;
-  state.transactions = []; state.categories = DEFAULT_CATEGORIES.slice();
-  state.settings = JSON.parse(JSON.stringify(INITIAL_SETTINGS));
-  resetPlanMemory();
-  load();
-  applyTheme(state.settings.theme); applyFontAndNumberSettings(); applyBg();
-  accApplyUI(); refreshAll();
-}
-function openAccountSheet(){ renderAccountSheet(); openSheet('sheet-account'); gRender(); }
-function renderAccountSheet(){
-  const box = document.getElementById('acc-body'); if (!box) return;
-  const p = gCurrent();
-  if (p){
-    const pic = /^https:\/\//.test(p.picture || '') ? `<img src="${esc(p.picture)}" alt="" referrerpolicy="no-referrer" style="width:64px;height:64px;border-radius:50%;border:2.5px solid var(--ink);object-fit:cover">` : '<span class="ce-big">🙂</span>';
-    box.innerHTML = `<div class="ce-hero">${pic}<div class="ce-ht"><b>${esc(p.name||'')}</b><small>${esc(p.email||'')}</small></div></div>
-      <div class="sal-note" style="margin:10px 0 14px">بياناتك محفوظة على هذا الجهاز ضمن حسابك. عند تسجيل الخروج تبقى محفوظة ويعود التطبيق إلى وضع الضيف.</div>
-      <button class="btn btn-accent btn-block" onclick="gLogout()">🔓 تسجيل الخروج</button>
-      <button class="btn btn-ghost btn-block" style="margin-top:8px;color:var(--expense)" onclick="gDelete()">🗑️ حذف الحساب وبياناته</button>`;
-    return;
-  }
-  box.innerHTML = `<div class="sal-note" style="margin-bottom:12px">سجّل الدخول بحساب Google لتنفصل بياناتك على هذا الجهاز عن الضيف. التسجيل تعريف محلي فقط، ولا تُزامَن البيانات مع أجهزة أخرى.</div>
-    ${GOOGLE_CLIENT_ID
-      ? `<div id="gsi-btn" style="display:flex;justify-content:center;min-height:44px"></div>`
-      : `<div class="sal-note" style="border:2px dashed var(--ink);border-radius:14px;padding:12px">⚠️ لم يُضبط معرّف Google بعد. ضع Client ID في أول الكود (GOOGLE_CLIENT_ID).</div>`}
-    <div class="sal-note" style="margin-top:10px">يعمل التسجيل فقط عند فتح الصفحة عبر https.</div>`;
-}
-function gRender(){
-  if (!GOOGLE_CLIENT_ID || gCurrent()) return;
-  const el = document.getElementById('gsi-btn'), gid = window.google && google.accounts && google.accounts.id;
-  if (!el || !gid) return;
-  gid.initialize({ client_id: GOOGLE_CLIENT_ID, callback: gHandle, auto_select: false, cancel_on_tap_outside: true });
-  gid.renderButton(el, { theme:'outline', size:'large', text:'signin_with', shape:'pill', locale:'ar' });
-}
-function gHandle(resp){
-  try {
-    const p = jwtPayload(resp.credential);
-    const okIss = p.iss === 'https://accounts.google.com' || p.iss === 'accounts.google.com';
-    if (p.aud !== GOOGLE_CLIENT_ID || !okIss) throw new Error('aud/iss');
-    if (!/^\d+$/.test(String(p.sub))) throw new Error('sub');
-    if (p.exp && p.exp * 1000 < Date.now()) throw new Error('expired');
-    const sub = String(p.sub), wasGuest = !gCurrent();
-    // أول دخول من الضيف: تُنسخ بياناته الحالية إلى الحساب إن لم يكن له بيانات
-    if (wasGuest && !localStorage.getItem('dawrati_g_' + sub)){
-      const guest = localStorage.getItem('mizaniyati_v2'); if (guest) localStorage.setItem('dawrati_g_' + sub, guest);
-    }
-    localStorage.setItem(G_PROFILE_KEY, JSON.stringify({
-      sub, name: String(p.name || '').slice(0,60),
-      email: String(p.email || '').slice(0,120),
-      picture: /^https:\/\//.test(String(p.picture || '')) ? String(p.picture) : ''
-    }));
-    closeSheet('sheet-account'); accSwitchData();
-    showToast('👋 أهلاً ' + (p.name || p.email || ''));
-  } catch(e){ showToast('⚠️ تعذّر تسجيل الدخول بحساب Google'); }
-}
-function gLogout(){
-  try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch(e){}
-  try { localStorage.removeItem(G_PROFILE_KEY); } catch(e){}
-  closeSheet('sheet-account'); accSwitchData();
-  showToast('تم تسجيل الخروج، بياناتك محفوظة في حسابك');
-}
-function gDelete(){
-  const p = gCurrent(); if (!p) return;
-  showConfirm('حذف البيانات', 'سيُحذف بياناتك من هذا الجهاز نهائياً، ولا يمكن التراجع. حساب Google نفسه لا يتأثر.', '🗑️', ()=>{
-    try { localStorage.removeItem('dawrati_g_' + p.sub); localStorage.removeItem(G_PROFILE_KEY); } catch(e){}
-    closeSheet('sheet-account'); accSwitchData();
-    showToast('🗑️ تم حذف بياناتك من هذا الجهاز');
-  });
-}
-
 // ---------- بدء التشغيل ----------
 load();
 if ((state.settings.debts||[]).some(d=>!Array.isArray(d.items))){ state.settings.debts = normDebts(state.settings.debts); save(); }
@@ -9548,7 +9463,6 @@ applyTheme(state.settings.theme);
 applyFontAndNumberSettings();
 applyBg();
 checkNotifications();
-accApplyUI();
 document.addEventListener('visibilitychange', ()=>{ if (!document.hidden) checkNotifications(); });
 setInterval(()=>{ if (!document.hidden) checkNotifications(); }, 60000);
 showPage('dashboard');
